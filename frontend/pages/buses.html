@@ -1,16 +1,31 @@
+<!--
+    This is the main HTML document for the bus search page.
+    It includes the head section with metadata and stylesheets, and the body with the page content.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!--
+        The head section contains metadata about the document,
+        such as character set, viewport settings, and the page title.
+        It also links to external CSS files for styling.
+    -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Buses - Royal Nepal</title>
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap CSS for responsive layout and components -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
+    <!-- Bootstrap Icons for icons used throughout the page -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Google Fonts -->
+    <!-- Google Fonts for custom typography -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom main stylesheet for global styles -->
     <link rel="stylesheet" href="../css/main.css">
+    <!--
+        Inline styles specific to the buses page.
+        This includes styles for the page layout, filter card, bus result cards,
+        badges, and other UI elements.
+    -->
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -121,7 +136,16 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!--
+        The body contains all the visible content of the page.
+    -->
+
+    <!--
+        Navigation Bar:
+        This is the main navigation header for the website.
+        It is a fixed-top navbar that remains visible on scroll.
+        It includes the brand logo, navigation links, and a login button.
+    -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: linear-gradient(135deg, rgba(0, 56, 147, 0.98) 0%, rgba(220, 20, 60, 0.98) 100%);">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="home.html">
@@ -150,34 +174,51 @@
         </div>
     </nav>
 
-    <!-- Page Header -->
+    <!--
+        Page Header:
+        This section displays the title of the page, breadcrumb navigation,
+        and a summary of the search results.
+    -->
     <div class="page-header">
         <div class="container">
+            <!-- Breadcrumb for easy navigation back to the home page -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-3">
                     <li class="breadcrumb-item"><a href="home.html" class="text-white-50"><i class="bi bi-house me-1"></i>Home</a></li>
                     <li class="breadcrumb-item active text-white">Buses</li>
                 </ol>
             </nav>
+            <!-- Main heading for the page -->
             <h1 class="display-5 fw-bold mb-2"><i class="bi bi-bus-front-fill me-3"></i>Bus Search Results</h1>
+            <!-- Subheading to show search summary, e.g., "Showing buses from Kathmandu to Pokhara" -->
             <p class="lead opacity-75" id="search-summary">Find comfortable buses across Nepal</p>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!--
+        Main Content Area:
+        This is the primary section of the page, containing the filter options
+        and the list of bus search results. It uses a two-column layout.
+    -->
     <div class="container pb-5">
         <div class="row g-4">
-            <!-- Filters -->
+            <!--
+                Filters Column:
+                This column contains various filter options to refine the bus search results.
+                It is sticky, so it stays in view while scrolling through the results.
+            -->
             <div class="col-lg-3">
                 <div class="card filter-card sticky-top" style="top: 100px;">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filters</h5>
                     </div>
                     <div class="card-body">
+                        <!-- Filter by bus operator -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold"><i class="bi bi-building text-primary me-1"></i>Operator</label>
                             <select class="form-select" id="filter-operator"><option value="">All Operators</option></select>
                         </div>
+                        <!-- Filter by bus type (e.g., AC, Deluxe) -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold"><i class="bi bi-bus-front text-success me-1"></i>Bus Type</label>
                             <select class="form-select" id="filter-type">
@@ -188,6 +229,7 @@
                                 <option value="sleeper">Sleeper</option>
                             </select>
                         </div>
+                        <!-- Sorting options for the results -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold"><i class="bi bi-sort-down text-info me-1"></i>Sort By</label>
                             <select class="form-select" id="sort-by">
@@ -197,10 +239,12 @@
                                 <option value="departure-asc">Departure: Earliest</option>
                             </select>
                         </div>
+                        <!-- Filter by maximum price -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold"><i class="bi bi-currency-dollar text-warning me-1"></i>Max Price (NPR)</label>
                             <input type="number" class="form-control" id="filter-price" placeholder="Enter max price">
                         </div>
+                        <!-- Button to reset all applied filters -->
                         <button class="btn btn-outline-primary w-100" onclick="resetFilters()">
                             <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Filters
                         </button>
@@ -208,20 +252,42 @@
                 </div>
             </div>
 
-            <!-- Results -->
+            <!--
+                Results Column:
+                This column displays the bus search results.
+                It includes a count of the results, a loading state, the results list,
+                and a message for when no results are found.
+            -->
             <div class="col-lg-9">
                 <div class="d-flex justify-content-between align-items-center mb-4">
+                    <!-- Displays the number of results found or a "Searching..." message -->
                     <span id="results-count" class="text-muted"><i class="bi bi-search me-1"></i>Searching...</span>
+                    <!-- Link to go back to the home page for a new search -->
                     <a href="home.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>New Search</a>
                 </div>
 
+                <!--
+                    Loading Skeleton:
+                    This is a placeholder shown while the bus results are being fetched from the server.
+                    It provides a visual cue that content is loading.
+                -->
                 <div id="loading">
                     <div class="card mb-3"><div class="card-body"><div class="skeleton" style="height: 80px;"></div></div></div>
                     <div class="card mb-3"><div class="card-body"><div class="skeleton" style="height: 80px;"></div></div></div>
                 </div>
 
+                <!--
+                    Results List:
+                    This container will be dynamically populated with the bus search results
+                    using JavaScript.
+                -->
                 <div id="results-list"></div>
 
+                <!--
+                    No Results Message:
+                    This is displayed when the search returns no buses.
+                    It provides feedback to the user and a link to start a new search.
+                -->
                 <div id="no-results" class="card text-center empty-state" style="display: none;">
                     <div class="card-body">
                         <i class="bi bi-bus-front"></i>
@@ -234,7 +300,11 @@
         </div>
     </div>
 
-    <!-- Booking Modal -->
+    <!--
+        Booking Modal:
+        This modal dialog appears when the user clicks the "Book Now" button on a bus card.
+        It shows booking details and asks for confirmation.
+    -->
     <div class="modal fade" id="bookingModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -242,6 +312,7 @@
                     <h5 class="modal-title"><i class="bi bi-bus-front me-2"></i>Confirm Booking</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+                <!-- Booking details will be loaded here by JavaScript -->
                 <div class="modal-body" id="booking-details"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -253,6 +324,12 @@
         </div>
     </div>
 
+    <!--
+        JavaScript Files:
+        These scripts add interactivity to the page.
+        - Bootstrap bundle is for Bootstrap components like the modal.
+        - buses.js contains the custom logic for fetching, filtering, and displaying bus data.
+    -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/buses.js"></script>
 </body>
