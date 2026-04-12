@@ -1,0 +1,374 @@
+/**
+ * Royal Nepal - Home Page Styles (Bootstrap Enhanced)
+ */
+
+/* Custom Properties */
+:root {
+    --nepal-red: #DC143C;
+    --nepal-blue: #003893;
+    --nepal-gold: #FFD700;
+}
+
+/* Font Family */
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Navbar */
+#mainNavbar {
+    background: linear-gradient(135deg, rgba(0, 56, 147, 0.95) 0%, rgba(220, 20, 60, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    padding: 0.8rem 0;
+    transition: all 0.3s ease;
+}
+
+#mainNavbar.scrolled {
+    background: linear-gradient(135deg, rgba(0, 56, 147, 1) 0%, rgba(220, 20, 60, 1) 100%);
+    padding: 0.5rem 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--nepal-gold);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+    width: 80%;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(0, 56, 147, 0.85) 0%, rgba(220, 20, 60, 0.85) 100%),
+                url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1920') center/cover fixed;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+    z-index: 1;
+}
+
+.hero-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Search Section */
+.search-section {
+    margin-top: -100px;
+    position: relative;
+    z-index: 100;
+}
+
+.search-card {
+    background: white;
+    border: none;
+}
+
+.search-tabs .nav-pills .nav-link {
+    color: #666;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.search-tabs .nav-pills .nav-link:hover {
+    background: rgba(220, 20, 60, 0.1);
+    color: var(--nepal-red);
+}
+
+.search-tabs .nav-pills .nav-link.active {
+    background: linear-gradient(135deg, var(--nepal-red) 0%, var(--nepal-blue) 100%);
+    color: white;
+}
+
+.search-tabs .nav-pills .nav-link i {
+    font-size: 1.1rem;
+}
+
+/* Form Controls */
+.form-select:focus,
+.form-control:focus {
+    border-color: var(--nepal-red);
+    box-shadow: 0 0 0 0.25rem rgba(220, 20, 60, 0.15);
+}
+
+.form-select-lg,
+.form-control-lg {
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+}
+
+/* Destination Cards */
+.destination-card {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.destination-card:hover {
+    transform: translateY(-10px);
+}
+
+.destination-card .destination-img {
+    height: 180px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.destination-card:hover .destination-img i {
+    transform: scale(1.2);
+    transition: transform 0.3s ease;
+}
+
+/* Service Cards */
+.service-card {
+    transition: all 0.4s ease;
+    border-radius: 15px;
+}
+
+.service-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.service-icon {
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-icon {
+    transform: scale(1.1);
+}
+
+/* Feature Cards */
+.feature-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.feature-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-5px);
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.feature-icon {
+    transition: transform 0.3s ease;
+}
+
+/* Testimonial Cards */
+.testimonials-section .card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.testimonials-section .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Newsletter Section */
+.newsletter-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.3; }
+}
+
+/* Footer */
+.footer a:hover {
+    color: var(--nepal-gold) !important;
+    text-decoration: none !important;
+}
+
+.footer .social-icons a {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.footer .social-icons a:hover {
+    background: var(--nepal-red);
+    border-color: var(--nepal-red);
+    transform: translateY(-3px);
+}
+
+/* Back to Top Button */
+#backToTop {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+#backToTop:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(220, 20, 60, 0.4);
+}
+
+/* Custom Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Loading Spinner */
+.spinner-grow-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Custom Button Styles */
+.btn {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--nepal-red) 0%, #b8102f 100%);
+    border: none;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #b8102f 0%, #8b0d24 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--nepal-blue) 0%, #002266 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #002266 0%, #001144 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 56, 147, 0.3);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--nepal-gold) 0%, #e6c200 100%);
+    border: none;
+    color: #333;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #e6c200 0%, #ccac00 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+    color: #333;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .hero-section {
+        min-height: 80vh;
+    }
+    
+    .search-section {
+        margin-top: -50px;
+    }
+    
+    .navbar-collapse {
+        background: linear-gradient(135deg, rgba(0, 56, 147, 0.98) 0%, rgba(220, 20, 60, 0.98) 100%);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hero-section h1 {
+        font-size: 2.5rem !important;
+    }
+    
+    .search-tabs .nav-pills .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .search-tabs .nav-pills .nav-link i {
+        display: block;
+        margin: 0 auto 0.25rem;
+    }
+    
+    .destination-card .destination-img {
+        height: 150px;
+    }
+}
+
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Selection Color */
+::selection {
+    background: var(--nepal-red);
+    color: white;
+}
+
+/* Focus Styles */
+*:focus {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: 2px solid var(--nepal-gold);
+    outline-offset: 2px;
+}

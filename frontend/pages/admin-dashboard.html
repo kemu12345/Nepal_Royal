@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Royal Nepal</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Royal Nepal</h2>
+                <p class="tagline">Admin Panel</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#users" class="nav-item">
+                    <span class="icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="#flights" class="nav-item">
+                    <span class="icon">✈️</span>
+                    <span>Flights</span>
+                </a>
+                <a href="#buses" class="nav-item">
+                    <span class="icon">🚌</span>
+                    <span>Buses</span>
+                </a>
+                <a href="#hotels" class="nav-item">
+                    <span class="icon">🏨</span>
+                    <span>Hotels</span>
+                </a>
+                <a href="#packages" class="nav-item">
+                    <span class="icon">📦</span>
+                    <span>Packages</span>
+                </a>
+                <a href="#places" class="nav-item">
+                    <span class="icon">🏔️</span>
+                    <span>Places</span>
+                </a>
+                <a href="#bookings" class="nav-item">
+                    <span class="icon">📋</span>
+                    <span>Bookings</span>
+                </a>
+                <a href="#" class="nav-item logout-btn">
+                    <span class="icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <h1>Dashboard Overview</h1>
+                <div class="user-info">
+                    <span id="userName">Admin User</span>
+                    <span class="badge" id="userRole">Admin</span>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #DC143C;">👥</div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #003893;">📋</div>
+                        <div class="stat-info">
+                            <h3 id="totalBookings">0</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #FFD700;">✈️</div>
+                        <div class="stat-info">
+                            <h3 id="totalFlights">0</h3>
+                            <p>Active Flights</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #28a745;">🏨</div>
+                        <div class="stat-info">
+                            <h3 id="totalHotels">0</h3>
+                            <p>Listed Hotels</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Management -->
+                <div class="card">
+                    <div class="inventory-card-header">
+                        <div>
+                            <h2>Inventory Management</h2>
+                            <p>Create, update, and remove travel inventory items.</p>
+                        </div>
+                        <div class="inventory-toolbar">
+                            <label for="inventoryType">Item Type</label>
+                            <select id="inventoryType" class="inventory-select">
+                                <option value="flight">Flights</option>
+                                <option value="bus">Buses</option>
+                                <option value="hotel">Hotels</option>
+                                <option value="package">Packages</option>
+                                <option value="place">Places</option>
+                            </select>
+                            <button class="btn btn-secondary" type="button" id="refreshInventoryBtn">Refresh</button>
+                        </div>
+                    </div>
+
+                    <div id="inventoryMessage" class="message-box"></div>
+
+                    <div class="inventory-layout">
+                        <div class="inventory-form-panel">
+                            <div class="panel-header">
+                                <h3 id="inventoryFormTitle">Add Flight</h3>
+                                <p id="inventoryFormSubtitle">Fill in the fields for the selected item type.</p>
+                            </div>
+
+                            <form id="inventoryForm" class="inventory-form">
+                                <input type="hidden" id="inventoryId">
+                                <div id="inventoryFormFields"></div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary" id="saveInventoryBtn">Save Item</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancel Edit</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="inventory-table-panel">
+                            <div class="panel-header">
+                                <h3>Current Items</h3>
+                                <p>Use the action buttons to edit or delete an item.</p>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="data-table inventory-table">
+                                    <thead id="inventoryTableHead"></thead>
+                                    <tbody id="inventoryTableBody">
+                                        <tr>
+                                            <td colspan="6" class="text-center">Select an item type to load records.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" type="button" data-inventory-type="flight">Add Flight</button>
+                        <button class="btn btn-primary" type="button" data-inventory-type="bus">Add Bus</button>
+                        <button class="btn btn-primary" type="button" data-inventory-type="hotel">Add Hotel</button>
+                        <button class="btn btn-primary" type="button" data-inventory-type="package">Create Package</button>
+                        <button class="btn btn-secondary" type="button" data-inventory-type="place">Add Place</button>
+                        <button class="btn btn-secondary">View Reports</button>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="card">
+                    <h2>Recent Bookings</h2>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentBookings">
+                                <tr>
+                                    <td colspan="6" class="text-center">No bookings yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- System Info -->
+                <div class="card">
+                    <h2>System Information</h2>
+                    <div class="system-info">
+                        <p><strong>Platform:</strong> Royal Nepal Travel & Tourism</p>
+                        <p><strong>Version:</strong> 1.0.0</p>
+                        <p><strong>Database:</strong> MySQL (royal_nepal)</p>
+                        <p><strong>Focus:</strong> Nepal-centric travel services</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
