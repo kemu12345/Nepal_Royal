@@ -1,28 +1,35 @@
-/**
- * Royal Nepal - Buses Search Results (Bootstrap Enhanced)
- */
+/*
+    This script handles the functionality for the bus search results page.
+    It fetches bus data based on URL parameters, provides filtering and sorting options,
+    and manages the booking process through a modal.
+*/
 
+// Base URL for the backend API.
 const API_BASE_URL = '../../backend/api';
-let allBuses = [];
-let filteredBuses = [];
-let selectedBus = null;
 
+// Global variables to store bus data.
+let allBuses = [];      // Holds all buses fetched from the API.
+let filteredBuses = []; // Holds the buses after applying filters.
+let selectedBus = null; // Holds the bus object selected for booking.
+
+// This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    // Get search parameters from URL
+    // Get search parameters (from, to, date) from the URL.
     const urlParams = new URLSearchParams(window.location.search);
     const from = urlParams.get('from');
     const to = urlParams.get('to');
     const date = urlParams.get('date');
 
+    // If search parameters exist, fetch buses from the API.
     if (from && to && date) {
         displaySearchSummary(from, to, date);
         searchBuses(from, to, date);
     } else {
-        // Load demo buses if no search params
+        // If no search parameters, load demo data for display purposes.
         loadDemoBuses();
     }
 
-    // Setup filter handlers
+    // Set up event listeners for the filter and sort controls.
     document.getElementById('operatorFilter')?.addEventListener('change', applyFilters);
     document.getElementById('busTypeFilter')?.addEventListener('change', applyFilters);
     document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
@@ -31,12 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
         applyFilters();
     });
     
-    // Update auth buttons
+    // Update the navigation bar to show user info if logged in.
     updateAuthButtons();
 });
 
 /**
- * Update auth buttons based on login status
+ * Updates the authentication buttons in the navigation bar to show the user's name
+ * and a dropdown menu if they are logged in.
  */
 function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -60,7 +68,8 @@ function updateAuthButtons() {
 }
 
 /**
- * Get demo buses
+ * Returns a static array of demo bus data.
+ * This is used for frontend development and testing when the backend is not available.
  */
 function getDemoBuses() {
     return [
@@ -124,7 +133,7 @@ function getDemoBuses() {
 }
 
 /**
- * Load demo buses
+ * Loads the demo bus data into the page.
  */
 function loadDemoBuses() {
     document.getElementById('loadingState').style.display = 'none';
@@ -135,13 +144,15 @@ function loadDemoBuses() {
 }
 
 /**
- * Display search summary
+ * Displays a summary of the current search (origin, destination, and date)
+ * in the page header. It fetches location names from the API.
  */
 async function displaySearchSummary(fromId, toId, date) {
     const summaryEl = document.getElementById('searchSummary');
     if (!summaryEl) return;
     
     try {
+        // Fetch location data to get names from IDs.
         const response = await fetch(`${API_BASE_URL}/get_locations.php`);
         const data = await response.json();
 
@@ -162,7 +173,7 @@ async function displaySearchSummary(fromId, toId, date) {
 }
 
 /**
- * Search for buses
+ * Fetches bus data from the API based on the search criteria.
  */
 async function searchBuses(from, to, date) {
     const loadingEl = document.getElementById('loadingState');
@@ -184,6 +195,7 @@ async function searchBuses(from, to, date) {
         if (data.success && data.data && data.data.length > 0) {
             allBuses = data.data;
         } else {
+            // Fallback to demo buses if the API returns no data.
             allBuses = getDemoBuses();
         }
         
@@ -193,6 +205,7 @@ async function searchBuses(from, to, date) {
     } catch (error) {
         console.error('Error searching buses:', error);
         loadingEl.style.display = 'none';
+        // Fallback to demo buses on API error.
         allBuses = getDemoBuses();
         filteredBuses = [...allBuses];
         populateOperatorFilter(allBuses);
@@ -201,14 +214,15 @@ async function searchBuses(from, to, date) {
 }
 
 /**
- * Populate operator filter dropdown
+ * Populates the 'Operator' filter dropdown with unique operator names
+ * from the fetched bus data.
  */
 function populateOperatorFilter(buses) {
     const operators = [...new Set(buses.map(b => b.operator_name))];
     const filterSelect = document.getElementById('operatorFilter');
     if (!filterSelect) return;
 
-    // Clear existing options except first
+    // Clear existing options but keep the "All Operators" default.
     while (filterSelect.options.length > 1) {
         filterSelect.remove(1);
     }
@@ -220,7 +234,7 @@ function populateOperatorFilter(buses) {
 }
 
 /**
- * Reset all filters
+ * Resets all filters to their default values and re-applies them.
  */
 function resetFilters() {
     document.getElementById('operatorFilter').value = '';
@@ -232,7 +246,7 @@ function resetFilters() {
 }
 
 /**
- * Apply filters and sorting
+ * Applies the selected filters and sorting to the list of buses.
  */
 function applyFilters() {
     const operatorFilter = document.getElementById('operatorFilter')?.value || '';
@@ -240,6 +254,7 @@ function applyFilters() {
     const priceFilter = document.getElementById('priceRange')?.value || 5000;
     const sortBy = document.getElementById('sortFilter')?.value || 'price-asc';
 
+    // Filter the buses based on the selected criteria.
     filteredBuses = allBuses.filter(bus => {
         if (operatorFilter && bus.operator_name !== operatorFilter) return false;
         if (typeFilter && bus.bus_type !== typeFilter) return false;
@@ -247,6 +262,7 @@ function applyFilters() {
         return true;
     });
 
+    // Sort the filtered buses.
     filteredBuses.sort((a, b) => {
         switch (sortBy) {
             case 'price-asc':
@@ -266,7 +282,7 @@ function applyFilters() {
 }
 
 /**
- * Display buses
+ * Renders the list of buses on the page.
  */
 function displayBuses(buses) {
     const resultsEl = document.getElementById('busesContainer');
@@ -283,7 +299,9 @@ function displayBuses(buses) {
 }
 
 /**
- * Create Bootstrap bus card
+ * Creates the HTML for a single bus card.
+ * @param {object} bus - The bus data object.
+ * @returns {string} The HTML string for the bus card.
  */
 function createBusCard(bus) {
     const duration = formatDuration(bus.duration_minutes);
@@ -352,7 +370,7 @@ function createBusCard(bus) {
 }
 
 /**
- * Open booking modal
+ * Opens the booking modal with the details of the selected bus.
  */
 function openBookingModal(busId) {
     selectedBus = allBuses.find(b => b.bus_id === busId);
@@ -404,12 +422,14 @@ function openBookingModal(busId) {
 }
 
 /**
- * Confirm booking
+ * Handles the booking confirmation.
+ * It checks if the user is logged in before proceeding.
  */
 function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     
     if (!isLoggedIn) {
+        // If not logged in, hide the modal and redirect to the login page.
         bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
         showToast('Please login to book a bus', 'warning');
         setTimeout(() => {
@@ -418,12 +438,15 @@ function confirmBooking() {
         return;
     }
     
+    // In a real application, this would proceed to a payment or confirmation step.
     bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
     showToast(`🚌 Booking confirmed for ${selectedBus.operator_name}!`, 'success');
 }
 
 /**
- * Show Bootstrap toast
+ * Shows a Bootstrap toast message at the bottom of the page.
+ * @param {string} message - The message to display.
+ * @param {string} type - The type of toast ('info', 'success', 'warning').
  */
 function showToast(message, type = 'info') {
     const container = document.querySelector('.toast-container');
@@ -444,7 +467,7 @@ function showToast(message, type = 'info') {
 }
 
 /**
- * Format duration
+ * Helper function to format duration from minutes to a "Xh Ym" string.
  */
 function formatDuration(minutes) {
     const hours = Math.floor(minutes / 60);
@@ -453,21 +476,21 @@ function formatDuration(minutes) {
 }
 
 /**
- * Format time
+ * Helper function to format time from "HH:MM:SS" to "HH:MM".
  */
 function formatTime(time) {
     return time.substring(0, 5);
 }
 
 /**
- * Format price
+ * Helper function to format a number as a price string with commas.
  */
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('en-US');
 }
 
 /**
- * Format date
+ * Helper function to format a date string into a more readable format.
  */
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -479,7 +502,7 @@ function formatDate(dateString) {
 }
 
 /**
- * Logout function
+ * Logs the user out and reloads the page.
  */
 function logout() {
     localStorage.removeItem('isLoggedIn');

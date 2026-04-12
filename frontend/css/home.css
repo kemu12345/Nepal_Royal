@@ -1,39 +1,55 @@
-/**
- * Royal Nepal - Home Page Styles (Bootstrap Enhanced)
- */
+/*
+    This file contains specific styles for the home page.
+    It enhances the base Bootstrap styles to create a unique look and feel
+    for the Royal Nepal website's main landing page.
+*/
 
-/* Custom Properties */
+/*
+    Custom CSS variables (properties) for brand colors.
+    This makes it easy to maintain a consistent color scheme.
+*/
 :root {
-    --nepal-red: #DC143C;
-    --nepal-blue: #003893;
-    --nepal-gold: #FFD700;
+    --nepal-red: #DC143C;   /* A strong red, representing the national flag */
+    --nepal-blue: #003893;  /* A deep blue, also from the flag */
+    --nepal-gold: #FFD700;  /* A golden yellow for highlights and accents */
 }
 
-/* Font Family */
+/* Sets the primary font for the entire page. */
 body {
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Navbar */
+/*
+    Styles for the main navigation bar.
+    It has a semi-transparent gradient background that becomes solid on scroll.
+*/
 #mainNavbar {
     background: linear-gradient(135deg, rgba(0, 56, 147, 0.95) 0%, rgba(220, 20, 60, 0.95) 100%);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Creates a frosted glass effect */
     padding: 0.8rem 0;
     transition: all 0.3s ease;
 }
 
+/*
+    Style applied to the navbar when the user scrolls down the page.
+    The background becomes opaque and a shadow is added.
+*/
 #mainNavbar.scrolled {
     background: linear-gradient(135deg, rgba(0, 56, 147, 1) 0%, rgba(220, 20, 60, 1) 100%);
     padding: 0.5rem 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Styling for navigation links. */
 .navbar-nav .nav-link {
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
 }
 
+/*
+    An underline effect for navigation links that appears on hover or when active.
+*/
 .navbar-nav .nav-link::after {
     content: '';
     position: absolute;
@@ -46,12 +62,16 @@ body {
     transform: translateX(-50%);
 }
 
+/* The underline becomes visible on hover or for the active link. */
 .navbar-nav .nav-link:hover::after,
 .navbar-nav .nav-link.active::after {
     width: 80%;
 }
 
-/* Hero Section */
+/*
+    The main "hero" section at the top of the page.
+    It has a full-height background image with a gradient overlay.
+*/
 .hero-section {
     min-height: 100vh;
     background: linear-gradient(135deg, rgba(0, 56, 147, 0.85) 0%, rgba(220, 20, 60, 0.85) 100%),
@@ -60,6 +80,7 @@ body {
     overflow: hidden;
 }
 
+/* A subtle overlay to improve text readability over the hero image. */
 .hero-overlay {
     position: absolute;
     inset: 0;
@@ -67,6 +88,7 @@ body {
     z-index: 1;
 }
 
+/* A container for particle effects in the hero section (if any). */
 .hero-particles {
     position: absolute;
     inset: 0;
@@ -74,18 +96,23 @@ body {
     pointer-events: none;
 }
 
-/* Search Section */
+/*
+    The search section, which slightly overlaps the hero section
+    for a layered effect.
+*/
 .search-section {
     margin-top: -100px;
     position: relative;
     z-index: 100;
 }
 
+/* The main card containing the search tabs and forms. */
 .search-card {
     background: white;
     border: none;
 }
 
+/* Styling for the tabs (Flights, Buses, etc.) in the search card. */
 .search-tabs .nav-pills .nav-link {
     color: #666;
     font-weight: 600;
@@ -98,6 +125,7 @@ body {
     color: var(--nepal-red);
 }
 
+/* Style for the active search tab. */
 .search-tabs .nav-pills .nav-link.active {
     background: linear-gradient(135deg, var(--nepal-red) 0%, var(--nepal-blue) 100%);
     color: white;
@@ -107,7 +135,9 @@ body {
     font-size: 1.1rem;
 }
 
-/* Form Controls */
+/*
+    Custom focus styles for form controls to match the brand colors.
+*/
 .form-select:focus,
 .form-control:focus {
     border-color: var(--nepal-red);
@@ -120,7 +150,10 @@ body {
     border: 2px solid #e0e0e0;
 }
 
-/* Destination Cards */
+/*
+    Styling for the featured destination cards.
+    Includes a hover effect that lifts the card.
+*/
 .destination-card {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -129,6 +162,7 @@ body {
     transform: translateY(-10px);
 }
 
+/* The image container for a destination card. */
 .destination-card .destination-img {
     height: 180px;
     position: relative;
@@ -138,12 +172,16 @@ body {
     overflow: hidden;
 }
 
+/* A subtle zoom effect on the icon inside the destination image on hover. */
 .destination-card:hover .destination-img i {
     transform: scale(1.2);
     transition: transform 0.3s ease;
 }
 
-/* Service Cards */
+/*
+    Styling for the service cards (Flights, Buses, etc.).
+    Includes a more pronounced hover effect.
+*/
 .service-card {
     transition: all 0.4s ease;
     border-radius: 15px;
@@ -154,6 +192,7 @@ body {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
+/* The icon within a service card. */
 .service-icon {
     transition: transform 0.3s ease;
 }
@@ -162,7 +201,9 @@ body {
     transform: scale(1.1);
 }
 
-/* Feature Cards */
+/*
+    Styling for the "Why Choose Us" feature cards.
+*/
 .feature-card {
     transition: all 0.3s ease;
     border-radius: 15px;
@@ -181,7 +222,9 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* Testimonial Cards */
+/*
+    Styling for the testimonial cards.
+*/
 .testimonials-section .card {
     transition: all 0.3s ease;
     border-radius: 15px;
@@ -192,7 +235,10 @@ body {
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* Newsletter Section */
+/*
+    Styling for the newsletter subscription section.
+    Includes a subtle animated background effect.
+*/
 .newsletter-section {
     position: relative;
     overflow: hidden;
@@ -209,12 +255,15 @@ body {
     animation: pulse 4s ease-in-out infinite;
 }
 
+/* The animation for the newsletter background effect. */
 @keyframes pulse {
     0%, 100% { transform: scale(1); opacity: 0.5; }
     50% { transform: scale(1.1); opacity: 0.3; }
 }
 
-/* Footer */
+/*
+    Styling for the footer links and social media icons.
+*/
 .footer a:hover {
     color: var(--nepal-gold) !important;
     text-decoration: none !important;
@@ -235,7 +284,9 @@ body {
     transform: translateY(-3px);
 }
 
-/* Back to Top Button */
+/*
+    The "Back to Top" button that appears on scroll.
+*/
 #backToTop {
     width: 50px;
     height: 50px;
@@ -250,7 +301,9 @@ body {
     box-shadow: 0 10px 25px rgba(220, 20, 60, 0.4);
 }
 
-/* Custom Animations */
+/*
+    A custom floating animation.
+*/
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
@@ -260,19 +313,22 @@ body {
     animation: float 3s ease-in-out infinite;
 }
 
-/* Loading Spinner */
+/* A smaller version of the Bootstrap spinner. */
 .spinner-grow-sm {
     width: 1rem;
     height: 1rem;
 }
 
-/* Badges */
+/* Custom styling for badges. */
 .badge {
     font-weight: 500;
     letter-spacing: 0.5px;
 }
 
-/* Custom Button Styles */
+/*
+    Custom styles for buttons to give them gradient backgrounds
+    and hover effects that match the brand.
+*/
 .btn {
     font-weight: 600;
     letter-spacing: 0.3px;
@@ -314,7 +370,9 @@ body {
     color: #333;
 }
 
-/* Responsive Adjustments */
+/*
+    Responsive adjustments for tablet-sized screens.
+*/
 @media (max-width: 991.98px) {
     .hero-section {
         min-height: 80vh;
@@ -324,6 +382,7 @@ body {
         margin-top: -50px;
     }
     
+    /* Styles the collapsed navbar menu on smaller screens. */
     .navbar-collapse {
         background: linear-gradient(135deg, rgba(0, 56, 147, 0.98) 0%, rgba(220, 20, 60, 0.98) 100%);
         padding: 1rem;
@@ -332,6 +391,9 @@ body {
     }
 }
 
+/*
+    Responsive adjustments for mobile-sized screens.
+*/
 @media (max-width: 767.98px) {
     .hero-section h1 {
         font-size: 2.5rem !important;
@@ -342,6 +404,7 @@ body {
         font-size: 0.9rem;
     }
     
+    /* Stacks the icon and text in the search tabs vertically. */
     .search-tabs .nav-pills .nav-link i {
         display: block;
         margin: 0 auto 0.25rem;
@@ -352,22 +415,25 @@ body {
     }
 }
 
-/* Smooth Scroll Behavior */
+/* Enables smooth scrolling when clicking on anchor links. */
 html {
     scroll-behavior: smooth;
 }
 
-/* Selection Color */
+/* Customizes the color of selected text. */
 ::selection {
     background: var(--nepal-red);
     color: white;
 }
 
-/* Focus Styles */
+/* Removes the default outline on focused elements. */
 *:focus {
     outline: none;
 }
 
+/*
+    Adds a custom, accessibility-friendly focus outline for keyboard navigation.
+*/
 *:focus-visible {
     outline: 2px solid var(--nepal-gold);
     outline-offset: 2px;

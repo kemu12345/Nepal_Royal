@@ -1,37 +1,49 @@
-/**
- * Royal Nepal - Flights Search Results (Bootstrap Enhanced)
- */
+/*
+    This script handles the functionality for the flight search results page.
+    It fetches flight data based on URL parameters, provides filtering and sorting,
+    and manages the booking process through a modal.
+*/
 
+// Base URL for the backend API.
 const API_BASE_URL = '../../backend/api';
-let allFlights = [];
-let filteredFlights = [];
-let selectedFlight = null;
 
+// Global variables to store flight data.
+let allFlights = [];      // Holds all flights fetched from the API.
+let filteredFlights = []; // Holds the flights after applying filters.
+let selectedFlight = null;  // Holds the flight object selected for booking.
+
+// This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    // Get search parameters from URL
+    // Get search parameters (from, to, date) from the URL.
     const urlParams = new URLSearchParams(window.location.search);
     const from = urlParams.get('from');
     const to = urlParams.get('to');
     const date = urlParams.get('date');
 
+    // If search parameters are missing, redirect to the home page.
     if (!from || !to || !date) {
         window.location.href = 'home.html';
         return;
     }
 
-    // Display search summary
+    // Display a summary of the search in the page header.
     displaySearchSummary(from, to, date);
 
-    // Search for flights
+    // Fetch flights from the API based on the search criteria.
     searchFlights(from, to, date);
 
-    // Setup filter and sort handlers
+    // Set up event listeners for the filter and sort controls.
     document.getElementById('filter-airline').addEventListener('change', applyFilters);
     document.getElementById('filter-price').addEventListener('input', debounce(applyFilters, 300));
     document.getElementById('sort-by').addEventListener('change', applyFilters);
 });
 
-// Debounce helper
+/**
+ * A debounce function to limit the rate at which a function gets called.
+ * This is useful for input events to prevent excessive function calls.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - The debounce delay in milliseconds.
+ */
 function debounce(func, wait) {
     let timeout;
     return function(...args) {
@@ -40,7 +52,9 @@ function debounce(func, wait) {
     };
 }
 
-// Reset filters
+/**
+ * Resets all filters to their default values and re-applies them.
+ */
 function resetFilters() {
     document.getElementById('filter-airline').value = '';
     document.getElementById('filter-price').value = '';
@@ -49,7 +63,8 @@ function resetFilters() {
 }
 
 /**
- * Display search summary
+ * Displays a summary of the current search (origin, destination, and date).
+ * It fetches location names from the API to show readable names instead of IDs.
  */
 async function displaySearchSummary(fromId, toId, date) {
     try {
@@ -77,7 +92,7 @@ async function displaySearchSummary(fromId, toId, date) {
 }
 
 /**
- * Search for flights
+ * Fetches flight data from the API based on the search criteria.
  */
 async function searchFlights(from, to, date) {
     const loadingEl = document.getElementById('loading');
@@ -102,7 +117,7 @@ async function searchFlights(from, to, date) {
             populateAirlineFilter(allFlights);
             applyFilters();
         } else {
-            // Show demo flights if no results
+            // Fallback to demo flights if the API returns no results.
             allFlights = getDemoFlights(from, to, date);
             filteredFlights = [...allFlights];
             populateAirlineFilter(allFlights);
@@ -111,7 +126,7 @@ async function searchFlights(from, to, date) {
     } catch (error) {
         console.error('Error searching flights:', error);
         loadingEl.style.display = 'none';
-        // Show demo flights on error
+        // Fallback to demo flights on API error.
         allFlights = getDemoFlights(from, to, date);
         filteredFlights = [...allFlights];
         populateAirlineFilter(allFlights);
@@ -120,7 +135,7 @@ async function searchFlights(from, to, date) {
 }
 
 /**
- * Get demo flights for testing
+ * Returns a static array of demo flight data for testing purposes.
  */
 function getDemoFlights(from, to, date) {
     const airlines = [
@@ -157,7 +172,8 @@ function getDemoFlights(from, to, date) {
 }
 
 /**
- * Populate airline filter dropdown
+ * Populates the 'Airline' filter dropdown with unique airline names
+ * from the fetched flight data.
  */
 function populateAirlineFilter(flights) {
     const airlines = [...new Set(flights.map(f => f.airline_name))];
@@ -170,14 +186,14 @@ function populateAirlineFilter(flights) {
 }
 
 /**
- * Apply filters and sorting
+ * Applies the selected filters and sorting to the list of flights.
  */
 function applyFilters() {
     const airlineFilter = document.getElementById('filter-airline').value;
     const priceFilter = document.getElementById('filter-price').value;
     const sortBy = document.getElementById('sort-by').value;
 
-    // Filter flights
+    // Filter the flights based on the selected criteria.
     filteredFlights = allFlights.filter(flight => {
         // Airline filter
         if (airlineFilter && flight.airline_name !== airlineFilter) {
@@ -192,7 +208,7 @@ function applyFilters() {
         return true;
     });
 
-    // Sort flights
+    // Sort the filtered flights.
     filteredFlights.sort((a, b) => {
         switch (sortBy) {
             case 'price-asc':
@@ -208,12 +224,12 @@ function applyFilters() {
         }
     });
 
-    // Display results
+    // Display the filtered and sorted results.
     displayFlights(filteredFlights);
 }
 
 /**
- * Display flights
+ * Renders the list of flights on the page.
  */
 function displayFlights(flights) {
     const resultsEl = document.getElementById('results-list');
@@ -231,7 +247,7 @@ function displayFlights(flights) {
     noResultsEl.style.display = 'none';
     resultsEl.innerHTML = flights.map(flight => createFlightCard(flight)).join('');
 
-    // Add event listeners to book buttons
+    // Re-add event listeners to the "Book Now" buttons after rendering.
     document.querySelectorAll('.book-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const flightId = btn.dataset.flightId;
@@ -241,7 +257,9 @@ function displayFlights(flights) {
 }
 
 /**
- * Create flight card HTML (Bootstrap version)
+ * Creates the HTML for a single flight card.
+ * @param {object} flight - The flight data object.
+ * @returns {string} The HTML string for the flight card.
  */
 function createFlightCard(flight) {
     const duration = formatDuration(flight.duration_minutes);
@@ -303,7 +321,7 @@ function createFlightCard(flight) {
 }
 
 /**
- * Open booking modal
+ * Opens the booking modal with the details of the selected flight.
  */
 function openBookingModal(flightId) {
     selectedFlight = allFlights.find(f => f.flight_id == flightId);
@@ -349,7 +367,8 @@ function openBookingModal(flightId) {
 }
 
 /**
- * Confirm booking
+ * Handles the booking confirmation.
+ * It checks if the user is logged in before proceeding.
  */
 function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -357,11 +376,13 @@ function confirmBooking() {
     if (!isLoggedIn) {
         showToast('Please login to book a flight', 'warning');
         setTimeout(() => {
+            // Redirect to login page with a redirect-back URL.
             window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
         }, 1500);
         return;
     }
     
+    // In a real application, this would proceed to a payment or confirmation step.
     showToast('Booking confirmed! Check your email for details.', 'success');
     
     const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
@@ -369,7 +390,7 @@ function confirmBooking() {
 }
 
 /**
- * Show toast notification
+ * Shows a Bootstrap toast notification.
  */
 function showToast(message, type = 'info') {
     let toastContainer = document.getElementById('toastContainer');
@@ -401,14 +422,14 @@ function showToast(message, type = 'info') {
 }
 
 /**
- * Handle booking
+ * A wrapper function to handle the booking process.
  */
 function handleBooking(flightId) {
     openBookingModal(flightId);
 }
 
 /**
- * Format duration
+ * Helper function to format duration from minutes to a "Xh Ym" string.
  */
 function formatDuration(minutes) {
     const hours = Math.floor(minutes / 60);
@@ -417,14 +438,14 @@ function formatDuration(minutes) {
 }
 
 /**
- * Format time (HH:MM:SS to HH:MM)
+ * Helper function to format time from "HH:MM:SS" to "HH:MM".
  */
 function formatTime(time) {
     return time.substring(0, 5);
 }
 
 /**
- * Format price with commas
+ * Helper function to format a number as a price string with commas.
  */
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('en-NP', {
@@ -434,7 +455,7 @@ function formatPrice(price) {
 }
 
 /**
- * Format date
+ * Helper function to format a date string into a more readable format.
  */
 function formatDate(dateString) {
     const date = new Date(dateString);

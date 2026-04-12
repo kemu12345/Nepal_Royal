@@ -1,5 +1,18 @@
+# This is a comment to explain the purpose of this .gitignore file.
+# It is used by Git to determine which files and directories to ignore
+# when committing code. This helps keep the repository clean from
+# unnecessary or sensitive files.
+
+# Ignore files and directories specific to the backend.
+# This includes vendor dependencies managed by Composer and log files.
 backend/
+
+# Ignore IDE-specific settings files.
+# This ensures that personal editor configurations are not shared
+# across the team.
 .vscode/
+
+# Ignore Markdown files that are for documentation or project management,
+# not part of the core application code.
 ADVANCED_FEATURES.md
 README.md
-frontend

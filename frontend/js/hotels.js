@@ -1,28 +1,35 @@
-/**
- * Royal Nepal - Hotels Search Results (Bootstrap Enhanced)
- */
+/*
+    This script handles the functionality for the hotel search results page.
+    It fetches hotel data based on URL parameters, provides filtering and sorting,
+    and manages the booking process through a modal.
+*/
 
+// Base URL for the backend API.
 const API_BASE_URL = '../../backend/api';
-let allHotels = [];
-let filteredHotels = [];
-let selectedHotel = null;
 
+// Global variables to store hotel data.
+let allHotels = [];      // Holds all hotels fetched from the API.
+let filteredHotels = []; // Holds the hotels after applying filters.
+let selectedHotel = null;  // Holds the hotel object selected for booking.
+
+// This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    // Get search parameters from URL
+    // Get search parameters (city, check-in, check-out) from the URL.
     const urlParams = new URLSearchParams(window.location.search);
     const city = urlParams.get('city');
     const checkin = urlParams.get('checkin');
     const checkout = urlParams.get('checkout');
 
+    // If search parameters are present, fetch hotels from the API.
     if (city && checkin && checkout) {
         displaySearchSummary(city, checkin, checkout);
         searchHotels(city, checkin, checkout);
     } else {
-        // Load demo hotels
+        // Otherwise, load a default set of demo hotels for display.
         loadDemoHotels();
     }
 
-    // Setup filter handlers
+    // Set up event listeners for the filter and sort controls.
     document.getElementById('hotelTypeFilter')?.addEventListener('change', applyFilters);
     document.getElementById('starFilter')?.addEventListener('change', applyFilters);
     document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
@@ -31,12 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
         applyFilters();
     });
     
-    // Update auth buttons
+    // Update the authentication buttons based on the user's login status.
     updateAuthButtons();
 });
 
 /**
- * Update auth buttons based on login status
+ * Updates the authentication buttons in the navbar.
+ * If the user is logged in, it shows a dropdown with their name and a logout link.
  */
 function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -60,7 +68,7 @@ function updateAuthButtons() {
 }
 
 /**
- * Get demo hotels
+ * Returns a static array of demo hotel data for testing or when the API is unavailable.
  */
 function getDemoHotels() {
     return [
@@ -143,7 +151,7 @@ function getDemoHotels() {
 }
 
 /**
- * Load demo hotels
+ * Loads and displays the demo hotel data.
  */
 function loadDemoHotels() {
     document.getElementById('loadingState').style.display = 'none';
@@ -153,7 +161,7 @@ function loadDemoHotels() {
 }
 
 /**
- * Display search summary
+ * Displays a summary of the current search (city, dates, and number of nights).
  */
 async function displaySearchSummary(cityId, checkin, checkout) {
     const summaryEl = document.getElementById('searchSummary');
@@ -179,7 +187,7 @@ async function displaySearchSummary(cityId, checkin, checkout) {
 }
 
 /**
- * Calculate nights between dates
+ * Calculates the number of nights between two dates.
  */
 function calculateNights(checkin, checkout) {
     const date1 = new Date(checkin);
@@ -189,7 +197,7 @@ function calculateNights(checkin, checkout) {
 }
 
 /**
- * Search for hotels
+ * Fetches hotel data from the API based on the search criteria.
  */
 async function searchHotels(city, checkin, checkout) {
     const loadingEl = document.getElementById('loadingState');
@@ -211,6 +219,7 @@ async function searchHotels(city, checkin, checkout) {
         if (data.success && data.data && data.data.length > 0) {
             allHotels = data.data;
         } else {
+            // Fallback to demo hotels if the API returns no results.
             allHotels = getDemoHotels();
         }
         
@@ -219,6 +228,7 @@ async function searchHotels(city, checkin, checkout) {
     } catch (error) {
         console.error('Error searching hotels:', error);
         loadingEl.style.display = 'none';
+        // Fallback to demo hotels on API error.
         allHotels = getDemoHotels();
         filteredHotels = [...allHotels];
         applyFilters();
@@ -226,7 +236,7 @@ async function searchHotels(city, checkin, checkout) {
 }
 
 /**
- * Reset all filters
+ * Resets all filters to their default values and re-applies them.
  */
 function resetFilters() {
     document.getElementById('hotelTypeFilter').value = '';
@@ -238,7 +248,7 @@ function resetFilters() {
 }
 
 /**
- * Apply filters and sorting
+ * Applies the selected filters and sorting to the list of hotels.
  */
 function applyFilters() {
     const typeFilter = document.getElementById('hotelTypeFilter')?.value || '';
@@ -246,6 +256,7 @@ function applyFilters() {
     const priceFilter = document.getElementById('priceRange')?.value || 20000;
     const sortBy = document.getElementById('sortFilter')?.value || 'rating-desc';
 
+    // Filter the hotels based on the selected criteria.
     filteredHotels = allHotels.filter(hotel => {
         if (typeFilter && hotel.hotel_type !== typeFilter) return false;
         if (ratingFilter && parseFloat(hotel.star_rating) < parseFloat(ratingFilter)) return false;
@@ -253,6 +264,7 @@ function applyFilters() {
         return true;
     });
 
+    // Sort the filtered hotels.
     filteredHotels.sort((a, b) => {
         switch (sortBy) {
             case 'price-asc':
@@ -268,11 +280,12 @@ function applyFilters() {
         }
     });
 
+    // Display the filtered and sorted results.
     displayHotels(filteredHotels);
 }
 
 /**
- * Display hotels
+ * Renders the list of hotels on the page.
  */
 function displayHotels(hotels) {
     const resultsEl = document.getElementById('hotelsContainer');
@@ -289,7 +302,9 @@ function displayHotels(hotels) {
 }
 
 /**
- * Create Bootstrap hotel card
+ * Creates the HTML for a single hotel card.
+ * @param {object} hotel - The hotel data object.
+ * @returns {string} The HTML string for the hotel card.
  */
 function createHotelCard(hotel) {
     const stars = '⭐'.repeat(Math.floor(hotel.star_rating));
@@ -355,7 +370,7 @@ function createHotelCard(hotel) {
 }
 
 /**
- * Open booking modal
+ * Opens the booking modal with the details of the selected hotel.
  */
 function openBookingModal(roomId) {
     selectedHotel = allHotels.find(h => h.room_id === roomId);
@@ -420,7 +435,8 @@ function openBookingModal(roomId) {
 }
 
 /**
- * Confirm booking
+ * Handles the booking confirmation.
+ * It checks if the user is logged in before proceeding.
  */
 function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -429,6 +445,7 @@ function confirmBooking() {
         bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
         showToast('Please login to book a hotel', 'warning');
         setTimeout(() => {
+            // Redirect to login page with a redirect-back URL.
             window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
         }, 1500);
         return;
@@ -445,7 +462,7 @@ function confirmBooking() {
 }
 
 /**
- * Show Bootstrap toast
+ * Shows a Bootstrap toast notification.
  */
 function showToast(message, type = 'info') {
     const container = document.querySelector('.toast-container');
@@ -466,14 +483,14 @@ function showToast(message, type = 'info') {
 }
 
 /**
- * Format price
+ * Helper function to format a number as a price string with commas.
  */
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('en-US');
 }
 
 /**
- * Format date
+ * Helper function to format a date string into a more readable format.
  */
 function formatDate(dateString) {
     const date = new Date(dateString);
@@ -484,7 +501,7 @@ function formatDate(dateString) {
 }
 
 /**
- * Logout function
+ * Handles the user logout process.
  */
 function logout() {
     localStorage.removeItem('isLoggedIn');

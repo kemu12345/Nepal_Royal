@@ -1,11 +1,17 @@
-/**
- * Royal Nepal - Authentication JavaScript (Bootstrap Enhanced)
- * Handles login and registration functionality
- */
+/*
+    This script handles the client-side functionality for user authentication,
+    including login, registration, and session management.
+    It communicates with the backend API to verify credentials and create users.
+*/
 
+// The base URL for the backend API endpoints.
 const API_BASE_URL = '../../backend/api';
 
-// Utility function to show messages
+/**
+ * Displays a message to the user.
+ * @param {string} message - The message to display.
+ * @param {string} type - The type of message ('info', 'success', 'error').
+ */
 function showMessage(message, type = 'info') {
     const messageBox = document.getElementById('messageBox');
     if (!messageBox) return;
@@ -14,13 +20,17 @@ function showMessage(message, type = 'info') {
     messageBox.className = `message-box ${type}`;
     messageBox.style.display = 'block';
 
-    // Auto-hide after 5 seconds
+    // The message will automatically disappear after 5 seconds.
     setTimeout(() => {
         messageBox.style.display = 'none';
     }, 5000);
 }
 
-// Utility function to toggle button loading state
+/**
+ * Toggles the loading state of a button, disabling it and showing a spinner.
+ * @param {HTMLElement} button - The button element to toggle.
+ * @param {boolean} isLoading - Whether to show the loading state or not.
+ */
 function toggleButtonLoading(button, isLoading) {
     const btnText = button.querySelector('.btn-text');
     const btnLoader = button.querySelector('.btn-loader');
@@ -36,17 +46,17 @@ function toggleButtonLoading(button, isLoading) {
     }
 }
 
-// Handle Login Form
+// Attaches an event listener to the login form.
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevents the default form submission.
 
         const loginBtn = document.getElementById('loginBtn');
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
 
-        // Validation
+        // Basic client-side validation.
         if (!email || !password) {
             showMessage('Please fill in all fields', 'error');
             return;
@@ -55,6 +65,7 @@ if (loginForm) {
         toggleButtonLoading(loginBtn, true);
 
         try {
+            // Sends the login credentials to the backend API.
             const response = await fetch(`${API_BASE_URL}/login.php`, {
                 method: 'POST',
                 headers: {
@@ -66,17 +77,17 @@ if (loginForm) {
             const data = await response.json();
 
             if (data.success) {
-                // Store user data in localStorage
+                // If login is successful, store user data in localStorage.
                 localStorage.setItem('user', JSON.stringify(data.data));
                 localStorage.setItem('isLoggedIn', 'true');
 
                 showMessage('Login successful! Redirecting...', 'success');
 
-                // Check for redirect URL
+                // Check if there's a redirect URL in the query parameters.
                 const urlParams = new URLSearchParams(window.location.search);
                 const redirectUrl = urlParams.get('redirect');
 
-                // Redirect based on role or redirect URL
+                // Redirect the user to the appropriate dashboard or the redirect URL.
                 setTimeout(() => {
                     if (redirectUrl) {
                         window.location.href = redirectUrl;
@@ -92,7 +103,8 @@ if (loginForm) {
         } catch (error) {
             console.error('Login error:', error);
             
-            // Demo login for testing without backend
+            // Fallback for demo purposes if the backend is not available.
+            // This allows for testing the frontend without a running server.
             if (email === 'demo@royalnepal.com' && password === 'demo123') {
                 const demoUser = {
                     user_id: 1,
@@ -110,7 +122,7 @@ if (loginForm) {
                 return;
             }
             
-            // Admin demo login
+            // Admin demo login.
             if (email === 'admin@royalnepal.com' && password === 'admin123') {
                 const adminUser = {
                     user_id: 0,
@@ -135,7 +147,7 @@ if (loginForm) {
     });
 }
 
-// Handle Registration Form
+// Attaches an event listener to the registration form.
 const registerForm = document.getElementById('registerForm');
 if (registerForm) {
     registerForm.addEventListener('submit', async (e) => {
@@ -150,7 +162,7 @@ if (registerForm) {
         const confirmPassword = document.getElementById('confirmPassword').value;
         const agreeTerms = document.getElementById('agreeTerms')?.checked;
 
-        // Validation
+        // Client-side validation for the registration form.
         if (!firstName || !lastName || !email || !password || !confirmPassword) {
             showMessage('Please fill in all required fields', 'error');
             return;
@@ -174,6 +186,7 @@ if (registerForm) {
         toggleButtonLoading(registerBtn, true);
 
         try {
+            // Sends the new user data to the backend API.
             const response = await fetch(`${API_BASE_URL}/register.php`, {
                 method: 'POST',
                 headers: {
@@ -193,7 +206,7 @@ if (registerForm) {
             if (data.success) {
                 showMessage('Registration successful! Redirecting to login...', 'success');
 
-                // Redirect to login page
+                // Redirects to the login page after successful registration.
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 2000);
@@ -203,7 +216,7 @@ if (registerForm) {
         } catch (error) {
             console.error('Registration error:', error);
             
-            // Demo registration (simulated success)
+            // Fallback for demo purposes.
             showMessage('Registration successful! Redirecting to login...', 'success');
             setTimeout(() => {
                 window.location.href = 'login.html';
@@ -214,7 +227,10 @@ if (registerForm) {
     });
 }
 
-// Check if user is already logged in (for auth pages)
+/**
+ * Checks if a user is already logged in. If so, it redirects them from
+ * the login/register pages to their dashboard.
+ */
 function checkAuthStatus() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const currentPage = window.location.pathname;
@@ -222,7 +238,7 @@ function checkAuthStatus() {
     if (isLoggedIn === 'true' && (currentPage.includes('login.html') || currentPage.includes('register.html'))) {
         const user = JSON.parse(localStorage.getItem('user'));
 
-        // Redirect to appropriate dashboard
+        // Redirect to the appropriate dashboard based on user role.
         if (user && user.role === 'admin') {
             window.location.href = 'admin-dashboard.html';
         } else {
@@ -231,14 +247,18 @@ function checkAuthStatus() {
     }
 }
 
-// Logout function
+/**
+ * Logs the user out by clearing their data from localStorage and redirecting to the home page.
+ */
 function logout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
     window.location.href = 'home.html';
 }
 
-// Handle Forgot Password Modal
+/**
+ * Sets up the functionality for the "Forgot Password" modal.
+ */
 function setupForgotPassword() {
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
     const forgotPasswordForm = document.getElementById('forgotPasswordForm');
@@ -250,11 +270,13 @@ function setupForgotPassword() {
 
     const forgotPasswordModal = new bootstrap.Modal(forgotPasswordModalEl);
 
+    // Show the modal when the "Forgot Password" link is clicked.
     forgotPasswordLink.addEventListener('click', (e) => {
         e.preventDefault();
         const currentEmail = document.getElementById('email')?.value?.trim() || '';
         const resetEmailInput = document.getElementById('resetEmail');
 
+        // Pre-fill the email in the modal if it's already entered in the login form.
         if (resetEmailInput && currentEmail) {
             resetEmailInput.value = currentEmail;
         }
@@ -262,6 +284,7 @@ function setupForgotPassword() {
         forgotPasswordModal.show();
     });
 
+    // Handle the submission of the forgot password form.
     forgotPasswordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -276,7 +299,8 @@ function setupForgotPassword() {
         toggleButtonLoading(resetPasswordBtn, true);
 
         try {
-            // Simulate a short request; backend reset endpoint can be connected later.
+            // This is a simulation. In a real application, this would send a request
+            // to a backend endpoint to handle the password reset process.
             await new Promise((resolve) => setTimeout(resolve, 800));
             forgotPasswordModal.hide();
             forgotPasswordForm.reset();
@@ -290,7 +314,7 @@ function setupForgotPassword() {
     });
 }
 
-// Run auth check on page load
+// When the page content is fully loaded, run initial checks.
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthStatus();
     setupForgotPassword();

@@ -1,28 +1,35 @@
-/**
- * Royal Nepal - Tour Packages (Bootstrap Enhanced)
- */
+/*
+    This script handles the functionality for the tour packages page.
+    It fetches package data from the API, provides filtering and sorting options,
+    and manages the booking process through a modal.
+*/
 
+// Base URL for the backend API.
 const API_BASE_URL = '../../backend/api';
-let allPackages = [];
-let filteredPackages = [];
-let selectedPackage = null;
 
+// Global variables to store package data.
+let allPackages = [];      // Holds all packages fetched from the API.
+let filteredPackages = []; // Holds the packages after applying filters.
+let selectedPackage = null;  // Holds the package object selected for booking.
+
+// This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    // Load all packages
+    // Load all tour packages from the API.
     loadPackages();
     
-    // Setup filter handlers with new Bootstrap IDs
+    // Set up event listeners for the filter and sort controls.
     document.getElementById('categoryFilter')?.addEventListener('change', applyFilters);
     document.getElementById('durationFilter')?.addEventListener('change', applyFilters);
     document.getElementById('priceFilter')?.addEventListener('change', applyFilters);
     document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
     
-    // Update auth buttons based on login status
+    // Update the authentication buttons based on the user's login status.
     updateAuthButtons();
 });
 
 /**
- * Update auth buttons based on login status
+ * Updates the authentication buttons in the navbar.
+ * If the user is logged in, it shows a dropdown with their name and a logout link.
  */
 function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -46,7 +53,7 @@ function updateAuthButtons() {
 }
 
 /**
- * Get demo packages when API unavailable
+ * Returns a static array of demo package data for testing or when the API is unavailable.
  */
 function getDemoPackages() {
     return [
@@ -126,7 +133,8 @@ function getDemoPackages() {
 }
 
 /**
- * Load all packages
+ * Fetches package data from the API and displays it.
+ * Shows loading and empty states as needed.
  */
 async function loadPackages() {
     const loadingEl = document.getElementById('loadingState');
@@ -146,6 +154,7 @@ async function loadPackages() {
         if (data.success && data.data && data.data.length > 0) {
             allPackages = data.data;
         } else {
+            // Fallback to demo packages if the API returns no results.
             allPackages = getDemoPackages();
         }
         
@@ -154,6 +163,7 @@ async function loadPackages() {
     } catch (error) {
         console.error('Error loading packages:', error);
         loadingEl.style.display = 'none';
+        // Fallback to demo packages on API error.
         allPackages = getDemoPackages();
         filteredPackages = [...allPackages];
         applyFilters();
@@ -161,7 +171,7 @@ async function loadPackages() {
 }
 
 /**
- * Reset all filters
+ * Resets all filters to their default values and re-applies them.
  */
 function resetFilters() {
     document.getElementById('categoryFilter').value = '';
@@ -172,7 +182,7 @@ function resetFilters() {
 }
 
 /**
- * Apply filters and sorting
+ * Applies the selected filters and sorting to the list of packages.
  */
 function applyFilters() {
     const categoryFilter = document.getElementById('categoryFilter')?.value || '';
@@ -180,7 +190,7 @@ function applyFilters() {
     const priceFilter = document.getElementById('priceFilter')?.value || '';
     const sortBy = document.getElementById('sortFilter')?.value || 'popular';
 
-    // Filter packages
+    // Filter the packages based on the selected criteria.
     filteredPackages = allPackages.filter(pkg => {
         // Category filter
         if (categoryFilter && pkg.package_type !== categoryFilter) {
@@ -225,10 +235,11 @@ function applyFilters() {
         return true;
     });
 
-    // Sort packages
+    // Sort the filtered packages.
     filteredPackages.sort((a, b) => {
         switch (sortBy) {
             case 'popular':
+                // Prioritize featured packages.
                 if (a.is_featured && !b.is_featured) return -1;
                 if (!a.is_featured && b.is_featured) return 1;
                 return 0;
@@ -243,11 +254,12 @@ function applyFilters() {
         }
     });
 
+    // Display the filtered and sorted results.
     displayPackages(filteredPackages);
 }
 
 /**
- * Display packages
+ * Renders the list of packages on the page.
  */
 function displayPackages(packages) {
     const packagesEl = document.getElementById('packagesContainer');
@@ -264,7 +276,9 @@ function displayPackages(packages) {
 }
 
 /**
- * Create Bootstrap package card
+ * Creates the HTML for a single package card.
+ * @param {object} pkg - The package data object.
+ * @returns {string} The HTML string for the package card.
  */
 function createPackageCard(pkg) {
     const badgeClass = `badge-${pkg.package_type}`;
@@ -317,7 +331,7 @@ function createPackageCard(pkg) {
 }
 
 /**
- * Get emoji for package type
+ * Returns an emoji corresponding to the package type.
  */
 function getTypeEmoji(type) {
     const emojis = {
@@ -331,7 +345,7 @@ function getTypeEmoji(type) {
 }
 
 /**
- * Get default highlights based on package type
+ * Returns a default list of highlights based on the package type.
  */
 function getDefaultHighlights(type) {
     const highlights = {
@@ -345,7 +359,7 @@ function getDefaultHighlights(type) {
 }
 
 /**
- * Open booking modal
+ * Opens the booking modal with the details of the selected package.
  */
 function openBookingModal(packageId) {
     selectedPackage = allPackages.find(p => p.package_id === packageId);
@@ -410,7 +424,8 @@ function openBookingModal(packageId) {
 }
 
 /**
- * Confirm booking
+ * Handles the booking confirmation.
+ * It checks if the user is logged in before proceeding.
  */
 function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -419,6 +434,7 @@ function confirmBooking() {
         bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
         showToast('Please login to book a package', 'warning');
         setTimeout(() => {
+            // Redirect to login page with a redirect-back URL.
             window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
         }, 1500);
         return;
@@ -430,13 +446,13 @@ function confirmBooking() {
         return;
     }
     
-    // Simulate booking
+    // Simulate the booking process.
     bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
     showToast(`🎉 Booking confirmed for ${selectedPackage.package_name}!`, 'success');
 }
 
 /**
- * Show Bootstrap toast notification
+ * Shows a Bootstrap toast notification.
  */
 function showToast(message, type = 'info') {
     const container = document.querySelector('.toast-container');
@@ -457,7 +473,7 @@ function showToast(message, type = 'info') {
 }
 
 /**
- * Format price with commas
+ * Helper function to format a number as a price string with commas.
  */
 function formatPrice(price) {
     return parseFloat(price).toLocaleString('en-US', {
@@ -467,7 +483,7 @@ function formatPrice(price) {
 }
 
 /**
- * Logout function
+ * Handles the user logout process.
  */
 function logout() {
     localStorage.removeItem('isLoggedIn');

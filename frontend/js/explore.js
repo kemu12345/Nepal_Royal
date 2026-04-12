@@ -1,23 +1,31 @@
-/**
- * Royal Nepal - Explore Places (Bootstrap Enhanced)
- */
+/*
+    This script handles the functionality for the "Explore" page.
+    It loads a list of places from the backend, allows users to search,
+    filter by category, and sort the results.
+*/
 
+// Base URL for the backend API.
 const API_BASE_URL = '../../backend/api';
-let allPlaces = [];
-let filteredPlaces = [];
-let currentCategory = '';
 
+// Global variables to store place data.
+let allPlaces = [];         // Holds all places fetched from the API.
+let filteredPlaces = [];    // Holds the places after applying filters.
+let currentCategory = '';   // The currently selected category filter.
+
+// This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    // Load places
+    // Load all places from the API.
     loadPlaces();
     
-    // Setup search handler
+    // Set up a debounced event listener for the search input to avoid excessive filtering.
     document.getElementById('searchInput')?.addEventListener('input', debounce(applyFilters, 300));
+    // Set up an event listener for the sort dropdown.
     document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
     
-    // Setup category pills
+    // Set up click handlers for the category filter pills.
     document.querySelectorAll('.category-pill').forEach(pill => {
         pill.addEventListener('click', () => {
+            // Manages the 'active' class for visual feedback.
             document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
             currentCategory = pill.dataset.category;
@@ -25,12 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Update auth buttons
+    // Update the navigation bar to show user info if logged in.
     updateAuthButtons();
 });
 
 /**
- * Debounce helper
+ * A debounce function to limit the rate at which a function gets called.
+ * This is useful for input events like search to prevent API calls on every keystroke.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - The debounce delay in milliseconds.
  */
 function debounce(func, wait) {
     let timeout;
@@ -41,7 +52,8 @@ function debounce(func, wait) {
 }
 
 /**
- * Update auth buttons based on login status
+ * Updates the authentication buttons in the navigation bar to show the user's name
+ * and a dropdown menu if they are logged in.
  */
 function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -65,7 +77,8 @@ function updateAuthButtons() {
 }
 
 /**
- * Get demo places when API unavailable
+ * Returns a static array of demo places.
+ * This is used for frontend development and testing when the backend is not available.
  */
 function getDemoPlaces() {
     return [
@@ -163,7 +176,7 @@ function getDemoPlaces() {
 }
 
 /**
- * Load all places
+ * Fetches all places from the API and initiates the display process.
  */
 async function loadPlaces() {
     const loadingEl = document.getElementById('loadingState');
@@ -183,6 +196,7 @@ async function loadPlaces() {
         if (data.success && data.data && data.data.length > 0) {
             allPlaces = data.data;
         } else {
+            // Fallback to demo data if API fails or returns no data.
             allPlaces = getDemoPlaces();
         }
         
@@ -191,6 +205,7 @@ async function loadPlaces() {
     } catch (error) {
         console.error('Error loading places:', error);
         loadingEl.style.display = 'none';
+        // Fallback to demo data on API error.
         allPlaces = getDemoPlaces();
         filteredPlaces = [...allPlaces];
         applyFilters();
@@ -198,7 +213,7 @@ async function loadPlaces() {
 }
 
 /**
- * Reset all filters
+ * Resets all filters to their default state and re-applies them.
  */
 function resetFilters() {
     document.getElementById('searchInput').value = '';
@@ -210,15 +225,15 @@ function resetFilters() {
 }
 
 /**
- * Apply filters and sorting
+ * Applies the current search, category, and sorting filters to the list of places.
  */
 function applyFilters() {
     const searchQuery = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const sortBy = document.getElementById('sortFilter')?.value || 'name-asc';
 
-    // Filter places
+    // Filter the places based on the search query and selected category.
     filteredPlaces = allPlaces.filter(place => {
-        // Search filter
+        // Search filter checks name, description, and location.
         if (searchQuery) {
             const nameMatch = place.place_name.toLowerCase().includes(searchQuery);
             const descMatch = place.description?.toLowerCase().includes(searchQuery);
@@ -228,7 +243,7 @@ function applyFilters() {
             }
         }
 
-        // Category filter
+        // Category filter.
         if (currentCategory && place.category !== currentCategory) {
             return false;
         }
@@ -236,7 +251,7 @@ function applyFilters() {
         return true;
     });
 
-    // Sort places
+    // Sort the filtered places based on the selected sort option.
     filteredPlaces.sort((a, b) => {
         switch (sortBy) {
             case 'name-asc':
@@ -244,6 +259,7 @@ function applyFilters() {
             case 'name-desc':
                 return b.place_name.localeCompare(a.place_name);
             case 'heritage':
+                // Prioritize UNESCO heritage sites.
                 if (a.is_unesco_heritage && !b.is_unesco_heritage) return -1;
                 if (!a.is_unesco_heritage && b.is_unesco_heritage) return 1;
                 return a.place_name.localeCompare(b.place_name);
@@ -256,7 +272,7 @@ function applyFilters() {
 }
 
 /**
- * Display places
+ * Renders the list of filtered and sorted places on the page.
  */
 function displayPlaces(places) {
     const placesEl = document.getElementById('placesContainer');
@@ -276,14 +292,16 @@ function displayPlaces(places) {
 }
 
 /**
- * Create Bootstrap place card
+ * Creates the HTML for a single place card.
+ * @param {object} place - The place data object.
+ * @returns {string} The HTML string for the place card.
  */
 function createPlaceCard(place) {
     const categoryIcon = getCategoryIcon(place.category);
     const badgeClass = `badge-${place.category}`;
     const heritageBadge = place.is_unesco_heritage == 1 ? '<div class="heritage-badge"><i class="bi bi-award-fill me-1"></i>UNESCO</div>' : '';
     
-    // Generate feature tags
+    // Generate feature tags like "World Heritage" and entry fee.
     const features = [];
     if (place.is_unesco_heritage == 1) features.push('World Heritage');
     if (place.entry_fee && parseFloat(place.entry_fee) > 0) {
@@ -317,7 +335,8 @@ function createPlaceCard(place) {
 }
 
 /**
- * View place details
+ * Placeholder function for viewing more details about a place.
+ * In a full application, this might navigate to a new page or open a modal.
  */
 function viewPlace(placeId) {
     const place = allPlaces.find(p => p.place_id === placeId);
@@ -327,7 +346,9 @@ function viewPlace(placeId) {
 }
 
 /**
- * Get category icon
+ * Returns an emoji icon based on the place category.
+ * @param {string} category - The category of the place.
+ * @returns {string} An emoji icon.
  */
 function getCategoryIcon(category) {
     const icons = {
@@ -346,14 +367,16 @@ function getCategoryIcon(category) {
 }
 
 /**
- * Format category name
+ * Formats a category string (e.g., 'heritage_site') into a more readable format ('Heritage Site').
  */
 function formatCategory(category) {
     return category.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
 }
 
 /**
- * Show Bootstrap toast notification
+ * Shows a Bootstrap toast message at the bottom of the page.
+ * @param {string} message - The message to display.
+ * @param {string} type - The type of toast ('info', 'success', 'warning', 'danger').
  */
 function showToast(message, type = 'info') {
     const container = document.querySelector('.toast-container');
@@ -374,7 +397,7 @@ function showToast(message, type = 'info') {
 }
 
 /**
- * Logout function
+ * Logs the user out and reloads the page.
  */
 function logout() {
     localStorage.removeItem('isLoggedIn');

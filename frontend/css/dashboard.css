@@ -1,15 +1,23 @@
-/**
- * Royal Nepal - Dashboard Styles
- * Admin and user dashboard layouts
- */
+/*
+    This file contains the styles for the user and admin dashboards.
+    It defines the layout for the sidebar, main content area, and various
+    dashboard components like stat cards and tables.
+*/
 
+/*
+    The main container for the dashboard, using a flexbox layout
+    to position the sidebar and main content.
+*/
 .dashboard-container {
     display: flex;
     min-height: 100vh;
     background-color: var(--bg-light);
 }
 
-/* Sidebar */
+/*
+    The sidebar provides navigation for the dashboard.
+    It's fixed on the left side with a gradient background.
+*/
 .sidebar {
     width: 260px;
     background: linear-gradient(180deg, #003893 0%, #DC143C 100%);
@@ -21,28 +29,38 @@
     z-index: 1000;
 }
 
+/*
+    The header section of the sidebar, containing the dashboard title.
+*/
 .sidebar-header {
     padding: var(--spacing-xl) var(--spacing-lg);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
 }
 
+/* The main title in the sidebar header. */
 .sidebar-header h2 {
     font-size: 1.5rem;
     margin-bottom: var(--spacing-xs);
     font-weight: 700;
 }
 
+/* The tagline below the sidebar title. */
 .sidebar-header .tagline {
     font-size: 0.85rem;
     opacity: 0.9;
     font-style: italic;
 }
 
+/* The navigation menu within the sidebar. */
 .sidebar-nav {
     padding: var(--spacing-lg) 0;
 }
 
+/*
+    Styling for individual navigation items in the sidebar.
+    Includes padding, color, and a transition for hover effects.
+*/
 .nav-item {
     display: flex;
     align-items: center;
@@ -53,18 +71,21 @@
     border-left: 3px solid transparent;
 }
 
+/* Hover effect for navigation items. */
 .nav-item:hover {
     background-color: rgba(255, 255, 255, 0.1);
     border-left-color: var(--nepal-gold);
     text-decoration: none;
 }
 
+/* Styling for the currently active navigation item. */
 .nav-item.active {
     background-color: rgba(255, 255, 255, 0.15);
     border-left-color: var(--nepal-gold);
     font-weight: 600;
 }
 
+/* Icons used in the navigation items. */
 .nav-item .icon {
     font-size: 1.25rem;
     margin-right: var(--spacing-md);
@@ -72,14 +93,19 @@
     text-align: center;
 }
 
-/* Main Content */
+/*
+    The main content area that takes up the rest of the page.
+*/
 .main-content {
-    margin-left: 260px;
+    margin-left: 260px; /* Same as sidebar width */
     flex: 1;
     padding: 0;
 }
 
-/* Top Bar */
+/*
+    The top bar of the main content area, which is sticky.
+    It usually contains the page title and user information.
+*/
 .top-bar {
     background-color: var(--bg-white);
     padding: var(--spacing-lg) var(--spacing-xl);
@@ -92,18 +118,21 @@
     z-index: 100;
 }
 
+/* The main title in the top bar. */
 .top-bar h1 {
     font-size: 1.75rem;
     color: var(--text-dark);
     margin: 0;
 }
 
+/* Container for user-related information in the top bar. */
 .user-info {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
 }
 
+/* A badge, often used to display user roles or status. */
 .badge {
     background-color: var(--primary-color);
     color: var(--nepal-white);
@@ -113,12 +142,15 @@
     font-weight: 600;
 }
 
-/* Content Area */
+/* The main area where dashboard content is displayed. */
 .content-area {
     padding: var(--spacing-xl);
 }
 
-/* Stats Grid */
+/*
+    A grid for displaying statistics, such as user counts or bookings.
+    It's responsive and adjusts the number of columns based on screen size.
+*/
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -126,6 +158,10 @@
     margin-bottom: var(--spacing-xl);
 }
 
+/*
+    Individual cards within the stats grid.
+    Each card shows a single statistic with an icon.
+*/
 .stat-card {
     background-color: var(--bg-white);
     border-radius: 8px;
@@ -136,11 +172,13 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Hover effect for stat cards. */
 .stat-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
 }
 
+/* The icon within a stat card. */
 .stat-icon {
     width: 60px;
     height: 60px;
@@ -152,6 +190,7 @@
     margin-right: var(--spacing-lg);
 }
 
+/* The container for the text information in a stat card. */
 .stat-info h3 {
     font-size: 2rem;
     margin: 0;
@@ -164,7 +203,7 @@
     font-size: 0.9rem;
 }
 
-/* Action Buttons */
+/* A container for action buttons. */
 .action-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -172,6 +211,7 @@
     margin-top: var(--spacing-lg);
 }
 
+/* Header for the inventory management card. */
 .inventory-card-header {
     display: flex;
     justify-content: space-between;
@@ -190,6 +230,7 @@
     color: var(--text-light);
 }
 
+/* Toolbar for inventory actions, like filtering. */
 .inventory-toolbar {
     display: flex;
     align-items: end;
@@ -205,6 +246,7 @@
     margin-bottom: 0.35rem;
 }
 
+/* Select dropdown for inventory filtering. */
 .inventory-select {
     min-width: 180px;
     padding: 0.75rem 0.9rem;
@@ -214,6 +256,7 @@
     color: var(--text-dark);
 }
 
+/* Layout for the inventory management page, with a form and a table. */
 .inventory-layout {
     display: grid;
     grid-template-columns: 360px 1fr;
@@ -221,6 +264,7 @@
     margin-top: var(--spacing-lg);
 }
 
+/* Panels for the inventory form and table. */
 .inventory-form-panel,
 .inventory-table-panel {
     background: var(--bg-light);
@@ -229,15 +273,18 @@
     padding: var(--spacing-lg);
 }
 
+/* The form for adding or editing inventory items. */
 .inventory-form {
     margin-top: var(--spacing-md);
 }
 
+/* A grid container for form fields. */
 .inventory-fields {
     display: grid;
     gap: var(--spacing-md);
 }
 
+/* Grid layouts for arranging form fields. */
 .field-grid-2 {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -250,6 +297,7 @@
     gap: var(--spacing-md);
 }
 
+/* A group containing a label and an input field. */
 .field-group {
     display: flex;
     flex-direction: column;
@@ -262,6 +310,7 @@
     color: var(--text-dark);
 }
 
+/* General styling for form inputs, selects, and textareas. */
 .field-group input,
 .field-group select,
 .field-group textarea {
@@ -279,11 +328,13 @@
     resize: vertical;
 }
 
+/* Hint text for form fields. */
 .field-hint {
     font-size: 0.8rem;
     color: var(--text-light);
 }
 
+/* Styling for a checkbox field. */
 .checkbox-field {
     flex-direction: row;
     align-items: center;
@@ -299,16 +350,19 @@
     margin-left: 0.75rem;
 }
 
+/* Container for form action buttons (e.g., Save, Cancel). */
 .form-actions {
     display: flex;
     gap: var(--spacing-sm);
     margin-top: var(--spacing-lg);
 }
 
+/* Table for displaying inventory items. */
 .inventory-table {
     min-width: 900px;
 }
 
+/* Action buttons within the inventory table (e.g., Edit, Delete). */
 .inventory-table .table-actions {
     display: flex;
     gap: 0.5rem;
@@ -320,6 +374,10 @@
     font-size: 0.85rem;
 }
 
+/*
+    A message box for displaying feedback to the user.
+    Initially hidden.
+*/
 .message-box {
     display: none;
     padding: 0.85rem 1rem;
@@ -329,6 +387,7 @@
     font-size: 0.95rem;
 }
 
+/* Styles for a success message box. */
 .message-box.success {
     display: block;
     background: #d4edda;
@@ -336,6 +395,7 @@
     border: 1px solid #c3e6cb;
 }
 
+/* Styles for an error message box. */
 .message-box.error {
     display: block;
     background: #f8d7da;
@@ -343,6 +403,7 @@
     border: 1px solid #f5c6cb;
 }
 
+/* Styles for an info message box. */
 .message-box.info {
     display: block;
     background: #d1ecf1;
@@ -350,11 +411,14 @@
     border: 1px solid #bee5eb;
 }
 
+/* Utility class for centering text. */
 .text-center {
     text-align: center;
 }
 
-/* Data Table */
+/*
+    Styling for data tables used throughout the dashboard.
+*/
 .table-responsive {
     overflow-x: auto;
     margin-top: var(--spacing-lg);
@@ -386,7 +450,7 @@
     background-color: var(--bg-light);
 }
 
-/* System Info */
+/* Styling for system information display. */
 .system-info p {
     margin: 0.5rem 0;
     color: var(--text-light);
@@ -397,17 +461,22 @@
     margin-right: var(--spacing-sm);
 }
 
-/* Responsive Design */
+/*
+    Responsive design for smaller screens.
+*/
 @media (max-width: 992px) {
+    /* Hides the sidebar off-screen by default on tablets and smaller. */
     .sidebar {
         transform: translateX(-260px);
         transition: transform 0.3s ease;
     }
 
+    /* Shows the sidebar when it has the 'active' class (toggled by JS). */
     .sidebar.active {
         transform: translateX(0);
     }
 
+    /* Main content takes up the full width when the sidebar is hidden. */
     .main-content {
         margin-left: 0;
     }
@@ -430,6 +499,7 @@
         padding: var(--spacing-lg);
     }
 
+    /* Stacks stat cards vertically on mobile. */
     .stats-grid {
         grid-template-columns: 1fr;
     }
@@ -442,6 +512,7 @@
         width: 100%;
     }
 
+    /* Stacks various layout elements vertically. */
     .inventory-card-header,
     .inventory-toolbar,
     .form-actions {

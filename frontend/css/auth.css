@@ -1,8 +1,14 @@
-/**
- * Royal Nepal - Authentication Pages Styles
- * Styles for login and registration pages
- */
+/*
+    This file provides the styling for the authentication pages,
+    including the login and registration forms. It defines the layout,
+    colors, and responsive behavior for these pages.
+*/
 
+/*
+    The main container for the authentication pages.
+    It centers the content vertically and horizontally
+    and sets a gradient background.
+*/
 .auth-container {
     min-height: 100vh;
     display: flex;
@@ -12,6 +18,11 @@
     padding: var(--spacing-lg);
 }
 
+/*
+    The card that holds the authentication form.
+    It has a white background, rounded corners, and a shadow
+    to make it stand out from the background.
+*/
 .auth-card {
     background: var(--bg-white);
     border-radius: 12px;
@@ -21,6 +32,11 @@
     overflow: hidden;
 }
 
+/*
+    The header section of the authentication card.
+    It has a gradient background and contains the main title
+    and a tagline.
+*/
 .auth-header {
     background: linear-gradient(135deg, #DC143C 0%, #003893 100%);
     color: var(--nepal-white);
@@ -28,6 +44,7 @@
     text-align: center;
 }
 
+/* The main heading in the auth header. */
 .auth-header h1 {
     font-size: 2rem;
     margin-bottom: var(--spacing-sm);
@@ -35,6 +52,7 @@
     letter-spacing: 1px;
 }
 
+/* The tagline text below the main heading. */
 .auth-header .tagline {
     font-size: 0.9rem;
     opacity: 0.9;
@@ -42,33 +60,46 @@
     font-style: italic;
 }
 
+/*
+    The main form area within the authentication card.
+    It contains the input fields, labels, and buttons.
+*/
 .auth-form {
     padding: var(--spacing-xxl) var(--spacing-lg);
 }
 
+/* The title for the form (e.g., "Login" or "Create Account"). */
 .auth-form h2 {
     color: var(--text-dark);
     font-size: 1.75rem;
     margin-bottom: var(--spacing-xs);
 }
 
+/* The subtitle or introductory text for the form. */
 .auth-form .subtitle {
     color: var(--text-light);
     font-size: 0.95rem;
     margin-bottom: var(--spacing-xl);
 }
 
-/* Form Elements */
+/*
+    Styling for form groups, which wrap a label and an input field.
+*/
 .form-group {
     margin-bottom: var(--spacing-lg);
 }
 
+/*
+    A row that can contain multiple form fields, arranged in a grid.
+    Used for first name and last name on the registration page.
+*/
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-md);
 }
 
+/* Styling for form labels. */
 .form-group label {
     display: block;
     font-weight: 500;
@@ -77,6 +108,10 @@
     font-size: 0.9rem;
 }
 
+/*
+    Styling for text-based input fields.
+    This includes a transition for a smooth focus effect.
+*/
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="password"],
@@ -90,12 +125,17 @@
     font-family: inherit;
 }
 
+/*
+    Style for input fields when they are focused.
+    It changes the border color and adds a box shadow to highlight the active field.
+*/
 .form-group input:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
 }
 
+/* A small hint or helper text displayed below a form field. */
 .form-hint {
     display: block;
     font-size: 0.85rem;
@@ -103,7 +143,7 @@
     margin-top: var(--spacing-xs);
 }
 
-/* Checkbox */
+/* Styling for checkboxes. */
 .checkbox {
     display: flex;
     align-items: center;
@@ -111,6 +151,7 @@
     font-size: 0.9rem;
 }
 
+/* The actual checkbox input element. */
 .checkbox input[type="checkbox"] {
     margin-right: var(--spacing-sm);
     cursor: pointer;
@@ -118,12 +159,16 @@
     height: 18px;
 }
 
+/* Styling for links within the checkbox label (e.g., "Terms of Service"). */
 .checkbox span a {
     color: var(--primary-color);
     font-weight: 500;
 }
 
-/* Form Options */
+/*
+    Container for additional form options, like the "Remember me" checkbox
+    and the "Forgot password" link.
+*/
 .form-options {
     display: flex;
     justify-content: space-between;
@@ -132,12 +177,13 @@
     font-size: 0.9rem;
 }
 
+/* Styling for the "Forgot password" link. */
 .forgot-password {
     color: var(--primary-color);
     font-weight: 500;
 }
 
-/* Submit Button */
+/* Styling for the main submission button in the form. */
 .auth-form .btn {
     width: 100%;
     padding: 1rem;
@@ -147,16 +193,21 @@
     position: relative;
 }
 
+/* A loader/spinner icon that can be shown on the button during submission. */
 .btn-loader {
     display: none;
 }
 
+/* Styling for the button when it is disabled. */
 .btn[disabled] {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-/* Footer */
+/*
+    The footer section of the authentication card, typically containing a link
+    to the other authentication page (e.g., "Don't have an account? Sign up").
+*/
 .auth-footer {
     text-align: center;
     margin-top: var(--spacing-xl);
@@ -164,17 +215,22 @@
     border-top: 1px solid var(--border-color);
 }
 
+/* Text within the auth footer. */
 .auth-footer p {
     color: var(--text-light);
     font-size: 0.95rem;
 }
 
+/* Links within the auth footer. */
 .auth-footer a {
     color: var(--primary-color);
     font-weight: 600;
 }
 
-/* Message Box */
+/*
+    A message box used to display success, error, or informational messages
+    to the user after a form submission.
+*/
 .message-box {
     padding: 0.75rem 1rem;
     border-radius: 6px;
@@ -182,25 +238,30 @@
     font-size: 0.9rem;
 }
 
+/* Styling for a success message. */
 .message-box.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
+/* Styling for an error message. */
 .message-box.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
 
+/* Styling for an informational message. */
 .message-box.info {
     background-color: #d1ecf1;
     color: #0c5460;
     border: 1px solid #bee5eb;
 }
 
-/* Demo Credentials */
+/*
+    A section to display demo credentials for easy testing of the login functionality.
+*/
 .demo-credentials {
     background-color: var(--bg-light);
     padding: var(--spacing-lg);
@@ -208,37 +269,49 @@
     font-size: 0.85rem;
 }
 
+/* Text within the demo credentials section. */
 .demo-credentials p {
     margin: 0.25rem 0;
     color: var(--text-light);
 }
 
+/* Strong (bold) text within the demo credentials section. */
 .demo-credentials strong {
     color: var(--text-dark);
 }
 
-/* Responsive Design */
+/*
+    Responsive styles for smaller screens (max-width: 576px).
+    This adjusts padding, font sizes, and layout to ensure the form
+    is usable on mobile devices.
+*/
 @media (max-width: 576px) {
+    /* Adjust padding on the main container for smaller screens. */
     .auth-container {
         padding: var(--spacing-md);
     }
 
+    /* Adjust padding on the auth header. */
     .auth-header {
         padding: var(--spacing-lg) var(--spacing-md);
     }
 
+    /* Reduce the font size of the main heading. */
     .auth-header h1 {
         font-size: 1.5rem;
     }
 
+    /* Adjust padding on the auth form. */
     .auth-form {
         padding: var(--spacing-lg) var(--spacing-md);
     }
 
+    /* Stack form row elements vertically on small screens. */
     .form-row {
         grid-template-columns: 1fr;
     }
 
+    /* Adjust the layout of form options for better readability. */
     .form-options {
         flex-direction: column;
         align-items: flex-start;

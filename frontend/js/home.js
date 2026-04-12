@@ -1,13 +1,15 @@
-/**
- * Royal Nepal - Home Page JavaScript (Bootstrap Enhanced)
- * Homepage search portal, navigation, and dynamic features
- */
+/*
+    This script manages the functionality of the home page.
+    It handles the search forms, navigation bar effects, user authentication status,
+    and other dynamic features like animations and particles.
+*/
 
+// Base URL for the backend API.
 const API_BASE_URL = '../../backend/api';
 
-// Initialize on DOM load
+// This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize all features
+    // Initialize all the features for the home page.
     initNavbarScroll();
     initBackToTop();
     initAuthButtons();
@@ -19,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Navbar scroll effect
+ * Adds a scroll effect to the main navigation bar.
+ * The navbar becomes more opaque when the user scrolls down.
  */
 function initNavbarScroll() {
     const navbar = document.getElementById('mainNavbar');
@@ -33,11 +36,11 @@ function initNavbarScroll() {
     };
     
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
+    handleScroll(); // Run on page load to set initial state.
 }
 
 /**
- * Back to top button
+ * Initializes the "Back to Top" button, which appears after scrolling down.
  */
 function initBackToTop() {
     const backToTop = document.getElementById('backToTop');
@@ -56,7 +59,8 @@ function initBackToTop() {
 }
 
 /**
- * Update auth buttons based on login status
+ * Updates the authentication buttons in the navbar based on login status.
+ * If logged in, it shows a user dropdown with dashboard and logout links.
  */
 function initAuthButtons() {
     const authButtons = document.getElementById('authButtons');
@@ -70,8 +74,8 @@ function initAuthButtons() {
                     <i class="bi bi-person-circle me-1"></i>${user.first_name || 'User'}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-clipboard-check me-2"></i>My Bookings</a></li>
+                    <li><a class="dropdown-item" href="pages/dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                    <li><a class="dropdown-item" href="pages/dashboard.html?tab=bookings"><i class="bi bi-clipboard-check me-2"></i>My Bookings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                 </ul>
@@ -81,7 +85,7 @@ function initAuthButtons() {
 }
 
 /**
- * Handle logout
+ * Handles the user logout process by clearing session data from local storage.
  */
 function handleLogout() {
     localStorage.removeItem('isLoggedIn');
@@ -90,7 +94,8 @@ function handleLogout() {
 }
 
 /**
- * Initialize date pickers
+ * Initializes date pickers, setting minimum dates to today
+ * and handling dependencies between check-in and check-out dates.
  */
 function initDatePickers() {
     const today = new Date().toISOString().split('T')[0];
@@ -101,7 +106,7 @@ function initDatePickers() {
         }
     });
     
-    // Set checkout date to tomorrow by default
+    // Set hotel check-out date to tomorrow by default.
     const checkin = document.getElementById('hotel-checkin');
     const checkout = document.getElementById('hotel-checkout');
     
@@ -111,6 +116,7 @@ function initDatePickers() {
         checkout.value = tomorrow.toISOString().split('T')[0];
         checkout.min = tomorrow.toISOString().split('T')[0];
         
+        // Ensure check-out date is always after check-in date.
         checkin.addEventListener('change', () => {
             const nextDay = new Date(checkin.value);
             nextDay.setDate(nextDay.getDate() + 1);
@@ -123,7 +129,7 @@ function initDatePickers() {
 }
 
 /**
- * Initialize form handlers
+ * Attaches submit event listeners to the search forms.
  */
 function initFormHandlers() {
     document.getElementById('flightSearchForm')?.addEventListener('submit', handleFlightSearch);
@@ -132,7 +138,8 @@ function initFormHandlers() {
 }
 
 /**
- * Load locations into dropdowns
+ * Fetches location data from the API and populates the dropdowns.
+ * Uses a fallback if the API call fails.
  */
 async function loadLocations() {
     try {
@@ -142,18 +149,18 @@ async function loadLocations() {
         if (data.success) {
             populateLocationDropdowns(data.data);
         } else {
-            // Use fallback data if API fails
+            // Use fallback data if API returns an error.
             populateLocationDropdowns(getFallbackLocations());
         }
     } catch (error) {
         console.error('Error loading locations:', error);
-        // Use fallback data
+        // Use fallback data on network error.
         populateLocationDropdowns(getFallbackLocations());
     }
 }
 
 /**
- * Get fallback locations when API is unavailable
+ * Returns a static array of location data for testing or when the API is down.
  */
 function getFallbackLocations() {
     return [
@@ -169,10 +176,11 @@ function getFallbackLocations() {
 }
 
 /**
- * Populate all location dropdowns
+ * Populates the location dropdowns for flights, buses, and hotels
+ * based on the location type.
  */
 function populateLocationDropdowns(locations) {
-    // Flight dropdowns (airports only)
+    // Flight dropdowns (only show locations with an airport code).
     const airportLocations = locations.filter(loc => loc.airport_code);
 
     const flightFromSelect = document.getElementById('flight-from');
@@ -189,7 +197,7 @@ function populateLocationDropdowns(locations) {
         }
     });
 
-    // Bus dropdowns (cities)
+    // Bus dropdowns (only show cities and districts).
     const cityLocations = locations.filter(loc => loc.location_type === 'city' || loc.location_type === 'district');
 
     const busFromSelect = document.getElementById('bus-from');
@@ -206,7 +214,7 @@ function populateLocationDropdowns(locations) {
         }
     });
 
-    // Hotel dropdown (all popular locations)
+    // Hotel dropdown (only show popular locations).
     const hotelCitySelect = document.getElementById('hotel-city');
     const popularLocations = locations.filter(loc => loc.is_popular == 1);
 
@@ -219,7 +227,8 @@ function populateLocationDropdowns(locations) {
 }
 
 /**
- * Handle flight search
+ * Handles the flight search form submission.
+ * Validates input and redirects to the flights page with search parameters.
  */
 function handleFlightSearch(e) {
     e.preventDefault();
@@ -238,12 +247,13 @@ function handleFlightSearch(e) {
         return;
     }
 
-    // Redirect to flights page with parameters
-    window.location.href = `flights.html?from=${from}&to=${to}&date=${date}`;
+    // Redirect to the flights page with search parameters in the URL.
+    window.location.href = `pages/flights.html?from=${from}&to=${to}&date=${date}`;
 }
 
 /**
- * Handle bus search
+ * Handles the bus search form submission.
+ * Validates input and redirects to the buses page with search parameters.
  */
 function handleBusSearch(e) {
     e.preventDefault();
@@ -262,12 +272,13 @@ function handleBusSearch(e) {
         return;
     }
 
-    // Redirect to buses page with parameters
-    window.location.href = `buses.html?from=${from}&to=${to}&date=${date}`;
+    // Redirect to the buses page with search parameters in the URL.
+    window.location.href = `pages/buses.html?from=${from}&to=${to}&date=${date}`;
 }
 
 /**
- * Handle hotel search
+ * Handles the hotel search form submission.
+ * Validates input and redirects to the hotels page with search parameters.
  */
 function handleHotelSearch(e) {
     e.preventDefault();
@@ -286,15 +297,17 @@ function handleHotelSearch(e) {
         return;
     }
 
-    // Redirect to hotels page with parameters
-    window.location.href = `hotels.html?city=${city}&checkin=${checkin}&checkout=${checkout}`;
+    // Redirect to the hotels page with search parameters in the URL.
+    window.location.href = `pages/hotels.html?city=${city}&checkin=${checkin}&checkout=${checkout}`;
 }
 
 /**
- * Show toast notification
+ * Displays a Bootstrap toast notification.
+ * @param {string} message - The message to display.
+ * @param {string} type - The type of toast (success, warning, danger, info).
  */
 function showToast(message, type = 'info') {
-    // Create toast container if it doesn't exist
+    // Create a container for toasts if it doesn't already exist.
     let toastContainer = document.getElementById('toastContainer');
     if (!toastContainer) {
         toastContainer = document.createElement('div');
@@ -329,11 +342,12 @@ function showToast(message, type = 'info') {
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
     
+    // Remove the toast from the DOM after it's hidden.
     toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
 }
 
 /**
- * Initialize floating particles effect
+ * Initializes a floating particles animation in the background.
  */
 function initParticles() {
     const particles = document.getElementById('particles');
@@ -355,7 +369,7 @@ function initParticles() {
         particles.appendChild(particle);
     }
     
-    // Add particle animation CSS
+    // Add the keyframe animation CSS to the document's head.
     const style = document.createElement('style');
     style.textContent = `
         @keyframes floatParticle {
@@ -369,7 +383,8 @@ function initParticles() {
 }
 
 /**
- * Initialize scroll animations
+ * Initializes scroll-triggered animations for various elements on the page
+ * using the Intersection Observer API.
  */
 function initAnimations() {
     const observerOptions = {
@@ -382,14 +397,14 @@ function initAnimations() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate__animated', 'animate__fadeInUp');
-                observer.unobserve(entry.target);
+                observer.unobserve(entry.target); // Stop observing after animation.
             }
         });
     }, observerOptions);
     
-    // Observe cards and sections
+    // Observe cards and sections to apply the fade-in animation.
     document.querySelectorAll('.destination-card, .service-card, .feature-card, .testimonials-section .card').forEach(el => {
-        el.style.opacity = '0';
+        el.style.opacity = '0'; // Hide element initially.
         observer.observe(el);
     });
 }

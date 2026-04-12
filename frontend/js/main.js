@@ -1,25 +1,36 @@
-/**
- * Royal Nepal - Main JavaScript
- * Common functions and utilities
- */
+/*
+    This script provides common, reusable functions and utilities for the entire application.
+    It includes functions for user authentication, API requests, data formatting,
+    and initializes common elements like the logout button.
+*/
 
+// Base URL for the backend API.
 const API_BASE_URL = '../../backend/api';
 
-// Get current user from localStorage
+/**
+ * Retrieves the current user's data from local storage.
+ * @returns {object|null} The user object or null if not found.
+ */
 function getCurrentUser() {
     const userJson = localStorage.getItem('user');
     return userJson ? JSON.parse(userJson) : null;
 }
 
-// Check if user is logged in
+/**
+ * Checks if the user is currently logged in by checking local storage.
+ * @returns {boolean} True if the user is logged in, false otherwise.
+ */
 function isLoggedIn() {
     return localStorage.getItem('isLoggedIn') === 'true';
 }
 
-// Logout function
+/**
+ * Handles the user logout process.
+ * It calls the logout API endpoint and clears user data from local storage.
+ */
 async function logout() {
     try {
-        // Call logout API
+        // Call the backend logout script.
         await fetch(`${API_BASE_URL}/logout.php`, {
             method: 'POST',
             headers: {
@@ -27,18 +38,24 @@ async function logout() {
             }
         });
     } catch (error) {
-        console.error('Logout error:', error);
+        console.error('Logout API call failed:', error);
     } finally {
-        // Clear localStorage
+        // Always clear local storage regardless of API call success.
         localStorage.removeItem('user');
         localStorage.removeItem('isLoggedIn');
 
-        // Redirect to login
+        // Redirect the user to the login page.
         window.location.href = 'login.html';
     }
 }
 
-// Protect pages that require authentication
+/**
+ * Protects pages that require user authentication.
+ * Redirects to the login page if the user is not logged in.
+ * Can also check for a specific user role (e.g., 'admin').
+ * @param {string|null} requiredRole - The role required to access the page.
+ * @returns {boolean} True if the user is authenticated and has the required role.
+ */
 function requireAuth(requiredRole = null) {
     if (!isLoggedIn()) {
         window.location.href = 'login.html';
@@ -47,16 +64,22 @@ function requireAuth(requiredRole = null) {
 
     const user = getCurrentUser();
 
+    // If a role is required, check if the user has that role.
     if (requiredRole && user.role !== requiredRole) {
-        alert('You do not have permission to access this page');
-        window.location.href = 'dashboard.html';
+        alert('You do not have permission to access this page.');
+        window.location.href = 'dashboard.html'; // Redirect to a safe page.
         return false;
     }
 
     return true;
 }
 
-// Format currency
+/**
+ * Formats a number into a currency string (e.g., "रू 1,234.56").
+ * @param {number|string} amount - The amount to format.
+ * @param {string} currency - The currency code (defaults to 'NPR').
+ * @returns {string} The formatted currency string.
+ */
 function formatCurrency(amount, currency = 'NPR') {
     const formatted = parseFloat(amount).toLocaleString('en-NP', {
         minimumFractionDigits: 2,
@@ -66,7 +89,11 @@ function formatCurrency(amount, currency = 'NPR') {
     return currency === 'NPR' ? `रू ${formatted}` : `$${formatted}`;
 }
 
-// Format date
+/**
+ * Formats a date string into a more readable format (e.g., "January 1, 2023").
+ * @param {string} dateString - The date string to format.
+ * @returns {string} The formatted date string.
+ */
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -76,7 +103,13 @@ function formatDate(dateString) {
     });
 }
 
-// Make API request with error handling
+/**
+ * A wrapper for making API requests using the Fetch API.
+ * It includes default headers and error handling.
+ * @param {string} endpoint - The API endpoint to call.
+ * @param {object} options - The options for the fetch request.
+ * @returns {Promise<object>} A promise that resolves with the JSON response data.
+ */
 async function apiRequest(endpoint, options = {}) {
     try {
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
@@ -100,7 +133,9 @@ async function apiRequest(endpoint, options = {}) {
     }
 }
 
-// Display user info in navbar (if exists)
+/**
+ * Displays the current user's name and role in the UI, if the elements exist.
+ */
 function displayUserInfo() {
     const user = getCurrentUser();
     if (!user) return;
@@ -117,14 +152,14 @@ function displayUserInfo() {
     }
 }
 
-// Initialize common functionality
+// This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
-    // Display user info if logged in
+    // Display user info in the navbar if the user is logged in.
     if (isLoggedIn()) {
         displayUserInfo();
     }
 
-    // Attach logout event to logout buttons
+    // Attach a click event listener to all logout buttons.
     const logoutButtons = document.querySelectorAll('.logout-btn, #logoutBtn');
     logoutButtons.forEach(button => {
         button.addEventListener('click', (e) => {
@@ -136,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Export functions for use in other scripts
+// Expose key functions to the global window object to be accessible from other scripts.
 window.RoyalNepal = {
     getCurrentUser,
     isLoggedIn,
