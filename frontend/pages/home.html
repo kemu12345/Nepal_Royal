@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Nepal - Experience the pride of Nepalese</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/home.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="home.html">
+                <i class="bi bi-mountains me-2 fs-3"></i>
+                <div>
+                    <span class="fw-bold fs-4">Royal Nepal</span>
+                    <small class="d-block text-white-50" style="font-size: 0.7rem;">Experience the pride of Nepalese</small>
+                </div>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link active px-3" href="home.html"><i class="bi bi-house-door me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="explore.html"><i class="bi bi-compass me-1"></i>Explore</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="flights.html"><i class="bi bi-airplane me-1"></i>Flights</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="buses.html"><i class="bi bi-bus-front me-1"></i>Buses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="hotels.html"><i class="bi bi-building me-1"></i>Hotels</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="packages.html"><i class="bi bi-gift me-1"></i>Packages</a>
+                    </li>
+                    <li class="nav-item ms-lg-3" id="authButtons">
+                        <a class="btn btn-warning btn-sm px-4 fw-semibold" href="login.html">
+                            <i class="bi bi-person-circle me-1"></i>Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section d-flex align-items-center">
+        <div class="hero-overlay"></div>
+        <div class="hero-particles" id="particles"></div>
+        <div class="container position-relative z-2">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-7 text-white py-5">
+                    <span class="badge bg-warning text-dark px-3 py-2 mb-3 animate__animated animate__fadeInDown">
+                        <i class="bi bi-star-fill me-1"></i> Nepal's #1 Travel Platform
+                    </span>
+                    <h1 class="display-2 fw-bold mb-3 animate__animated animate__fadeInUp">
+                        Royal Nepal
+                    </h1>
+                    <p class="lead fs-3 mb-3 animate__animated animate__fadeInUp animate__delay-1s">
+                        Experience the pride of Nepalese 🇳🇵
+                    </p>
+                    <p class="fs-5 text-white-50 mb-4 animate__animated animate__fadeInUp animate__delay-2s">
+                        Discover the majestic Himalayas, ancient temples, and vibrant culture. 
+                        Book flights, hotels, buses and explore curated tour packages.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 animate__animated animate__fadeInUp animate__delay-3s">
+                        <a href="#search-section" class="btn btn-danger btn-lg px-4">
+                            <i class="bi bi-search me-2"></i>Start Searching
+                        </a>
+                        <a href="explore.html" class="btn btn-outline-light btn-lg px-4">
+                            <i class="bi bi-compass me-2"></i>Explore Nepal
+                        </a>
+                    </div>
+                    <div class="mt-5 animate__animated animate__fadeIn animate__delay-4s">
+                        <div class="row g-4">
+                            <div class="col-auto">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-success bg-opacity-25 rounded-circle p-3 me-3">
+                                        <i class="bi bi-airplane text-success fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0 fw-bold">500+</h5>
+                                        <small class="text-white-50">Flights Daily</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-info bg-opacity-25 rounded-circle p-3 me-3">
+                                        <i class="bi bi-building text-info fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0 fw-bold">1000+</h5>
+                                        <small class="text-white-50">Hotels</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-warning bg-opacity-25 rounded-circle p-3 me-3">
+                                        <i class="bi bi-people text-warning fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0 fw-bold">50K+</h5>
+                                        <small class="text-white-50">Happy Travelers</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Portal -->
+    <section class="search-section py-5" id="search-section">
+        <div class="container">
+            <div class="search-card shadow-lg rounded-4 overflow-hidden">
+                <div class="search-tabs">
+                    <ul class="nav nav-pills nav-fill p-3 bg-light" id="searchTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active rounded-pill" id="flights-tab" data-bs-toggle="pill" data-bs-target="#flights-search" type="button">
+                                <i class="bi bi-airplane-fill me-2"></i>Flights
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill" id="buses-tab" data-bs-toggle="pill" data-bs-target="#buses-search" type="button">
+                                <i class="bi bi-bus-front-fill me-2"></i>Buses
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill" id="hotels-tab" data-bs-toggle="pill" data-bs-target="#hotels-search" type="button">
+                                <i class="bi bi-building-fill me-2"></i>Hotels
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill" id="packages-tab" data-bs-toggle="pill" data-bs-target="#packages-search" type="button">
+                                <i class="bi bi-gift-fill me-2"></i>Packages
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content p-4 bg-white">
+                    <!-- Flights Search -->
+                    <div class="tab-pane fade show active" id="flights-search" role="tabpanel">
+                        <form id="flightSearchForm">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-geo-alt text-danger me-1"></i>From</label>
+                                    <select class="form-select form-select-lg" id="flight-from" required>
+                                        <option value="">Select Origin</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-geo-alt-fill text-success me-1"></i>To</label>
+                                    <select class="form-select form-select-lg" id="flight-to" required>
+                                        <option value="">Select Destination</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-calendar3 text-primary me-1"></i>Date</label>
+                                    <input type="date" class="form-control form-control-lg" id="flight-date" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-danger btn-lg w-100">
+                                        <i class="bi bi-search me-2"></i>Search Flights
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Buses Search -->
+                    <div class="tab-pane fade" id="buses-search" role="tabpanel">
+                        <form id="busSearchForm">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-geo-alt text-danger me-1"></i>From</label>
+                                    <select class="form-select form-select-lg" id="bus-from" required>
+                                        <option value="">Select Origin</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-geo-alt-fill text-success me-1"></i>To</label>
+                                    <select class="form-select form-select-lg" id="bus-to" required>
+                                        <option value="">Select Destination</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-calendar3 text-primary me-1"></i>Date</label>
+                                    <input type="date" class="form-control form-control-lg" id="bus-date" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        <i class="bi bi-search me-2"></i>Search Buses
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Hotels Search -->
+                    <div class="tab-pane fade" id="hotels-search" role="tabpanel">
+                        <form id="hotelSearchForm">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-geo-alt text-danger me-1"></i>Destination</label>
+                                    <select class="form-select form-select-lg" id="hotel-city" required>
+                                        <option value="">Select City</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-calendar-check text-success me-1"></i>Check-in</label>
+                                    <input type="date" class="form-control form-control-lg" id="hotel-checkin" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold"><i class="bi bi-calendar-x text-warning me-1"></i>Check-out</label>
+                                    <input type="date" class="form-control form-control-lg" id="hotel-checkout" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-success btn-lg w-100">
+                                        <i class="bi bi-search me-2"></i>Search Hotels
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Packages Search -->
+                    <div class="tab-pane fade" id="packages-search" role="tabpanel">
+                        <div class="text-center py-4">
+                            <div class="mb-4">
+                                <i class="bi bi-gift display-1 text-warning"></i>
+                            </div>
+                            <h4 class="mb-3">Explore Curated Tour Packages</h4>
+                            <p class="text-muted mb-4">Discover amazing travel experiences across Nepal - from Everest treks to wildlife safaris!</p>
+                            <a href="packages.html" class="btn btn-warning btn-lg px-5">
+                                <i class="bi bi-arrow-right-circle me-2"></i>View All Packages
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Destinations -->
+    <section class="destinations-section py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-danger px-3 py-2 mb-3">Popular Destinations</span>
+                <h2 class="display-5 fw-bold">Discover Nepal</h2>
+                <p class="text-muted lead">Explore the most breathtaking destinations in Nepal</p>
+            </div>
+            
+            <div class="row g-4" id="destinationsGrid">
+                <!-- Destinations will be loaded dynamically -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="destination-card card border-0 shadow-sm h-100 overflow-hidden">
+                        <div class="destination-img position-relative" style="background: linear-gradient(135deg, #DC143C 0%, #ff6b6b 100%);">
+                            <i class="bi bi-buildings position-absolute top-50 start-50 translate-middle text-white display-1 opacity-50"></i>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-warning text-dark">
+                                <i class="bi bi-star-fill me-1"></i>Popular
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-danger">Kathmandu</h5>
+                            <p class="card-text text-muted"><i class="bi bi-geo-alt me-1"></i>Cultural Capital</p>
+                            <p class="small">Ancient temples, vibrant markets, and rich heritage await you.</p>
+                            <a href="explore.html" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="destination-card card border-0 shadow-sm h-100 overflow-hidden">
+                        <div class="destination-img position-relative" style="background: linear-gradient(135deg, #003893 0%, #4dabf7 100%);">
+                            <i class="bi bi-water position-absolute top-50 start-50 translate-middle text-white display-1 opacity-50"></i>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-info text-dark">
+                                <i class="bi bi-heart-fill me-1"></i>Adventure
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary">Pokhara</h5>
+                            <p class="card-text text-muted"><i class="bi bi-geo-alt me-1"></i>Adventure Hub</p>
+                            <p class="small">Paragliding, boating, and stunning Annapurna views.</p>
+                            <a href="explore.html" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="destination-card card border-0 shadow-sm h-100 overflow-hidden">
+                        <div class="destination-img position-relative" style="background: linear-gradient(135deg, #FFD700 0%, #ffa94d 100%);">
+                            <i class="bi bi-snow position-absolute top-50 start-50 translate-middle text-white display-1 opacity-50"></i>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-success">
+                                <i class="bi bi-trophy-fill me-1"></i>Iconic
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-warning">Everest Region</h5>
+                            <p class="card-text text-muted"><i class="bi bi-geo-alt me-1"></i>Trekking Paradise</p>
+                            <p class="small">The ultimate trekking destination - reach base camp!</p>
+                            <a href="explore.html" class="btn btn-outline-warning btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="destination-card card border-0 shadow-sm h-100 overflow-hidden">
+                        <div class="destination-img position-relative" style="background: linear-gradient(135deg, #28a745 0%, #69db7c 100%);">
+                            <i class="bi bi-tree position-absolute top-50 start-50 translate-middle text-white display-1 opacity-50"></i>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-success">
+                                <i class="bi bi-shield-fill-check me-1"></i>Wildlife
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-success">Chitwan</h5>
+                            <p class="card-text text-muted"><i class="bi bi-geo-alt me-1"></i>Wildlife Sanctuary</p>
+                            <p class="small">Spot rhinos, tigers, and exotic birds in their habitat.</p>
+                            <a href="explore.html" class="btn btn-outline-success btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="destination-card card border-0 shadow-sm h-100 overflow-hidden">
+                        <div class="destination-img position-relative" style="background: linear-gradient(135deg, #e83e8c 0%, #f783ac 100%);">
+                            <i class="bi bi-peace position-absolute top-50 start-50 translate-middle text-white display-1 opacity-50"></i>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-danger">
+                                <i class="bi bi-heart-fill me-1"></i>Sacred
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold" style="color: #e83e8c;">Lumbini</h5>
+                            <p class="card-text text-muted"><i class="bi bi-geo-alt me-1"></i>Buddha's Birthplace</p>
+                            <p class="small">A UNESCO World Heritage Site of spiritual significance.</p>
+                            <a href="explore.html" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="destination-card card border-0 shadow-sm h-100 overflow-hidden">
+                        <div class="destination-img position-relative" style="background: linear-gradient(135deg, #6f42c1 0%, #9775fa 100%);">
+                            <i class="bi bi-mountain position-absolute top-50 start-50 translate-middle text-white display-1 opacity-50"></i>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-purple text-white" style="background: #6f42c1 !important;">
+                                <i class="bi bi-fire me-1"></i>Trek
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold" style="color: #6f42c1;">Annapurna</h5>
+                            <p class="card-text text-muted"><i class="bi bi-geo-alt me-1"></i>Mountain Majesty</p>
+                            <p class="small">World-famous circuit with breathtaking mountain views.</p>
+                            <a href="explore.html" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary px-3 py-2 mb-3">Our Services</span>
+                <h2 class="display-5 fw-bold">Book Your Journey</h2>
+                <p class="text-muted lead">Everything you need for your Nepal adventure</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card card border-0 bg-danger bg-gradient text-white h-100 text-center p-4">
+                        <div class="card-body">
+                            <div class="service-icon mb-3">
+                                <i class="bi bi-airplane-fill display-3"></i>
+                            </div>
+                            <h5 class="fw-bold">Flights</h5>
+                            <p class="opacity-75">Domestic flights to all major destinations in Nepal</p>
+                            <a href="flights.html" class="btn btn-light btn-sm mt-2">
+                                Book Now <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card card border-0 bg-primary bg-gradient text-white h-100 text-center p-4">
+                        <div class="card-body">
+                            <div class="service-icon mb-3">
+                                <i class="bi bi-bus-front-fill display-3"></i>
+                            </div>
+                            <h5 class="fw-bold">Buses</h5>
+                            <p class="opacity-75">Comfortable bus services across Nepal</p>
+                            <a href="buses.html" class="btn btn-light btn-sm mt-2">
+                                Book Now <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card card border-0 bg-success bg-gradient text-white h-100 text-center p-4">
+                        <div class="card-body">
+                            <div class="service-icon mb-3">
+                                <i class="bi bi-building-fill display-3"></i>
+                            </div>
+                            <h5 class="fw-bold">Hotels</h5>
+                            <p class="opacity-75">From luxury resorts to cozy guesthouses</p>
+                            <a href="hotels.html" class="btn btn-light btn-sm mt-2">
+                                Book Now <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="service-card card border-0 bg-warning bg-gradient text-dark h-100 text-center p-4">
+                        <div class="card-body">
+                            <div class="service-icon mb-3">
+                                <i class="bi bi-gift-fill display-3"></i>
+                            </div>
+                            <h5 class="fw-bold">Packages</h5>
+                            <p class="opacity-75">Curated tour packages for every adventurer</p>
+                            <a href="packages.html" class="btn btn-dark btn-sm mt-2">
+                                View All <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="features-section py-5 bg-dark text-white">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-warning text-dark px-3 py-2 mb-3">Why Us</span>
+                <h2 class="display-5 fw-bold">Why Choose Royal Nepal?</h2>
+                <p class="text-white-50 lead">Trusted by thousands of travelers</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon bg-danger bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="bi bi-mountains text-danger display-5"></i>
+                        </div>
+                        <h5 class="fw-bold">Nepal-Focused</h5>
+                        <p class="text-white-50">Exclusively dedicated to showcasing the beauty of Nepal</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon bg-success bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="bi bi-shield-check text-success display-5"></i>
+                        </div>
+                        <h5 class="fw-bold">Verified Services</h5>
+                        <p class="text-white-50">All operators and hotels are verified and trusted</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon bg-warning bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="bi bi-currency-dollar text-warning display-5"></i>
+                        </div>
+                        <h5 class="fw-bold">Best Prices</h5>
+                        <p class="text-white-50">Competitive prices in NPR and USD</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="feature-card text-center p-4">
+                        <div class="feature-icon bg-info bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                            <i class="bi bi-phone text-info display-5"></i>
+                        </div>
+                        <h5 class="fw-bold">Easy Booking</h5>
+                        <p class="text-white-50">Simple and secure online booking system</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge bg-success px-3 py-2 mb-3">Testimonials</span>
+                <h2 class="display-5 fw-bold">What Travelers Say</h2>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <p class="text-muted">"Amazing experience booking through Royal Nepal! The Everest trek package was perfectly organized."</p>
+                            <div class="d-flex align-items-center mt-4">
+                                <div class="bg-danger rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px;">
+                                    <span class="fw-bold">JD</span>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-bold">John Rock</h6>
+                                    <small class="text-muted">China</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </div>
+                            <p class="text-muted">"Best travel platform for Nepal! Found great deals on flights and hotels in Pokhara."</p>
+                            <div class="d-flex align-items-center mt-4">
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px;">
+                                    <span class="fw-bold">SM</span>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-bold">Roman Paudel</h6>
+                                    <small class="text-muted">Nepal</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-half text-warning"></i>
+                            </div>
+                            <p class="text-muted">"Smooth booking process and excellent customer support. Highly recommend Royal Nepal!"</p>
+                            <div class="d-flex align-items-center mt-4">
+                                <div class="bg-success rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px;">
+                                    <span class="fw-bold">RK</span>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-bold">Raj Kumar</h6>
+                                    <small class="text-muted">India</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section py-5 bg-gradient" style="background: linear-gradient(135deg, #DC143C 0%, #003893 100%);">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center text-white">
+                    <h3 class="fw-bold mb-3">Subscribe to Our Newsletter</h3>
+                    <p class="opacity-75 mb-4">Get the latest travel deals and updates straight to your inbox!</p>
+                    <form class="row g-3 justify-content-center">
+                        <div class="col-md-6">
+                            <input type="email" class="form-control form-control-lg" placeholder="Enter your email">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-warning btn-lg px-4">
+                                <i class="bi bi-envelope-paper me-2"></i>Subscribe
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-white pt-5 pb-3">
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-mountains me-2 fs-2 text-danger"></i>
+                        <div>
+                            <h4 class="mb-0 fw-bold">Royal Nepal</h4>
+                            <small class="text-white-50">Experience the pride of Nepalese</small>
+                        </div>
+                    </div>
+                    <p class="text-white-50">Your trusted travel partner for exploring the beauty, culture, and adventure that Nepal has to offer.</p>
+                    <div class="social-icons d-flex gap-2 mt-3">
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="fw-bold mb-3 text-warning">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="explore.html" class="text-white-50 text-decoration-none hover-white"><i class="bi bi-chevron-right me-1"></i>Explore</a></li>
+                        <li class="mb-2"><a href="packages.html" class="text-white-50 text-decoration-none hover-white"><i class="bi bi-chevron-right me-1"></i>Packages</a></li>
+                        <li class="mb-2"><a href="flights.html" class="text-white-50 text-decoration-none hover-white"><i class="bi bi-chevron-right me-1"></i>Flights</a></li>
+                        <li class="mb-2"><a href="hotels.html" class="text-white-50 text-decoration-none hover-white"><i class="bi bi-chevron-right me-1"></i>Hotels</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="fw-bold mb-3 text-warning">Destinations</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="explore.html" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right me-1"></i>Kathmandu</a></li>
+                        <li class="mb-2"><a href="explore.html" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right me-1"></i>Pokhara</a></li>
+                        <li class="mb-2"><a href="explore.html" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right me-1"></i>Everest</a></li>
+                        <li class="mb-2"><a href="explore.html" class="text-white-50 text-decoration-none"><i class="bi bi-chevron-right me-1"></i>Chitwan</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold mb-3 text-warning">Contact Us</h5>
+                    <ul class="list-unstyled text-white-50">
+                        <li class="mb-2"><i class="bi bi-envelope-fill text-danger me-2"></i>info@royalnepal.com</li>
+                        <li class="mb-2"><i class="bi bi-telephone-fill text-success me-2"></i>+977 9812358400</li>
+                        <li class="mb-2"><i class="bi bi-geo-alt-fill text-warning me-2"></i>Biratnagar,Morang, Nepal</li>
+                        <li class="mb-2"><i class="bi bi-clock-fill text-info me-2"></i>Sun-Fri: 9:00 AM - 6:00 PM</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-white-50">&copy; 2024 Royal Nepal. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white-50 text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white-50 text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button type="button" class="btn btn-danger btn-lg rounded-circle position-fixed bottom-0 end-0 m-4 shadow-lg" id="backToTop" style="display: none; z-index: 1050;">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/home.js"></script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Royal Nepal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: linear-gradient(135deg, #DC143C 0%, #003893 100%);
+            overflow-x: hidden;
+        }
+        
+        .auth-wrapper { display: flex; width: 100%; min-height: 100vh; }
+        
+        .auth-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-left::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+        
+        .auth-branding { text-align: center; color: white; position: relative; z-index: 1; }
+        
+        .auth-branding i {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .auth-branding h1 { font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .auth-branding p { font-size: 1.1rem; opacity: 0.9; }
+        
+        .feature-list { margin-top: 3rem; text-align: left; }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .feature-item i { font-size: 1.5rem; margin-right: 1rem; color: #FFD700; animation: none; }
+        
+        .auth-right {
+            flex: 1.2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 30px 0 0 30px;
+        }
+        
+        .auth-card { width: 100%; max-width: 520px; }
+        
+        .auth-header { text-align: center; margin-bottom: 2rem; }
+        .auth-header h2 { font-size: 2rem; font-weight: 700; color: #333; margin-bottom: 0.5rem; }
+        .auth-header p { color: #6c757d; }
+        
+        .form-floating { margin-bottom: 1rem; }
+        
+        .form-floating .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            height: 55px;
+            font-size: 1rem;
+        }
+        
+        .form-floating .form-control:focus {
+            border-color: #003893;
+            box-shadow: 0 0 0 0.25rem rgba(0, 56, 147, 0.1);
+        }
+        
+        .form-floating label { color: #6c757d; }
+        
+        .btn-register {
+            background: linear-gradient(135deg, #003893 0%, #002266 100%);
+            border: none;
+            height: 55px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 56, 147, 0.3);
+        }
+        
+        .message-box {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .message-box.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        .message-box.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        
+        .password-strength {
+            height: 5px;
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .strength-weak { background: #dc3545; width: 33%; }
+        .strength-medium { background: #ffc107; width: 66%; }
+        .strength-strong { background: #28a745; width: 100%; }
+        
+        @media (max-width: 991.98px) {
+            .auth-left { display: none; }
+            .auth-right { border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <!-- Left Side - Branding -->
+        <div class="auth-left">
+            <div class="auth-branding animate__animated animate__fadeInLeft">
+                <i class="bi bi-mountains"></i>
+                <h1>Royal Nepal</h1>
+                <p>Experience the pride of Nepalese 🇳🇵</p>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="bi bi-person-plus-fill"></i>
+                        <span>Create your free account</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="bi bi-bookmark-star-fill"></i>
+                        <span>Save your favorite destinations</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Track your bookings easily</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="bi bi-percent"></i>
+                        <span>Get exclusive member discounts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Register Form -->
+        <div class="auth-right">
+            <div class="auth-card animate__animated animate__fadeInRight">
+                <div class="auth-header">
+                    <h2>Create Account 🎉</h2>
+                    <p>Join us to explore Nepal</p>
+                </div>
+
+                <div id="messageBox" class="message-box"></div>
+
+                <form id="registerForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="firstName" placeholder="First name" required>
+                                <label for="firstName"><i class="bi bi-person me-2"></i>First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="lastName" placeholder="Last name" required>
+                                <label for="lastName"><i class="bi bi-person me-2"></i>Last Name</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="email" placeholder="your@email.com" required>
+                        <label for="email"><i class="bi bi-envelope me-2"></i>Email Address</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" id="phone" placeholder="+977-XXXXXXXXXX">
+                        <label for="phone"><i class="bi bi-telephone me-2"></i>Phone Number (Optional)</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="password" placeholder="Password" required minlength="6">
+                        <label for="password"><i class="bi bi-lock me-2"></i>Password</label>
+                    </div>
+                    <div class="password-strength" id="passwordStrength"></div>
+
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+                        <label for="confirmPassword"><i class="bi bi-lock-fill me-2"></i>Confirm Password</label>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-register w-100" id="registerBtn">
+                        <span class="btn-text"><i class="bi bi-person-plus me-2"></i>Create Account</span>
+                        <span class="btn-loader" style="display: none;">
+                            <span class="spinner-border spinner-border-sm me-2"></span>Creating account...
+                        </span>
+                    </button>
+                </form>
+
+                <p class="text-center mt-4 text-muted">
+                    Already have an account? 
+                    <a href="login.html" class="text-primary fw-semibold text-decoration-none">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Password strength indicator
+        document.getElementById('password')?.addEventListener('input', function() {
+            const strength = document.getElementById('passwordStrength');
+            const val = this.value;
+            
+            if (val.length < 4) {
+                strength.className = 'password-strength strength-weak';
+            } else if (val.length < 8) {
+                strength.className = 'password-strength strength-medium';
+            } else {
+                strength.className = 'password-strength strength-strong';
+            }
+        });
+    </script>
+</body>
+</html>

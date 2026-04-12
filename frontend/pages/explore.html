@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Nepal - Royal Nepal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --nepal-red: #DC143C;
+            --nepal-blue: #003893;
+            --nepal-gold: #FFD700;
+            --explore-teal: #20c997;
+            --explore-gradient: linear-gradient(135deg, #20c997 0%, #0d6efd 100%);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
+        
+        /* Navbar */
+        .navbar-custom {
+            background: linear-gradient(135deg, var(--nepal-red) 0%, var(--nepal-blue) 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .navbar-custom .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white !important;
+        }
+        .navbar-custom .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            transition: all 0.3s ease;
+        }
+        .navbar-custom .nav-link:hover,
+        .navbar-custom .nav-link.active {
+            color: var(--nepal-gold) !important;
+        }
+        
+        /* Page Header */
+        .page-header {
+            background: var(--explore-gradient);
+            padding: 4rem 0 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,10 90,90 10,90" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="3"/></svg>') repeat;
+            background-size: 80px;
+        }
+        
+        /* Search Section */
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-top: -3rem;
+            position: relative;
+            z-index: 10;
+        }
+        .search-input {
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            padding: 1rem 1.5rem 1rem 3rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: var(--explore-teal);
+            box-shadow: 0 0 0 0.25rem rgba(32, 201, 151, 0.15);
+        }
+        .search-icon {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+        
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        .category-pill {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .category-pill:hover, .category-pill.active {
+            background: var(--explore-gradient);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .category-pill i { margin-right: 0.5rem; }
+        
+        /* Place Cards */
+        .place-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.08);
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+        .place-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(32, 201, 151, 0.2);
+        }
+        .place-image {
+            height: 200px;
+            background: var(--explore-gradient);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        .place-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .heritage-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--nepal-gold);
+            color: #333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .place-category-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+        .badge-temple { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .badge-monastery { background: linear-gradient(135deg, #a55eea, #8854d0); }
+        .badge-palace { background: linear-gradient(135deg, #f7b731, #f39c12); }
+        .badge-mountain { background: linear-gradient(135deg, #45aaf2, #2d98da); }
+        .badge-lake { background: linear-gradient(135deg, #20c997, #0d6efd); }
+        .badge-park { background: linear-gradient(135deg, #26de81, #20bf6b); }
+        .badge-viewpoint { background: linear-gradient(135deg, #fd79a8, #e84393); }
+        .badge-heritage_site { background: linear-gradient(135deg, #636e72, #2d3436); }
+        
+        .place-body { padding: 1.5rem; }
+        .place-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+        .place-location {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+        .place-location i { margin-right: 0.3rem; color: var(--explore-teal); }
+        .place-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .place-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1rem;
+        }
+        .feature-tag {
+            background: #f0f9f7;
+            color: var(--explore-teal);
+            padding: 0.25rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .btn-explore {
+            background: var(--explore-gradient);
+            border: none;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-explore:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(32, 201, 151, 0.4);
+            color: white;
+        }
+        
+        /* Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 20px;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton-card { height: 380px; }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+        }
+        .empty-state i { font-size: 4rem; color: #ddd; }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--nepal-blue) 0%, #001a4d 100%);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
+        }
+        
+        /* Toast */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">
+                <i class="bi bi-mountains me-2"></i>Royal Nepal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="flights.html">Flights</a></li>
+                    <li class="nav-item"><a class="nav-link" href="buses.html">Buses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="hotels.html">Hotels</a></li>
+                    <li class="nav-item"><a class="nav-link" href="packages.html">Packages</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="explore.html">Explore</a></li>
+                </ul>
+                <div class="nav-auth" id="navAuth">
+                    <a href="login.html" class="btn btn-outline-light btn-sm me-2">Login</a>
+                    <a href="register.html" class="btn btn-warning btn-sm">Register</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header" style="padding-top: 100px;">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-2 animate__animated animate__fadeInDown">
+                <i class="bi bi-compass me-3"></i>Explore Nepal
+            </h1>
+            <p class="lead opacity-75 animate__animated animate__fadeInUp">Discover the beauty, culture, and heritage of the Himalayan nation</p>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="container">
+        <div class="search-section">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="position-relative">
+                        <i class="bi bi-search search-icon"></i>
+                        <input type="text" class="form-control search-input" id="searchInput" 
+                               placeholder="Search temples, mountains, lakes, cultural sites...">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-pills" id="categoryPills">
+                <button class="category-pill active" data-category="">
+                    <i class="bi bi-grid-3x3-gap"></i>All
+                </button>
+                <button class="category-pill" data-category="temple">
+                    <i class="bi bi-building"></i>Temples
+                </button>
+                <button class="category-pill" data-category="monastery">
+                    <i class="bi bi-building"></i>Monasteries
+                </button>
+                <button class="category-pill" data-category="palace">
+                    <i class="bi bi-house-door"></i>Palaces
+                </button>
+                <button class="category-pill" data-category="mountain">
+                    <i class="bi bi-triangle"></i>Mountains
+                </button>
+                <button class="category-pill" data-category="lake">
+                    <i class="bi bi-droplet"></i>Lakes
+                </button>
+                <button class="category-pill" data-category="park">
+                    <i class="bi bi-tree"></i>Parks
+                </button>
+                <button class="category-pill" data-category="heritage_site">
+                    <i class="bi bi-award"></i>UNESCO Sites
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Count -->
+    <section class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <p class="text-muted mb-0" id="resultsCount">Loading places...</p>
+            <select class="form-select" style="width: auto;" id="sortFilter">
+                <option value="name-asc">Name: A-Z</option>
+                <option value="name-desc">Name: Z-A</option>
+                <option value="heritage">Heritage First</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Places Grid -->
+    <section class="container py-4">
+        <div id="placesContainer" class="row g-4">
+            <!-- Places will be loaded here -->
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loadingState" class="row g-4">
+            <div class="col-md-4"><div class="skeleton skeleton-card"></div></div>
+            <div class="col-md-4"><div class="skeleton skeleton-card"></div></div>
+            <div class="col-md-4"><div class="skeleton skeleton-card"></div></div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="bi bi-geo-alt mb-3"></i>
+            <h3 class="fw-bold">No places found</h3>
+            <p class="text-muted">Try adjusting your search or category filter</p>
+            <button class="btn btn-explore mt-3" style="width: auto;" onclick="resetFilters()">
+                <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Filters
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-mountains me-2"></i>Royal Nepal</h5>
+                    <p class="opacity-75">Your gateway to exploring the wonders of Nepal - from ancient temples to towering Himalayan peaks.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="fw-semibold mb-3">Popular Categories</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none">🛕 Temples</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">🏔️ Mountains</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">🏛️ UNESCO Sites</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h6 class="fw-semibold mb-3">Contact</h6>
+                    <p class="text-white-50 mb-1"><i class="bi bi-envelope me-2"></i>info@royalnepal.com</p>
+                    <p class="text-white-50"><i class="bi bi-telephone me-2"></i>+977-1-4123456</p>
+                </div>
+            </div>
+            <hr class="opacity-25">
+            <p class="text-center text-white-50 mb-0">&copy; 2024 Royal Nepal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/explore.js"></script>
+</body>
+</html>
