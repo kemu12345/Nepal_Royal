@@ -17,35 +17,35 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="#dashboard" class="nav-item active">
+                <a href="#" class="nav-item active" data-section="dashboard">
                     <span class="icon">📊</span>
                     <span>Dashboard</span>
                 </a>
-                <a href="#users" class="nav-item">
+                <a href="#" class="nav-item" data-section="users">
                     <span class="icon">👥</span>
                     <span>Users</span>
                 </a>
-                <a href="#flights" class="nav-item">
+                <a href="#" class="nav-item" data-section="flights">
                     <span class="icon">✈️</span>
                     <span>Flights</span>
                 </a>
-                <a href="#buses" class="nav-item">
+                <a href="#" class="nav-item" data-section="buses">
                     <span class="icon">🚌</span>
                     <span>Buses</span>
                 </a>
-                <a href="#hotels" class="nav-item">
+                <a href="#" class="nav-item" data-section="hotels">
                     <span class="icon">🏨</span>
                     <span>Hotels</span>
                 </a>
-                <a href="#packages" class="nav-item">
+                <a href="#" class="nav-item" data-section="packages">
                     <span class="icon">📦</span>
                     <span>Packages</span>
                 </a>
-                <a href="#places" class="nav-item">
+                <a href="#" class="nav-item" data-section="places">
                     <span class="icon">🏔️</span>
                     <span>Places</span>
                 </a>
-                <a href="#bookings" class="nav-item">
+                <a href="#" class="nav-item" data-section="bookings">
                     <span class="icon">📋</span>
                     <span>Bookings</span>
                 </a>
@@ -60,7 +60,8 @@
         <main class="main-content">
             <!-- Top Bar -->
             <header class="top-bar">
-                <h1>Dashboard Overview</h1>
+                <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+                <h1 id="pageTitle">Dashboard Overview</h1>
                 <div class="user-info">
                     <span id="userName">Admin User</span>
                     <span class="badge" id="userRole">Admin</span>
@@ -69,145 +70,299 @@
 
             <!-- Content Area -->
             <div class="content-area">
-                <!-- Stats Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #DC143C;">👥</div>
-                        <div class="stat-info">
-                            <h3 id="totalUsers">0</h3>
-                            <p>Total Users</p>
-                        </div>
-                    </div>
 
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #003893;">📋</div>
-                        <div class="stat-info">
-                            <h3 id="totalBookings">0</h3>
-                            <p>Total Bookings</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #FFD700;">✈️</div>
-                        <div class="stat-info">
-                            <h3 id="totalFlights">0</h3>
-                            <p>Active Flights</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon" style="background: #28a745;">🏨</div>
-                        <div class="stat-info">
-                            <h3 id="totalHotels">0</h3>
-                            <p>Listed Hotels</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Inventory Management -->
-                <div class="card">
-                    <div class="inventory-card-header">
-                        <div>
-                            <h2>Inventory Management</h2>
-                            <p>Create, update, and remove travel inventory items.</p>
-                        </div>
-                        <div class="inventory-toolbar">
-                            <label for="inventoryType">Item Type</label>
-                            <select id="inventoryType" class="inventory-select">
-                                <option value="flight">Flights</option>
-                                <option value="bus">Buses</option>
-                                <option value="hotel">Hotels</option>
-                                <option value="package">Packages</option>
-                                <option value="place">Places</option>
-                            </select>
-                            <button class="btn btn-secondary" type="button" id="refreshInventoryBtn">Refresh</button>
-                        </div>
-                    </div>
-
-                    <div id="inventoryMessage" class="message-box"></div>
-
-                    <div class="inventory-layout">
-                        <div class="inventory-form-panel">
-                            <div class="panel-header">
-                                <h3 id="inventoryFormTitle">Add Flight</h3>
-                                <p id="inventoryFormSubtitle">Fill in the fields for the selected item type.</p>
+                <!-- DASHBOARD SECTION -->
+                <div id="section-dashboard" class="section active">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #DC143C;">👥</div>
+                            <div class="stat-info">
+                                <h3 id="totalUsers">0</h3>
+                                <p>Total Users</p>
                             </div>
-
-                            <form id="inventoryForm" class="inventory-form">
-                                <input type="hidden" id="inventoryId">
-                                <div id="inventoryFormFields"></div>
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-primary" id="saveInventoryBtn">Save Item</button>
-                                    <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancel Edit</button>
-                                </div>
-                            </form>
                         </div>
 
-                        <div class="inventory-table-panel">
-                            <div class="panel-header">
-                                <h3>Current Items</h3>
-                                <p>Use the action buttons to edit or delete an item.</p>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #003893;">📋</div>
+                            <div class="stat-info">
+                                <h3 id="totalBookings">0</h3>
+                                <p>Total Bookings</p>
                             </div>
+                        </div>
 
-                            <div class="table-responsive">
-                                <table class="data-table inventory-table">
-                                    <thead id="inventoryTableHead"></thead>
-                                    <tbody id="inventoryTableBody">
-                                        <tr>
-                                            <td colspan="6" class="text-center">Select an item type to load records.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #FFD700;">✈️</div>
+                            <div class="stat-info">
+                                <h3 id="totalFlights">0</h3>
+                                <p>Active Flights</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #28a745;">🏨</div>
+                            <div class="stat-info">
+                                <h3 id="totalHotels">0</h3>
+                                <p>Listed Hotels</p>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Quick Actions -->
-                <div class="card">
-                    <h2>Quick Actions</h2>
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" type="button" data-inventory-type="flight">Add Flight</button>
-                        <button class="btn btn-primary" type="button" data-inventory-type="bus">Add Bus</button>
-                        <button class="btn btn-primary" type="button" data-inventory-type="hotel">Add Hotel</button>
-                        <button class="btn btn-primary" type="button" data-inventory-type="package">Create Package</button>
-                        <button class="btn btn-secondary" type="button" data-inventory-type="place">Add Place</button>
-                        <button class="btn btn-secondary">View Reports</button>
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <h2>Quick Actions</h2>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" type="button" data-action="add-flight">Add Flight</button>
+                            <button class="btn btn-primary" type="button" data-action="add-bus">Add Bus</button>
+                            <button class="btn btn-primary" type="button" data-action="add-hotel">Add Hotel</button>
+                            <button class="btn btn-primary" type="button" data-action="add-package">Create Package</button>
+                            <button class="btn btn-secondary" type="button" data-action="add-place">Add Place</button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Bookings -->
+                    <div class="card">
+                        <h2>Recent Bookings</h2>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Customer</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentBookings">
+                                    <tr>
+                                        <td colspan="6" class="text-center">No bookings yet</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- System Info -->
+                    <div class="card">
+                        <h2>System Information</h2>
+                        <div class="system-info">
+                            <p><strong>Platform:</strong> Royal Nepal Travel & Tourism</p>
+                            <p><strong>Focus:</strong> Nepal-centric travel services</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Recent Bookings -->
-                <div class="card">
-                    <h2>Recent Bookings</h2>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Booking ID</th>
-                                    <th>Customer</th>
-                                    <th>Type</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentBookings">
-                                <tr>
-                                    <td colspan="6" class="text-center">No bookings yet</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- USERS SECTION -->
+                <div id="section-users" class="section">
+                    <div class="card">
+                        <h2>All Users</h2>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center">No users found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                <!-- System Info -->
-                <div class="card">
-                    <h2>System Information</h2>
-                    <div class="system-info">
-                        <p><strong>Platform:</strong> Royal Nepal Travel & Tourism</p>
-                        <p><strong>Focus:</strong> Nepal-centric travel services</p>
+                <!-- FLIGHTS SECTION -->
+                <div id="section-flights" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Flight Listings</h2>
+                            <button class="btn btn-primary" onclick="alert('Add flight form coming soon')">Add Flight</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Flight ID</th>
+                                        <th>Airline</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Departure</th>
+                                        <th>Price</th>
+                                        <th>Available Seats</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="flightsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No flights found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+
+                <!-- BUSES SECTION -->
+                <div id="section-buses" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Bus Listings</h2>
+                            <button class="btn btn-primary" onclick="alert('Add bus form coming soon')">Add Bus</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Bus ID</th>
+                                        <th>Provider</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Departure</th>
+                                        <th>Price</th>
+                                        <th>Available Seats</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="busesTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No buses found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOTELS SECTION -->
+                <div id="section-hotels" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Hotel Listings</h2>
+                            <button class="btn btn-primary" onclick="alert('Add hotel form coming soon')">Add Hotel</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Hotel ID</th>
+                                        <th>Hotel Name</th>
+                                        <th>City</th>
+                                        <th>Rating</th>
+                                        <th>Price/Night</th>
+                                        <th>Available Rooms</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hotelsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No hotels found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PACKAGES SECTION -->
+                <div id="section-packages" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Travel Packages</h2>
+                            <button class="btn btn-primary" onclick="alert('Create package form coming soon')">Create Package</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Package ID</th>
+                                        <th>Package Name</th>
+                                        <th>Duration</th>
+                                        <th>Price per Person</th>
+                                        <th>Destinations</th>
+                                        <th>Available Slots</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="packagesTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No packages found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLACES SECTION -->
+                <div id="section-places" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Tourist Destinations</h2>
+                            <button class="btn btn-primary" onclick="alert('Add place form coming soon')">Add Place</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Place ID</th>
+                                        <th>Place Name</th>
+                                        <th>Region</th>
+                                        <th>Altitude (m)</th>
+                                        <th>Coordinates</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="placesTableBody">
+                                    <tr>
+                                        <td colspan="7" class="text-center">No places found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOOKINGS SECTION -->
+                <div id="section-bookings" class="section">
+                    <div class="card">
+                        <h2>All Bookings</h2>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Booking Date</th>
+                                        <th>Travel Date</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookingsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No bookings found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>

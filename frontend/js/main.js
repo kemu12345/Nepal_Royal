@@ -5,7 +5,7 @@
 */
 
 // Base URL for the backend API.
-const API_BASE_URL = '../../backend/api';
+const API_BASE_URL = '/backend/api';
 
 /**
  * Retrieves the current user's data from local storage.
@@ -65,7 +65,7 @@ function requireAuth(requiredRole = null) {
     const user = getCurrentUser();
 
     // If a role is required, check if the user has that role.
-    if (requiredRole && user.role !== requiredRole) {
+    if (requiredRole && user && user.role !== requiredRole) {
         alert('You do not have permission to access this page.');
         window.location.href = 'dashboard.html'; // Redirect to a safe page.
         return false;

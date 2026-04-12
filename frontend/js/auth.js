@@ -55,10 +55,16 @@ if (loginForm) {
         const loginBtn = document.getElementById('loginBtn');
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
+        const csrfToken = document.getElementById('csrfToken').value;
 
         // Basic client-side validation.
         if (!email || !password) {
             showMessage('Please fill in all fields', 'error');
+            return;
+        }
+
+        if (!csrfToken) {
+            showMessage('Security token missing. Please refresh the page', 'error');
             return;
         }
 
@@ -71,15 +77,20 @@ if (loginForm) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password })
+                credentials: 'include', // Send cookies with the request
+                body: JSON.stringify({
+                    email,
+                    password,
+                    csrf_token: csrfToken
+                })
             });
 
             const data = await response.json();
 
             if (data.success) {
-                // If login is successful, store user data in localStorage.
-                localStorage.setItem('user', JSON.stringify(data.data));
+                // Store user data in localStorage for dashboard verification
                 localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('user', JSON.stringify(data.data));
 
                 showMessage('Login successful! Redirecting...', 'success');
 
@@ -102,45 +113,7 @@ if (loginForm) {
             }
         } catch (error) {
             console.error('Login error:', error);
-            
-            // Fallback for demo purposes if the backend is not available.
-            // This allows for testing the frontend without a running server.
-            if (email === 'demo@royalnepal.com' && password === 'demo123') {
-                const demoUser = {
-                    user_id: 1,
-                    first_name: 'Demo',
-                    last_name: 'User',
-                    email: 'demo@royalnepal.com',
-                    role: 'user'
-                };
-                localStorage.setItem('user', JSON.stringify(demoUser));
-                localStorage.setItem('isLoggedIn', 'true');
-                showMessage('Demo login successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-                return;
-            }
-            
-            // Admin demo login.
-            if (email === 'admin@royalnepal.com' && password === 'admin123') {
-                const adminUser = {
-                    user_id: 0,
-                    first_name: 'Admin',
-                    last_name: 'User',
-                    email: 'admin@royalnepal.com',
-                    role: 'admin'
-                };
-                localStorage.setItem('user', JSON.stringify(adminUser));
-                localStorage.setItem('isLoggedIn', 'true');
-                showMessage('Admin login successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = 'admin-dashboard.html';
-                }, 1500);
-                return;
-            }
-            
-            showMessage('Invalid credentials. Try admin@royalnepal.com / admin123 or demo@royalnepal.com / demo123', 'error');
+            showMessage('An error occurred during login. Please try again.', 'error');
         } finally {
             toggleButtonLoading(loginBtn, false);
         }
@@ -161,6 +134,7 @@ if (registerForm) {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const agreeTerms = document.getElementById('agreeTerms')?.checked;
+        const csrfToken = document.getElementById('csrfToken').value;
 
         // Client-side validation for the registration form.
         if (!firstName || !lastName || !email || !password || !confirmPassword) {
@@ -183,6 +157,11 @@ if (registerForm) {
             return;
         }
 
+        if (!csrfToken) {
+            showMessage('Security token missing. Please refresh the page', 'error');
+            return;
+        }
+
         toggleButtonLoading(registerBtn, true);
 
         try {
@@ -197,7 +176,8 @@ if (registerForm) {
                     last_name: lastName,
                     email: email,
                     phone: phone || null,
-                    password: password
+                    password: password,
+                    csrf_token: csrfToken
                 })
             });
 
@@ -215,12 +195,7 @@ if (registerForm) {
             }
         } catch (error) {
             console.error('Registration error:', error);
-            
-            // Fallback for demo purposes.
-            showMessage('Registration successful! Redirecting to login...', 'success');
-            setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 2000);
+            showMessage('An error occurred during registration. Please try again.', 'error');
         } finally {
             toggleButtonLoading(registerBtn, false);
         }

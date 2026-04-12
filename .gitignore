@@ -16,3 +16,4 @@ backend/
 # not part of the core application code.
 ADVANCED_FEATURES.md
 README.md
+.DS_Store

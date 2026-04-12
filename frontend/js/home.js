@@ -4,9 +4,6 @@
     and other dynamic features like animations and particles.
 */
 
-// Base URL for the backend API.
-const API_BASE_URL = '../../backend/api';
-
 // This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize all the features for the home page.
@@ -248,7 +245,7 @@ function handleFlightSearch(e) {
     }
 
     // Redirect to the flights page with search parameters in the URL.
-    window.location.href = `pages/flights.html?from=${from}&to=${to}&date=${date}`;
+    window.location.href = `flights.html?from=${from}&to=${to}&date=${date}`;
 }
 
 /**
@@ -273,7 +270,7 @@ function handleBusSearch(e) {
     }
 
     // Redirect to the buses page with search parameters in the URL.
-    window.location.href = `pages/buses.html?from=${from}&to=${to}&date=${date}`;
+    window.location.href = `buses.html?from=${from}&to=${to}&date=${date}`;
 }
 
 /**
@@ -298,7 +295,7 @@ function handleHotelSearch(e) {
     }
 
     // Redirect to the hotels page with search parameters in the URL.
-    window.location.href = `pages/hotels.html?city=${city}&checkin=${checkin}&checkout=${checkout}`;
+    window.location.href = `hotels.html?city=${city}&checkin=${checkin}&checkout=${checkout}`;
 }
 
 /**

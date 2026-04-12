@@ -74,8 +74,8 @@ body {
 */
 .hero-section {
     min-height: 100vh;
-    background: linear-gradient(135deg, rgba(0, 56, 147, 0.85) 0%, rgba(220, 20, 60, 0.85) 100%),
-                url('https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1920') center/cover fixed;
+    background: linear-gradient(135deg, rgba(0, 56, 147, 0.5) 0%, rgba(220, 20, 60, 0.3) 100%),
+                url('https://images.pexels.com/photos/4454855/pexels-photo-4454855.jpeg') center/cover fixed;
     position: relative;
     overflow: hidden;
 }
