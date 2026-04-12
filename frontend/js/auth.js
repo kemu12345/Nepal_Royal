@@ -4,8 +4,10 @@
     It communicates with the backend API to verify credentials and create users.
 */
 
-// The base URL for the backend API endpoints.
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+// Use PHP backend server when running pages from Live Server.
+const API_BASE_URL = window.location.port === '5500'
+    ? 'http://127.0.0.1:8000/api'
+    : '/backend/api';
 
 /**
  * Displays a message to the user.
@@ -193,6 +195,7 @@ if (registerForm) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include', // Send cookies with the request
                 body: JSON.stringify({
                     first_name: firstName,
                     last_name: lastName,
