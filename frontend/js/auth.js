@@ -5,7 +5,7 @@
 */
 
 // The base URL for the backend API endpoints.
-const API_BASE_URL = '../../backend/api';
+const API_BASE_URL = 'http://127.0.0.1:8000/api';
 
 /**
  * Displays a message to the user.
@@ -43,6 +43,29 @@ function toggleButtonLoading(button, isLoading) {
         if (btnText) btnText.style.display = 'inline';
         if (btnLoader) btnLoader.style.display = 'none';
         button.disabled = false;
+    }
+}
+
+/**
+ * Fetches and sets the CSRF token.
+ */
+async function fetchAndSetCsrfToken() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/get-csrf-token.php`, {
+            credentials: 'include' // Send cookies with the request
+        });
+        const data = await response.json();
+        if (data.success) {
+            const csrfTokenInput = document.getElementById('csrfToken');
+            if (csrfTokenInput) {
+                csrfTokenInput.value = data.csrf_token;
+            }
+        } else {
+            showMessage(data.message || 'Failed to fetch security token.', 'error');
+        }
+    } catch (error) {
+        console.error('Error fetching CSRF token:', error);
+        showMessage('An error occurred while fetching the security token.', 'error');
     }
 }
 
@@ -133,10 +156,9 @@ if (registerForm) {
         const phone = document.getElementById('phone')?.value.trim() || '';
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
-        const agreeTerms = document.getElementById('agreeTerms')?.checked;
         const csrfToken = document.getElementById('csrfToken').value;
 
-        // Client-side validation for the registration form.
+        // Basic client-side validation
         if (!firstName || !lastName || !email || !password || !confirmPassword) {
             showMessage('Please fill in all required fields', 'error');
             return;
@@ -158,7 +180,7 @@ if (registerForm) {
         }
 
         if (!csrfToken) {
-            showMessage('Security token missing. Please refresh the page', 'error');
+            showMessage('Security token missing. Please refresh the page.', 'error');
             return;
         }
 
@@ -293,4 +315,8 @@ function setupForgotPassword() {
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthStatus();
     setupForgotPassword();
+
+    if (document.getElementById('loginForm') || document.getElementById('registerForm')) {
+        fetchAndSetCsrfToken();
+    }
 });
