@@ -11,7 +11,7 @@ const API_BASE_URL = (() => {
     // Live Server or local file preview should call the PHP dev server directly.
     if (protocol === 'file:' || port === '5500') {
         // Keep the same host family (localhost vs 127.0.0.1) to preserve session cookies.
-        return `http://${hostname || 'localhost'}:8000/api`;
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
 
     // When frontend and backend are served from the same host.
