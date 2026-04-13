@@ -3,9 +3,6 @@
 # when committing code. This helps keep the repository clean from
 # unnecessary or sensitive files.
 
-# Ignore files and directories specific to the backend.
-# This includes vendor dependencies managed by Composer and log files.
-backend/
 
 # Ignore IDE-specific settings files.
 # This ensures that personal editor configurations are not shared

@@ -4,19 +4,12 @@
  * Endpoint: POST /backend/api/login.php
  */
 
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
 include_once '../config/config.php';
+
+header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/database.php';
 include_once '../classes/User.php';
+include_once '../middleware/CSRFToken.php';
 
 // Start session
 if (session_status() === PHP_SESSION_NONE) {
@@ -32,6 +25,16 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Get posted data
 $data = json_decode(file_get_contents("php://input"));
+
+// Validate CSRF token
+if (!isset($data->csrf_token) || !CSRFToken::validate($data->csrf_token)) {
+    http_response_code(403);
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid CSRF token"
+    ]);
+    exit();
+}
 
 // Validate required fields
 if(empty($data->email) || empty($data->password)) {

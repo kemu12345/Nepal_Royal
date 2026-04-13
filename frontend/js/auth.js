@@ -65,18 +65,26 @@ async function fetchAndSetCsrfToken() {
         const response = await fetch(`${API_BASE_URL}/get-csrf-token.php`, {
             credentials: 'include' // Send cookies with the request
         });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch CSRF token (${response.status})`);
+        }
+
         const data = await response.json();
         if (data.success) {
             const csrfTokenInput = document.getElementById('csrfToken');
             if (csrfTokenInput) {
                 csrfTokenInput.value = data.csrf_token;
             }
+            return data.csrf_token;
         } else {
             showMessage(data.message || 'Failed to fetch security token.', 'error');
+            return '';
         }
     } catch (error) {
         console.error('Error fetching CSRF token:', error);
         showMessage('An error occurred while fetching the security token.', 'error');
+        return '';
     }
 }
 
@@ -89,7 +97,8 @@ if (loginForm) {
         const loginBtn = document.getElementById('loginBtn');
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
-        const csrfToken = document.getElementById('csrfToken').value;
+        const csrfTokenInput = document.getElementById('csrfToken');
+        let csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
 
         // Basic client-side validation.
         if (!email || !password) {
@@ -98,7 +107,11 @@ if (loginForm) {
         }
 
         if (!csrfToken) {
-            showMessage('Security token missing. Please refresh the page', 'error');
+            csrfToken = await fetchAndSetCsrfToken();
+        }
+
+        if (!csrfToken) {
+            showMessage('Security token missing. Please refresh the page.', 'error');
             return;
         }
 
@@ -168,7 +181,8 @@ if (registerForm) {
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
         const agreeTerms = document.getElementById('agreeTerms')?.checked;
-        const csrfToken = document.getElementById('csrfToken').value;
+        const csrfTokenInput = document.getElementById('csrfToken');
+        let csrfToken = csrfTokenInput ? csrfTokenInput.value : '';
 
         // Basic client-side validation
         if (!firstName || !lastName || !email || !password || !confirmPassword) {
@@ -189,6 +203,10 @@ if (registerForm) {
         if (password !== confirmPassword) {
             showMessage('Passwords do not match', 'error');
             return;
+        }
+
+        if (!csrfToken) {
+            csrfToken = await fetchAndSetCsrfToken();
         }
 
         if (!csrfToken) {

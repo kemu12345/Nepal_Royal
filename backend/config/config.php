@@ -17,9 +17,21 @@ date_default_timezone_set('Asia/Kathmandu');
 ini_set('session.cookie_httponly', 1);
 ini_set('session.use_only_cookies', 1);
 ini_set('session.cookie_secure', 0); // Set to 1 in production with HTTPS
+ini_set('session.cookie_samesite', 'Lax');
 
-// CORS headers for API (adjust origin in production)
-header("Access-Control-Allow-Origin: *");
+// CORS headers for API (allow trusted local origins in development)
+$allowed_origins = [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'null' // file:// pages send Origin: null
+];
+
+$request_origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($request_origin, $allowed_origins, true)) {
+    header('Access-Control-Allow-Origin: ' . $request_origin);
+}
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Credentials: true");
