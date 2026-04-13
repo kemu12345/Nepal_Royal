@@ -1,197 +1,120 @@
-# Royal Nepal - Fully Advanced Platform Status
+# Royal Nepal - Advanced Features Status (Updated: 2026-04-13)
 
-## ✅ COMPLETED ADVANCED FEATURES
+## Overview
 
-### 🎯 Core Architecture (100% Complete)
+This document reflects the current implemented state of the Royal Nepal platform based on the code in this repository.
 
-#### Backend Classes (6 Classes)
-- ✅ **User.php** - Complete authentication, registration, profile management
-- ✅ **Flight.php** - Flight search, filtering, seat management, CRUD
-- ✅ **Bus.php** - Bus search, filtering, seat management
-- ✅ **Hotel.php** - Hotel search, room management, availability
-- ✅ **Package.php** - Tour package management, featured packages, itinerary
-- ✅ **Place.php** - Places directory, UNESCO sites, categories
-- ✅ **Location.php** - Nepal locations, airports, popular destinations
+## Current Build Snapshot
 
-#### API Endpoints (9 Endpoints)
-- ✅ **POST /api/register.php** - User registration with validation
-- ✅ **POST /api/login.php** - User authentication with sessions
-- ✅ **POST /api/logout.php** - Secure logout
-- ✅ **GET /api/get_flights.php** - Flight search with advanced filters
-- ✅ **GET /api/get_buses.php** - Bus search with filters
-- ✅ **GET /api/get_hotels.php** - Hotel search with rooms
-- ✅ **GET /api/get_packages.php** - Package listing with filters
-- ✅ **GET /api/get_places.php** - Places directory
-- ✅ **GET /api/get_locations.php** - Locations API
+| Area | Implemented |
+|------|-------------|
+| Backend API endpoints | 14 |
+| Backend domain classes | 7 |
+| Frontend pages | 10 |
+| Frontend JavaScript modules | 9 |
+| Frontend CSS stylesheets | 4 |
+| Database tables | 20 |
 
-#### Database (Complete)
-- ✅ **20 normalized tables** with foreign keys and constraints
-- ✅ **Seed data** for 21+ Nepal locations
-- ✅ **Sample flights, buses, hotels, packages**
-- ✅ **Proper indexing** for performance
-- ✅ **UTF-8 support** for Nepali characters
+## Implemented Backend Features
 
-### 🎨 Frontend Pages (7 Pages)
+### Domain Modules (OOP PHP)
 
-#### Authentication
-- ✅ **login.html** - Beautiful Nepal-themed login
-- ✅ **register.html** - User registration with validation
-- ✅ **dashboard.html** - User dashboard
-- ✅ **admin-dashboard.html** - Admin panel with stats
+- User management: `User.php`
+- Flights: `Flight.php`
+- Buses: `Bus.php`
+- Hotels: `Hotel.php`
+- Tour packages: `Package.php`
+- Places directory: `Place.php`
+- Nepal location catalog: `Location.php`
 
-#### Public Pages
-- ✅ **home.html** - Homepage with hero and search portal
-- Dynamic search tabs (Flights, Buses, Hotels, Packages)
-- Location-based search dropdowns
-- Featured destinations showcase
+### API Surface (14 Endpoints)
 
-### 💅 Styling (4 CSS Files)
-- ✅ **main.css** - Global Nepal theme (red, blue, gold)
-- ✅ **auth.css** - Authentication pages
-- ✅ **dashboard.css** - Dashboard layouts
-- ✅ **home.css** - Homepage and search portal
+- Authentication and session
+- `POST /api/register.php`
+- `POST /api/login.php`
+- `POST /api/logout.php`
+- `GET /api/get-csrf-token.php`
+- Discovery and listing
+- `GET /api/get_flights.php`
+- `GET /api/get_buses.php`
+- `GET /api/get_hotels.php`
+- `GET /api/get_packages.php`
+- `GET /api/get_places.php`
+- `GET /api/get_locations.php`
+- Booking and account
+- `POST /api/create_booking.php`
+- `GET /api/get_user_bookings.php`
+- Admin inventory
+- `GET /api/get_inventory.php`
+- `POST|PUT|DELETE /api/manage_inventory.php`
 
-### ⚡ JavaScript (4 Files)
-- ✅ **main.js** - Common utilities, API requests, auth checks
-- ✅ **auth.js** - Login/register functionality
-- ✅ **admin.js** - Admin dashboard logic
-- ✅ **home.js** - Search portal and navigation
+### Booking Engine
 
-## 🔧 Advanced Features Implemented
+- Transactional booking creation for 4 booking types: flight, bus, hotel, package.
+- Auto-calculates totals per item type and quantity.
+- Generates booking references (`RN` prefix).
+- Writes to master `bookings` plus type-specific booking detail tables.
+- Automatically decrements available seats/rooms where applicable.
 
-### Security
-- ✅ **BCrypt password hashing**
-- ✅ **PDO prepared statements** (SQL injection prevention)
-- ✅ **Input sanitization** (XSS protection)
-- ✅ **Session management**
-- ✅ **CORS headers configured**
+### Admin Inventory Management
 
-### Search & Filter
-- ✅ **Advanced flight search** - By origin, destination, date, airline, price
-- ✅ **Advanced bus search** - By route, date, type, operator, price
-- ✅ **Advanced hotel search** - By location, dates, rating, type, price
-- ✅ **Package filters** - By type, difficulty, duration, price
-- ✅ **Places categories** - Cultural, historical, religious, natural, etc.
+- Central inventory query endpoint with type scoping (`all`, `flight`, `bus`, `hotel`, `package`, `place`).
+- CRUD management endpoint for flights, buses, hotels, packages, and places.
+- Support payloads for admin forms (airlines, operators, locations).
 
-### Data Management
-- ✅ **Seat availability tracking**
-- ✅ **Room availability tracking**
-- ✅ **Dynamic pricing** (NPR/USD support)
-- ✅ **Operating days validation**
-- ✅ **Date range validation**
+## Implemented Frontend Features
 
-### User Experience
-- ✅ **Role-based access** (user, vendor, admin)
-- ✅ **Responsive design**
-- ✅ **Loading states**
-- ✅ **Form validation**
-- ✅ **Error handling**
-- ✅ **Auto-redirects**
+### Pages (10)
 
-## 📊 Platform Statistics
+- Public: `home.html`, `explore.html`, `flights.html`, `buses.html`, `hotels.html`, `packages.html`
+- Auth and user: `login.html`, `register.html`, `dashboard.html`
+- Admin: `admin-dashboard.html`
 
-| Metric | Count |
-|--------|-------|
-| **Total Files Created** | 40+ |
-| **Backend Classes** | 7 |
-| **API Endpoints** | 9 |
-| **Database Tables** | 20 |
-| **Frontend Pages** | 7 |
-| **CSS Files** | 4 |
-| **JavaScript Files** | 4 |
-| **Lines of Code** | 5000+ |
+### JavaScript Modules (9)
 
-## 🌟 What Makes It "Fully Advanced"
+- Core and auth: `main.js`, `auth.js`
+- Feature pages: `home.js`, `explore.js`, `flights.js`, `buses.js`, `hotels.js`, `packages.js`
+- Admin: `admin.js`
 
-### 1. **Production-Ready Architecture**
-- Strict separation: `/frontend` (HTML/CSS/JS) ↔ `/backend` (PHP APIs)
-- RESTful API design
-- Object-Oriented PHP with PDO
-- Normalized database (3NF)
+### UX Behaviors
 
-### 2. **Nepal-Centric Design**
-- All locations within Nepal only
-- NPR currency primary
-- Nepal flag color scheme
-- Cultural sensitivity
+- Form-level validation for auth workflows.
+- Loading and error/success messaging patterns.
+- Role-based redirects after login.
+- Dynamic API base URL handling for local development (`localhost`/`127.0.0.1` consistency).
 
-### 3. **Scalable Structure**
-- Modular class design
-- Reusable components
-- Easy to extend
-- Clear documentation
+## Security Features in Place
 
-### 4. **Security Best Practices**
-- Password hashing
-- SQL injection prevention
-- XSS protection
-- Session security
-- Input validation
+- Password hashing using bcrypt.
+- Prepared statements with PDO for SQL injection resistance.
+- Input sanitization for request data.
+- Session-based authentication checks on protected endpoints.
+- CSRF token flow with signed, expiring token format and session-token compatibility fallback.
+- Admin-only authorization guard for inventory management endpoints.
 
-### 5. **Advanced Search Capabilities**
-- Multi-criteria filtering
-- Dynamic dropdowns
-- Date validation
-- Price ranges
-- Availability checks
+## Database and Data Model
 
-### 6. **Professional UX**
-- Nepalese theme
-- Responsive design
-- Loading states
-- Error messages
-- Success feedback
+- 20-table schema with normalized relationships.
+- Dedicated booking detail tables per booking type.
+- Foreign-key constraints and indexed query paths.
+- Nepal-centric seeded data for locations, routes, and tourism inventory.
+- Currency columns support NPR and USD where applicable.
 
-## 🚀 Ready to Use
+## Advanced Capability Highlights
 
-The platform is fully functional with:
-- ✅ User registration and login
-- ✅ Search functionality for flights, buses, hotels
-- ✅ Browse packages and places
-- ✅ Admin dashboard
-- ✅ Role-based access control
+- Unified multi-service booking backend (flight/bus/hotel/package).
+- Inventory operations exposed through role-protected API.
+- Search/listing APIs split by domain for modular frontend pages.
+- Nepal-focused data model including domestic routes, attractions, and package categories.
 
-## 📁 File Structure
+## Current Gaps / Next Priority Enhancements
 
-```
-Royal Nepal/
-├── backend/
-│   ├── api/ (9 endpoints)
-│   ├── classes/ (7 classes)
-│   ├── config/ (database + app config)
-│   └── database/ (schema + seed data)
-├── frontend/
-│   ├── pages/ (7 HTML pages)
-│   ├── css/ (4 stylesheets)
-│   ├── js/ (4 JavaScript files)
-│   └── assets/
-└── README.md (comprehensive docs)
-```
+- Payment integration (eSewa/Khalti) and payment status callbacks.
+- Booking cancellation/refund workflow and seat/room restoration logic.
+- Email/SMS confirmations and notification delivery.
+- Automated tests (API and frontend smoke tests).
+- Production hardening: rate limiting, audit expansion, and observability.
 
-## 🎯 Next Enhancement Opportunities
+## Status Summary
 
-While the platform is fully advanced and functional, future enhancements could include:
-- Booking system API implementation
-- Payment gateway integration (eSewa/Khalti)
-- Email notifications
-- Reviews and ratings system
-- Wishlist functionality
-- Image upload capability
-- Advanced admin CRUD pages
-- Analytics dashboard
-- Mobile app version
-
-## ✨ Conclusion
-
-**Royal Nepal is now a FULLY ADVANCED travel platform** with:
-- Complete backend infrastructure
-- Professional frontend design
-- Advanced search capabilities
-- Secure authentication
-- Nepal-focused content
-- Production-ready code
-- Comprehensive documentation
-
-The platform demonstrates enterprise-level architecture and can handle real-world travel booking scenarios for Nepal tourism!
-
-🇳🇵 **"Experience the pride of Nepalese"** 🏔️
+Royal Nepal is beyond a basic prototype and now includes an integrated booking flow, admin inventory controls, modular discovery APIs, and a security foundation suitable for further production hardening.

@@ -20,9 +20,10 @@ Royal Nepal is a full-stack web application built for Nepal-centric tourism, fea
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **HTML5** - Semantic markup
-- **CSS3** - Nepalese-themed design (red, blue, gold color palette)
-- **Vanilla JavaScript** - No frameworks, pure JS with `fetch()` API
+
+- HTML5
+- CSS3
+- Vanilla JavaScript (Fetch API)
 
 ### Backend
 - **PHP** - Object-Oriented Programming with PDO
@@ -32,39 +33,69 @@ Royal Nepal is a full-stack web application built for Nepal-centric tourism, fea
 
 ## 📁 Project Structure
 
-```
-Portfolios/
+```text
+Nepal_Royal/
 ├── backend/
-│   ├── api/                    # REST API endpoints
-│   │   ├── login.php          # User login
-│   │   ├── register.php       # User registration
-│   │   └── logout.php         # User logout
-│   ├── classes/               # PHP classes
-│   │   └── User.php          # User authentication & management
-│   ├── config/                # Configuration files
-│   │   ├── database.php      # PDO database connection
-│   │   └── config.php        # App settings & constants
-│   └── database/              # Database schema & seed data
-│       ├── schema.sql        # Complete DB structure (20 tables)
-│       ├── seed_data.sql     # Nepal-specific sample data
-│       └── README.md         # Database documentation
+│   ├── api/                            # REST API endpoints
+│   │   ├── register.php               # User registration
+│   │   ├── login.php                  # User login
+│   │   ├── logout.php                 # User logout
+│   │   ├── get-csrf-token.php         # CSRF token generator
+│   │   ├── get_flights.php            # Flight search/listing
+│   │   ├── get_buses.php              # Bus search/listing
+│   │   ├── get_hotels.php             # Hotel search/listing
+│   │   ├── get_packages.php           # Tour packages listing
+│   │   ├── get_places.php             # Places directory
+│   │   ├── get_locations.php          # Nepal locations
+│   │   ├── create_booking.php         # Booking creation
+│   │   ├── get_user_bookings.php      # User booking history
+│   │   ├── get_inventory.php          # Admin inventory fetch
+│   │   └── manage_inventory.php       # Admin inventory CRUD
+│   ├── classes/                        # PHP domain classes
+│   │   ├── User.php
+│   │   ├── Flight.php
+│   │   ├── Bus.php
+│   │   ├── Hotel.php
+│   │   ├── Package.php
+│   │   ├── Place.php
+│   │   └── Location.php
+│   ├── config/                         # Configuration files
+│   │   ├── database.php                # PDO database connection
+│   │   └── config.php                  # App settings & constants
+│   ├── database/                       # Database schema & seed data
+│   │   ├── schema.sql                  # Complete DB structure (20 tables)
+│   │   ├── seed_data.sql               # Nepal-specific sample data
+│   │   └── README.md                   # Database documentation
+│   └── middleware/
+│       └── CSRFToken.php               # CSRF validation middleware
 │
 └── frontend/
-    ├── pages/                 # HTML pages
-    │   ├── login.html        # User login page
-    │   ├── register.html     # User registration page
-    │   ├── dashboard.html    # User dashboard
-    │   └── admin-dashboard.html  # Admin panel
-    ├── css/                   # Stylesheets
-    │   ├── main.css          # Global styles & Nepalese theme
-    │   ├── auth.css          # Authentication pages styles
-    │   └── dashboard.css     # Dashboard layouts
-    ├── js/                    # JavaScript files
-    │   ├── main.js           # Common utilities & functions
-    │   ├── auth.js           # Authentication logic
-    │   └── admin.js          # Admin panel functionality
-    └── assets/               # Static assets
-        └── images/           # Images and media
+		├── pages/                          # HTML pages
+		│   ├── home.html
+		│   ├── explore.html
+		│   ├── flights.html
+		│   ├── buses.html
+		│   ├── hotels.html
+		│   ├── packages.html
+		│   ├── login.html
+		│   ├── register.html
+		│   ├── dashboard.html
+		│   └── admin-dashboard.html
+		├── css/                            # Stylesheets
+		│   ├── main.css
+		│   ├── auth.css
+		│   ├── dashboard.css
+		│   └── home.css
+		├── js/                             # JavaScript files
+		│   ├── main.js
+		│   ├── auth.js
+		│   ├── home.js
+		│   ├── explore.js
+		│   ├── flights.js
+		│   ├── buses.js
+		│   ├── hotels.js
+		│   ├── packages.js
+		│   └── admin.js
 ```
 
 ---
@@ -100,14 +131,13 @@ Portfolios/
 ### Prerequisites
 - PHP 7.4+ with PDO extension
 - MySQL 5.7+ or MariaDB
-- Web server (Apache/Nginx)
+- Web server (Apache/Nginx) or PHP built-in server
 - Modern browser
 
 ### Step 1: Clone Repository
 ```bash
-cd /path/to/webserver/root
-git clone https://github.com/hazratansari004/Portfolios.git
-cd Portfolios
+git clone https://github.com/kemu12345/Nepal_Royal.git
+cd Nepal_Royal
 ```
 
 ### Step 2: Database Setup
@@ -143,30 +173,23 @@ chmod 777 backend/logs
 ```
 
 ### Step 6: Access Application
-- **Frontend**: `http://localhost/Portfolios/frontend/pages/`
-- **Login Page**: `http://localhost/Portfolios/frontend/pages/login.html`
-- **Admin Panel**: `http://localhost/Portfolios/frontend/pages/admin-dashboard.html`
+
+If using PHP built-in server from project root:
+```bash
+php -S localhost:8000
+```
+
+- **Frontend**: `http://localhost:8000/frontend/pages/home.html`
+- **Login Page**: `http://localhost:8000/frontend/pages/login.html`
+- **Admin Panel**: `http://localhost:8000/frontend/pages/admin-dashboard.html`
 
 ---
 
 ## 👤 Demo Accounts
 
-### Admin Account
-- **Email**: `admin@royalnepal.com`
-- **Password**: `admin123`
-- **Role**: Admin
+- Admin: admin@royalnepal.com / admin123
+- User: user@example.com / admin123
 
-### Vendor Account
-- **Email**: `vendor@example.com`
-- **Password**: `admin123`
-- **Role**: Vendor
-
-### User Account
-- **Email**: `user@example.com`
-- **Password**: `admin123`
-- **Role**: User
-
-⚠️ **Important**: Change all default passwords before production deployment!
 
 ---
 
@@ -178,40 +201,67 @@ chmod 777 backend/logs
 | `/backend/api/register.php` | POST | User registration |
 | `/backend/api/login.php` | POST | User login |
 | `/backend/api/logout.php` | POST | User logout |
+| `/backend/api/get-csrf-token.php` | GET | Generate CSRF token |
+
+### Listings & Discovery
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/backend/api/get_flights.php` | GET | Flight search/listing |
+| `/backend/api/get_buses.php` | GET | Bus search/listing |
+| `/backend/api/get_hotels.php` | GET | Hotel search/listing |
+| `/backend/api/get_packages.php` | GET | Packages listing |
+| `/backend/api/get_places.php` | GET | Places directory |
+| `/backend/api/get_locations.php` | GET | Nepal locations |
+
+### Bookings
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/backend/api/create_booking.php` | POST | Create new booking |
+| `/backend/api/get_user_bookings.php` | GET | Get user booking history |
+
+### Admin Inventory
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/backend/api/get_inventory.php` | GET | Get inventory data |
+| `/backend/api/manage_inventory.php` | POST | Create inventory item |
+| `/backend/api/manage_inventory.php` | PUT | Update inventory item |
+| `/backend/api/manage_inventory.php` | DELETE | Delete inventory item |
 
 ### Request/Response Format
 
 **Register Request:**
 ```json
 {
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john@example.com",
-  "phone": "+977-9800000000",
-  "password": "password123"
+	"first_name": "John",
+	"last_name": "Doe",
+	"email": "john@example.com",
+	"phone": "+977-9800000000",
+	"password": "password123",
+	"csrf_token": "..."
 }
 ```
 
 **Login Request:**
 ```json
 {
-  "email": "john@example.com",
-  "password": "password123"
+	"email": "john@example.com",
+	"password": "password123",
+	"csrf_token": "..."
 }
 ```
 
 **Success Response:**
 ```json
 {
-  "success": true,
-  "message": "Login successful",
-  "data": {
-    "user_id": 1,
-    "email": "john@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
-    "role": "user"
-  }
+	"success": true,
+	"message": "Login successful",
+	"data": {
+		"user_id": 1,
+		"email": "john@example.com",
+		"first_name": "John",
+		"last_name": "Doe",
+		"role": "user"
+	}
 }
 ```
 
@@ -253,7 +303,7 @@ chmod 777 backend/logs
 - **Password Hashing**: PHP `password_hash()` with `PASSWORD_BCRYPT`
 - **SQL Injection Prevention**: PDO prepared statements
 - **XSS Protection**: Input sanitization with `htmlspecialchars()`
-- **CSRF Protection**: Session-based validation
+- **CSRF Protection**: Signed + expiring CSRF tokens (with session compatibility)
 - **Input Validation**: Server-side and client-side
 - **Session Security**: HTTP-only cookies, secure flags
 
@@ -261,34 +311,12 @@ chmod 777 backend/logs
 
 ## 📝 Next Development Steps
 
-### Phase 2: Search & Booking
-- [ ] Flight search API endpoint
-- [ ] Bus search API endpoint
-- [ ] Hotel search API endpoint
-- [ ] Package listing API
-- [ ] Places directory API
-- [ ] Frontend search pages
-
-### Phase 3: Booking System
-- [ ] Create booking API
-- [ ] Payment integration (eSewa, Khalti for Nepal)
-- [ ] Booking confirmation emails
-- [ ] Booking management dashboard
-
-### Phase 4: Admin Features
-- [ ] CRUD operations for flights, buses, hotels
-- [ ] Package management
-- [ ] User management
-- [ ] Booking management
-- [ ] Analytics and reports
-
-### Phase 5: Enhancement
-- [ ] Reviews and ratings system
-- [ ] Wishlist functionality
-- [ ] Notifications system
-- [ ] Image upload for users/vendors
-- [ ] Email verification
-- [ ] Password reset
+### Upcoming Priorities
+- [ ] Payment integration (for Nepal)
+- [ ] Booking cancellation/refund workflow
+- [ ] Booking confirmation emails/SMS
+- [ ] Admin analytics and reports improvements
+- [ ] Automated test coverage (API + frontend smoke tests)
 
 ---
 
@@ -313,7 +341,8 @@ This project is for educational and portfolio purposes.
 
 For issues or questions:
 - Create an issue on GitHub
-- Contact: [Your Email/Contact]
+- Contact: saileshkumar2061@gmail.com
+- Contact: kemukafle@gmail.com
 
 ---
 
