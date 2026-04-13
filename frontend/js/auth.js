@@ -4,10 +4,19 @@
     It communicates with the backend API to verify credentials and create users.
 */
 
-// Use PHP backend server when running pages from Live Server.
-const API_BASE_URL = window.location.port === '5500'
-    ? 'http://127.0.0.1:8000/api'
-    : '/backend/api';
+// Resolve backend API URL for common local development modes.
+const API_BASE_URL = (() => {
+    const { protocol, port, hostname } = window.location;
+
+    // Live Server or local file preview should call the PHP dev server directly.
+    if (protocol === 'file:' || port === '5500') {
+        // Keep the same host family (localhost vs 127.0.0.1) to preserve session cookies.
+        return `http://${hostname || 'localhost'}:8000/api`;
+    }
+
+    // When frontend and backend are served from the same host.
+    return '/backend/api';
+})();
 
 /**
  * Displays a message to the user.
@@ -158,6 +167,7 @@ if (registerForm) {
         const phone = document.getElementById('phone')?.value.trim() || '';
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
+        const agreeTerms = document.getElementById('agreeTerms')?.checked;
         const csrfToken = document.getElementById('csrfToken').value;
 
         // Basic client-side validation
@@ -166,7 +176,7 @@ if (registerForm) {
             return;
         }
 
-        if (agreeTerms !== undefined && !agreeTerms) {
+        if (!agreeTerms) {
             showMessage('Please agree to the Terms of Service', 'error');
             return;
         }
