@@ -124,9 +124,9 @@ INSERT INTO buses (operator_id, bus_number, origin_location_id, destination_loca
 
 -- Password hash for 'admin123' using PHP password_hash with PASSWORD_BCRYPT
 INSERT INTO users (email, password_hash, first_name, last_name, phone, role, is_active, email_verified) VALUES
-('admin@royalnepal.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Royal', 'Admin', '+977-1-4000000', 'admin', TRUE, TRUE),
-('vendor@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Test', 'Vendor', '+977-9800000000', 'vendor', TRUE, TRUE),
-('user@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Test', 'User', '+977-9800000001', 'user', TRUE, TRUE);
+('admin@royalnepal.com', '$2y$12$h8W6F2QCqoW7Jm8Yr18HP.63.lmYg5OgWltsQgJmNA23cfbszqgRm', 'Royal', 'Admin', '+977-1-4000000', 'admin', TRUE, TRUE),
+('vendor@example.com', '$2y$12$h8W6F2QCqoW7Jm8Yr18HP.63.lmYg5OgWltsQgJmNA23cfbszqgRm', 'Test', 'Vendor', '+977-9800000000', 'vendor', TRUE, TRUE),
+('user@example.com', '$2y$12$h8W6F2QCqoW7Jm8Yr18HP.63.lmYg5OgWltsQgJmNA23cfbszqgRm', 'Test', 'User', '+977-9800000001', 'user', TRUE, TRUE);
 
 -- =====================================================
 -- SEED DATA: SAMPLE HOTELS
