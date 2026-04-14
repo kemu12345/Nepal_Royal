@@ -341,7 +341,6 @@ This project is for educational and portfolio purposes.
 
 For issues or questions:
 - Create an issue on GitHub
-- Contact: saileshkumar2061@gmail.com
 - Contact: kemukafle@gmail.com
 
 ---
