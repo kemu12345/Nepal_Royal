@@ -203,6 +203,32 @@
         }
         .destination-card h5 { font-weight: 600; margin-bottom: 0.3rem; }
         .destination-card p { font-size: 0.8rem; opacity: 0.8; margin: 0; }
+        .destination-card .wishlist-toggle {
+            margin-top: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.7rem;
+        }
+        .destination-card .wishlist-toggle.active {
+            background: #fff;
+            color: var(--nepal-red);
+            border-color: #fff;
+        }
+
+        .wishlist-item {
+            border: 1px solid #eceff3;
+            border-radius: 12px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+        .wishlist-item-title { font-weight: 600; margin: 0; color: #1f2937; }
+        .wishlist-item-subtitle { margin: 0; color: #6b7280; font-size: 0.85rem; }
         
         /* Responsive */
         @media (max-width: 991.98px) {
@@ -257,10 +283,10 @@
         </div>
         
         <ul class="nav-menu">
-            <li><a href="#" class="active"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a></li>
-            <li><a href="#bookings"><i class="bi bi-calendar-check"></i><span>My Bookings</span></a></li>
-            <li><a href="#wishlist"><i class="bi bi-heart"></i><span>Wishlist</span></a></li>
-            <li><a href="#profile"><i class="bi bi-person"></i><span>Profile</span></a></li>
+            <li><a href="#dashboardHome" class="active" data-dashboard-link="dashboardHome"><i class="bi bi-speedometer2"></i><span>Dashboard</span></a></li>
+            <li><a href="#bookingsSection" data-dashboard-link="bookingsSection"><i class="bi bi-calendar-check"></i><span>My Bookings</span></a></li>
+            <li><a href="#wishlistSection" data-dashboard-link="wishlistSection"><i class="bi bi-heart"></i><span>Wishlist</span></a></li>
+            <li><a href="#profileSection" data-dashboard-link="profileSection"><i class="bi bi-person"></i><span>Profile</span></a></li>
             <li><hr style="border-color: rgba(255,255,255,0.1);"></li>
             <li><a href="home.html"><i class="bi bi-house"></i><span>Home</span></a></li>
             <li><a href="explore.html"><i class="bi bi-compass"></i><span>Explore</span></a></li>
@@ -279,7 +305,7 @@
     <!-- Main Content -->
     <main class="main-content">
         <!-- Top Bar -->
-        <div class="top-bar">
+        <div class="top-bar" id="dashboardHome">
             <div>
                 <h1>Welcome back! 👋</h1>
                 <p class="text-muted mb-0">Here's what's happening with your travels</p>
@@ -356,7 +382,7 @@
         </div>
 
         <!-- Recent Bookings -->
-        <div class="dashboard-card">
+        <div class="dashboard-card" id="bookingsSection">
             <h3><i class="bi bi-clock-history"></i>Recent Bookings</h3>
             <div class="table-responsive">
                 <table class="table table-custom">
@@ -383,6 +409,31 @@
         </div>
 
         <!-- Discover Nepal -->
+        <div class="dashboard-card" id="wishlistSection">
+            <h3><i class="bi bi-heart"></i>Wishlist</h3>
+            <div id="wishlistList" class="d-grid gap-2">
+                <p class="text-muted mb-0">No saved places yet. Tap Save on a destination card.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card" id="profileSection">
+            <h3><i class="bi bi-person-circle"></i>My Profile</h3>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: rgba(13, 110, 253, 0.06);">
+                        <div class="small text-muted">Full Name</div>
+                        <div class="fw-semibold" id="profileName">-</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded" style="background: rgba(13, 110, 253, 0.06);">
+                        <div class="small text-muted">Email</div>
+                        <div class="fw-semibold" id="profileEmail">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="dashboard-card">
             <h3><i class="bi bi-compass"></i>Discover Nepal 🇳🇵</h3>
             <div class="row g-3">
@@ -391,6 +442,7 @@
                         <h5>🏔️</h5>
                         <h5>Everest</h5>
                         <p>Adventure</p>
+                        <button class="wishlist-toggle" data-place="Everest" data-category="Adventure" type="button">Save</button>
                     </div>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2">
@@ -398,6 +450,7 @@
                         <h5>🛕</h5>
                         <h5>Kathmandu</h5>
                         <p>Culture</p>
+                        <button class="wishlist-toggle" data-place="Kathmandu" data-category="Culture" type="button">Save</button>
                     </div>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2">
@@ -405,6 +458,7 @@
                         <h5>🏞️</h5>
                         <h5>Pokhara</h5>
                         <p>Lakes</p>
+                        <button class="wishlist-toggle" data-place="Pokhara" data-category="Lakes" type="button">Save</button>
                     </div>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2">
@@ -412,6 +466,7 @@
                         <h5>🐘</h5>
                         <h5>Chitwan</h5>
                         <p>Wildlife</p>
+                        <button class="wishlist-toggle" data-place="Chitwan" data-category="Wildlife" type="button">Save</button>
                     </div>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2">
@@ -419,6 +474,7 @@
                         <h5>🙏</h5>
                         <h5>Lumbini</h5>
                         <p>Spiritual</p>
+                        <button class="wishlist-toggle" data-place="Lumbini" data-category="Spiritual" type="button">Save</button>
                     </div>
                 </div>
                 <div class="col-6 col-md-4 col-lg-2">
@@ -426,6 +482,7 @@
                         <h5>🌄</h5>
                         <h5>Nagarkot</h5>
                         <p>Sunrise</p>
+                        <button class="wishlist-toggle" data-place="Nagarkot" data-category="Sunrise" type="button">Save</button>
                     </div>
                 </div>
             </div>
@@ -434,15 +491,193 @@
 
     <!-- Mobile Navigation -->
     <nav class="mobile-nav">
-        <a href="#" class="active"><i class="bi bi-house-fill"></i><span>Home</span></a>
-        <a href="#bookings"><i class="bi bi-calendar-check"></i><span>Bookings</span></a>
+        <a href="#dashboardHome" class="active" data-dashboard-link="dashboardHome"><i class="bi bi-house-fill"></i><span>Home</span></a>
+        <a href="#bookingsSection" data-dashboard-link="bookingsSection"><i class="bi bi-calendar-check"></i><span>Bookings</span></a>
         <a href="explore.html"><i class="bi bi-compass"></i><span>Explore</span></a>
-        <a href="#profile"><i class="bi bi-person"></i><span>Profile</span></a>
+        <a href="#profileSection" data-dashboard-link="profileSection"><i class="bi bi-person"></i><span>Profile</span></a>
     </nav>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const WISHLIST_KEY = 'royalNepalWishlist';
+        const API_BASE_URL = (() => {
+            const { protocol, port, hostname } = window.location;
+            if (protocol === 'file:' || port === '5500') {
+                return `http://${hostname || 'localhost'}:8000/backend/api`;
+            }
+            return '/backend/api';
+        })();
+
+        function readWishlist() {
+            try {
+                const parsed = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (_error) {
+                return [];
+            }
+        }
+
+        function writeWishlist(items) {
+            localStorage.setItem(WISHLIST_KEY, JSON.stringify(items));
+        }
+
+        function updateWishlistCount() {
+            const wishlistCount = document.getElementById('wishlistCount');
+            if (wishlistCount) {
+                wishlistCount.textContent = String(readWishlist().length);
+            }
+        }
+
+        function syncWishlistButtons() {
+            const names = new Set(readWishlist().map((item) => item.name));
+            document.querySelectorAll('.wishlist-toggle').forEach((button) => {
+                const place = button.dataset.place;
+                const isSaved = names.has(place);
+                button.classList.toggle('active', isSaved);
+                button.textContent = isSaved ? 'Saved' : 'Save';
+            });
+        }
+
+        function renderWishlistSection() {
+            const wishlistList = document.getElementById('wishlistList');
+            if (!wishlistList) return;
+
+            const items = readWishlist();
+            if (!items.length) {
+                wishlistList.innerHTML = '<p class="text-muted mb-0">No saved places yet. Tap Save on a destination card.</p>';
+                updateWishlistCount();
+                syncWishlistButtons();
+                return;
+            }
+
+            wishlistList.innerHTML = items.map((item) => `
+                <div class="wishlist-item">
+                    <div>
+                        <p class="wishlist-item-title">${item.name}</p>
+                        <p class="wishlist-item-subtitle">${item.category || 'Destination'}</p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-remove-wishlist="${item.name}">
+                        <i class="bi bi-trash"></i> Remove
+                    </button>
+                </div>
+            `).join('');
+
+            wishlistList.querySelectorAll('[data-remove-wishlist]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const toRemove = button.getAttribute('data-remove-wishlist');
+                    const filtered = readWishlist().filter((entry) => entry.name !== toRemove);
+                    writeWishlist(filtered);
+                    renderWishlistSection();
+                });
+            });
+
+            updateWishlistCount();
+            syncWishlistButtons();
+        }
+
+        function bindWishlistButtons() {
+            document.querySelectorAll('.wishlist-toggle').forEach((button) => {
+                button.addEventListener('click', () => {
+                    const place = button.dataset.place;
+                    const category = button.dataset.category || 'Destination';
+                    const existing = readWishlist();
+                    const alreadySaved = existing.some((item) => item.name === place);
+
+                    const updated = alreadySaved
+                        ? existing.filter((item) => item.name !== place)
+                        : [...existing, { name: place, category }];
+
+                    writeWishlist(updated);
+                    renderWishlistSection();
+                });
+            });
+        }
+
+        function formatAmount(amount, currency = 'NPR') {
+            const value = Number.parseFloat(amount || 0);
+            return `${currency} ${value.toLocaleString('en-NP', { maximumFractionDigits: 0 })}`;
+        }
+
+        function bookingDestination(booking) {
+            const d = booking.details || {};
+            if (booking.booking_type === 'flight' || booking.booking_type === 'bus') {
+                return `${d.origin || '-'} to ${d.destination || '-'}`;
+            }
+            if (booking.booking_type === 'hotel') {
+                return d.hotel_name || d.city || '-';
+            }
+            if (booking.booking_type === 'package') {
+                return d.package_name || '-';
+            }
+            return '-';
+        }
+
+        function bindDashboardNavLinks() {
+            const navLinks = document.querySelectorAll('[data-dashboard-link]');
+            navLinks.forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    const targetId = link.getAttribute('data-dashboard-link');
+                    const target = document.getElementById(targetId);
+                    if (!target) return;
+
+                    event.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    navLinks.forEach((item) => item.classList.remove('active'));
+                    document.querySelectorAll(`[data-dashboard-link="${targetId}"]`).forEach((item) => {
+                        item.classList.add('active');
+                    });
+                });
+            });
+        }
+
+        async function loadUserBookingData() {
+            const response = await fetch(`${API_BASE_URL}/get_user_bookings.php`, {
+                credentials: 'include'
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Unable to load booking history');
+            }
+
+            const bookings = data.data || [];
+            const flightCount = bookings.filter(b => b.booking_type === 'flight').length;
+            const hotelCount = bookings.filter(b => b.booking_type === 'hotel').length;
+            const packageCount = bookings.filter(b => b.booking_type === 'package').length;
+
+            document.getElementById('flightBookings').textContent = String(flightCount);
+            document.getElementById('hotelBookings').textContent = String(hotelCount);
+            document.getElementById('packageBookings').textContent = String(packageCount);
+
+            const recentBody = document.getElementById('recentBookings');
+            if (!recentBody) return;
+
+            if (!bookings.length) {
+                recentBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            No bookings yet. Start exploring Nepal!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            recentBody.innerHTML = bookings.slice(0, 8).map((b) => `
+                <tr>
+                    <td>${b.booking_reference || b.booking_id}</td>
+                    <td>${b.booking_type}</td>
+                    <td>${bookingDestination(b)}</td>
+                    <td>${new Date(b.booking_date).toLocaleDateString()}</td>
+                    <td><span class="status-badge status-${(b.booking_status || 'pending').toLowerCase()}">${b.booking_status}</span></td>
+                    <td>${formatAmount(b.total_amount, b.currency)}</td>
+                </tr>
+            `).join('');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // Check authentication
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -459,12 +694,24 @@
                 document.getElementById('userEmail').textContent = user.email || '';
                 document.querySelector('.user-avatar').innerHTML = user.first_name.charAt(0).toUpperCase();
             }
-            
-            // Demo stats
-            document.getElementById('flightBookings').textContent = Math.floor(Math.random() * 5);
-            document.getElementById('hotelBookings').textContent = Math.floor(Math.random() * 3);
-            document.getElementById('packageBookings').textContent = Math.floor(Math.random() * 2);
-            document.getElementById('wishlistCount').textContent = Math.floor(Math.random() * 10);
+
+            const profileName = document.getElementById('profileName');
+            const profileEmail = document.getElementById('profileEmail');
+            if (profileName) {
+                const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+                profileName.textContent = fullName || 'Not provided';
+            }
+            if (profileEmail) {
+                profileEmail.textContent = user.email || 'Not provided';
+            }
+
+            bindDashboardNavLinks();
+            bindWishlistButtons();
+            renderWishlistSection();
+
+            loadUserBookingData().catch((error) => {
+                console.error('Dashboard booking history error:', error);
+            });
         });
         
         function logout() {
