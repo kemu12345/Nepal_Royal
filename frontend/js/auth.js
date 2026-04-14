@@ -190,6 +190,12 @@ if (registerForm) {
             return;
         }
 
+        const namePattern = /^[\p{L}]+$/u;
+        if (!namePattern.test(firstName) || !namePattern.test(lastName)) {
+            showMessage('First name and last name must contain letters only', 'error');
+            return;
+        }
+
         if (!agreeTerms) {
             showMessage('Please agree to the Terms of Service', 'error');
             return;
