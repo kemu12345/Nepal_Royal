@@ -9,6 +9,12 @@ header("Content-Type: application/json; charset=UTF-8");
 include_once '../config/config.php';
 include_once '../config/database.php';
 include_once '../classes/User.php';
+include_once '../middleware/CSRFToken.php';
+
+// Start session for CSRF validation
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Only allow POST requests
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -19,6 +25,16 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Get posted data
 $data = json_decode(file_get_contents("php://input"));
+
+// Validate CSRF token
+if (!isset($data->csrf_token) || !CSRFToken::validate($data->csrf_token)) {
+    http_response_code(403);
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid CSRF token"
+    ]);
+    exit();
+}
 
 // Validate required fields
 if(empty($data->email) || empty($data->password) || empty($data->first_name) || empty($data->last_name)) {
