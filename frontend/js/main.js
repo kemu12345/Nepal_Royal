@@ -5,7 +5,14 @@
 */
 
 // Base URL for the backend API.
-const API_BASE_URL = '/backend/api';
+// Supports PHP dev server (port 8000), VS Code Live Server (port 5500) and direct file:// access.
+const API_BASE_URL = (() => {
+    const { protocol, port, hostname } = window.location;
+    if (protocol === 'file:' || port === '5500') {
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
+    }
+    return '/backend/api';
+})();
 
 /**
  * Retrieves the current user's data from local storage.
@@ -113,6 +120,7 @@ function formatDate(dateString) {
 async function apiRequest(endpoint, options = {}) {
     try {
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
                 ...options.headers

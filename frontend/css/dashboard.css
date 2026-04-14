@@ -704,3 +704,21 @@
         max-height: 95vh;
     }
 }
+
+/* Status and role badges used in admin tables */
+.badge-status,
+.badge-role {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.badge-status.confirmed  { background: #d4edda; color: #155724; }
+.badge-status.pending    { background: #fff3cd; color: #856404; }
+.badge-status.cancelled  { background: #f8d7da; color: #721c24; }
+
+.badge-role.admin  { background: #dc3545; color: #fff; }
+.badge-role.vendor { background: #fd7e14; color: #fff; }
+.badge-role.user   { background: #0d6efd; color: #fff; }

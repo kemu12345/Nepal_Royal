@@ -317,9 +317,9 @@
             </div>
             <div class="col-md-6 col-lg-3">
                 <div class="stat-card">
-                    <div class="stat-icon wishlist"><i class="bi bi-heart-fill"></i></div>
-                    <div class="stat-value" id="wishlistCount">0</div>
-                    <div class="stat-label">Saved Places</div>
+                    <div class="stat-icon wishlist"><i class="bi bi-bus-front"></i></div>
+                    <div class="stat-value" id="busBookings">0</div>
+                    <div class="stat-label">Bus Bookings</div>
                 </div>
             </div>
         </div>
@@ -443,30 +443,133 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Resolve API base URL for both PHP server and Live Server / file:// access
+        const DASH_API_BASE = (() => {
+            const { protocol, port, hostname } = window.location;
+            if (protocol === 'file:' || port === '5500') {
+                return `http://${hostname || 'localhost'}:8000/backend/api`;
+            }
+            return '/backend/api';
+        })();
+
         document.addEventListener('DOMContentLoaded', () => {
             // Check authentication
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const user = JSON.parse(localStorage.getItem('user') || '{}');
-            
+
             if (!isLoggedIn) {
                 window.location.href = 'login.html?redirect=dashboard.html';
                 return;
             }
-            
+
             // Update user info
             if (user.first_name) {
                 document.getElementById('userFullName').textContent = `${user.first_name} ${user.last_name || ''}`;
                 document.getElementById('userEmail').textContent = user.email || '';
                 document.querySelector('.user-avatar').innerHTML = user.first_name.charAt(0).toUpperCase();
             }
-            
-            // Demo stats
-            document.getElementById('flightBookings').textContent = Math.floor(Math.random() * 5);
-            document.getElementById('hotelBookings').textContent = Math.floor(Math.random() * 3);
-            document.getElementById('packageBookings').textContent = Math.floor(Math.random() * 2);
-            document.getElementById('wishlistCount').textContent = Math.floor(Math.random() * 10);
+
+            // Load real booking stats from the API
+            loadUserBookings();
         });
-        
+
+        async function loadUserBookings() {
+            try {
+                const response = await fetch(`${DASH_API_BASE}/get_user_bookings.php`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (!data.success) {
+                    // Not authenticated via session – show zeros
+                    return;
+                }
+
+                const bookings = data.data || [];
+
+                // Count by type
+                const counts = { flight: 0, bus: 0, hotel: 0, package: 0 };
+                bookings.forEach(b => {
+                    if (counts[b.booking_type] !== undefined) counts[b.booking_type]++;
+                });
+
+                document.getElementById('flightBookings').textContent  = counts.flight;
+                document.getElementById('hotelBookings').textContent   = counts.hotel;
+                document.getElementById('packageBookings').textContent = counts.package;
+                document.getElementById('busBookings').textContent     = counts.bus;
+
+                // Populate recent bookings table
+                const tbody = document.getElementById('recentBookings');
+                if (!tbody) return;
+
+                if (bookings.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                No bookings yet. Start exploring Nepal!
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = bookings.slice(0, 5).map(b => {
+                    const statusClass = {
+                        'confirmed': 'status-confirmed',
+                        'pending':   'status-pending',
+                        'cancelled': 'status-cancelled'
+                    }[b.booking_status] || 'status-pending';
+
+                    const destination = b.details
+                        ? (b.details.destination || b.details.package_name || b.details.hotel_name || '—')
+                        : '—';
+
+                    const travelDate = b.details
+                        ? (b.details.travel_date || b.details.start_date || b.details.check_in_date || '—')
+                        : '—';
+
+                    const amount = parseFloat(b.total_amount).toLocaleString('en-NP', {
+                        minimumFractionDigits: 2
+                    });
+
+                    return `
+                        <tr>
+                            <td>#${escapeHtml(b.booking_reference)}</td>
+                            <td>${capitalize(b.booking_type)}</td>
+                            <td>${escapeHtml(destination)}</td>
+                            <td>${travelDate !== '—' ? formatDate(travelDate) : '—'}</td>
+                            <td><span class="status-badge ${statusClass}">${capitalize(b.booking_status)}</span></td>
+                            <td>रू ${amount}</td>
+                        </tr>`;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error loading bookings:', err);
+            }
+        }
+
+        function capitalize(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function formatDate(dateString) {
+            if (!dateString || dateString === '—') return '—';
+            const d = new Date(dateString);
+            if (isNaN(d)) return dateString;
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
         function logout() {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('user');
