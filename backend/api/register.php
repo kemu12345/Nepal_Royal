@@ -50,6 +50,16 @@ if(strlen($data->password) < PASSWORD_MIN_LENGTH) {
     exit();
 }
 
+// Validate first and last names contain letters only.
+if (!preg_match('/^\p{L}+$/u', $data->first_name) || !preg_match('/^\p{L}+$/u', $data->last_name)) {
+    http_response_code(400);
+    echo json_encode([
+        "success" => false,
+        "message" => "First name and last name must contain letters only"
+    ]);
+    exit();
+}
+
 // Database connection
 $database = new Database();
 $db = $database->getConnection();
