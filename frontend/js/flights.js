@@ -4,8 +4,14 @@
     and manages the booking process through a modal.
 */
 
-// Base URL for the backend API.
-const API_BASE_URL = '../../backend/api';
+// Resolve backend API URL for common local development modes.
+const API_BASE_URL = (() => {
+    const { protocol, port, hostname } = window.location;
+    if (protocol === 'file:' || port === '5500') {
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
+    }
+    return '/backend/api';
+})();
 
 // Global variables to store flight data.
 let allFlights = [];      // Holds all flights fetched from the API.
@@ -105,7 +111,7 @@ async function searchFlights(from, to, date) {
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}/get_flights.php?origin=${from}&destination=${to}&date=${date}`
+            `${API_BASE_URL}/get_flights.php?from=${from}&to=${to}&date=${date}`
         );
         const data = await response.json();
 
@@ -370,7 +376,7 @@ function openBookingModal(flightId) {
  * Handles the booking confirmation.
  * It checks if the user is logged in before proceeding.
  */
-function confirmBooking() {
+async function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     
     if (!isLoggedIn) {
@@ -382,11 +388,35 @@ function confirmBooking() {
         return;
     }
     
-    // In a real application, this would proceed to a payment or confirmation step.
-    showToast('Booking confirmed! Check your email for details.', 'success');
-    
-    const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
-    modal.hide();
+    try {
+        const travelDate = new URLSearchParams(window.location.search).get('date') || new Date().toISOString().split('T')[0];
+        const response = await fetch(`${API_BASE_URL}/create_booking.php`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                booking_type: 'flight',
+                item_id: selectedFlight.flight_id,
+                travel_date: travelDate,
+                passengers: 1,
+                passenger_details: []
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Booking failed');
+        }
+
+        showToast('Booking confirmed! It is now visible in your dashboard history.', 'success');
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
+        modal.hide();
+    } catch (error) {
+        showToast(error.message || 'Unable to create booking', 'danger');
+    }
 }
 
 /**

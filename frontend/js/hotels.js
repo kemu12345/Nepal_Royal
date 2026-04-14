@@ -4,8 +4,14 @@
     and manages the booking process through a modal.
 */
 
-// Base URL for the backend API.
-const API_BASE_URL = '../../backend/api';
+// Resolve backend API URL for common local development modes.
+const API_BASE_URL = (() => {
+    const { protocol, port, hostname } = window.location;
+    if (protocol === 'file:' || port === '5500') {
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
+    }
+    return '/backend/api';
+})();
 
 // Global variables to store hotel data.
 let allHotels = [];      // Holds all hotels fetched from the API.
@@ -210,7 +216,7 @@ async function searchHotels(city, checkin, checkout) {
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}/get_hotels.php?location=${city}&checkin=${checkin}&checkout=${checkout}`
+            `${API_BASE_URL}/get_hotels.php?city=${city}&checkin=${checkin}&checkout=${checkout}`
         );
         const data = await response.json();
 
@@ -438,7 +444,7 @@ function openBookingModal(roomId) {
  * Handles the booking confirmation.
  * It checks if the user is logged in before proceeding.
  */
-function confirmBooking() {
+async function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     
     if (!isLoggedIn) {
@@ -452,13 +458,50 @@ function confirmBooking() {
     }
     
     const checkin = document.getElementById('modalCheckin').value;
-    if (!checkin) {
+    const checkout = document.getElementById('modalCheckout').value;
+    if (!checkin || !checkout) {
         showToast('Please select check-in date', 'warning');
         return;
     }
-    
-    bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
-    showToast(`🏨 Booking confirmed at ${selectedHotel.hotel_name}!`, 'success');
+
+    if (new Date(checkout) <= new Date(checkin)) {
+        showToast('Check-out must be after check-in', 'warning');
+        return;
+    }
+
+    try {
+        const rooms = Number.parseInt(document.getElementById('roomCount')?.value || '1', 10);
+        const guests = Number.parseInt(document.getElementById('guestCount')?.value || '1', 10);
+        const nights = Math.max(1, Math.ceil((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24)));
+
+        const response = await fetch(`${API_BASE_URL}/create_booking.php`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                booking_type: 'hotel',
+                item_id: selectedHotel.room_id,
+                check_in: checkin,
+                check_out: checkout,
+                nights,
+                rooms,
+                guests,
+                guest_details: []
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Booking failed');
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
+        showToast(`🏨 Booking confirmed at ${selectedHotel.hotel_name}!`, 'success');
+    } catch (error) {
+        showToast(error.message || 'Unable to create booking', 'warning');
+    }
 }
 
 /**
