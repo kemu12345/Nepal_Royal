@@ -4,8 +4,14 @@
     and manages the booking process through a modal.
 */
 
-// Base URL for the backend API.
-const API_BASE_URL = '../../backend/api';
+// Resolve backend API URL for common local development modes.
+const API_BASE_URL = (() => {
+    const { protocol, port, hostname } = window.location;
+    if (protocol === 'file:' || port === '5500') {
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
+    }
+    return '/backend/api';
+})();
 
 // Global variables to store bus data.
 let allBuses = [];      // Holds all buses fetched from the API.
@@ -186,7 +192,7 @@ async function searchBuses(from, to, date) {
 
     try {
         const response = await fetch(
-            `${API_BASE_URL}/get_buses.php?origin=${from}&destination=${to}&date=${date}`
+            `${API_BASE_URL}/get_buses.php?from=${from}&to=${to}&date=${date}`
         );
         const data = await response.json();
 
@@ -425,7 +431,7 @@ function openBookingModal(busId) {
  * Handles the booking confirmation.
  * It checks if the user is logged in before proceeding.
  */
-function confirmBooking() {
+async function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     
     if (!isLoggedIn) {
@@ -438,9 +444,35 @@ function confirmBooking() {
         return;
     }
     
-    // In a real application, this would proceed to a payment or confirmation step.
-    bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
-    showToast(`🚌 Booking confirmed for ${selectedBus.operator_name}!`, 'success');
+    try {
+        const seats = Number.parseInt(document.getElementById('seatCount')?.value || '1', 10);
+        const travelDate = new URLSearchParams(window.location.search).get('date') || new Date().toISOString().split('T')[0];
+
+        const response = await fetch(`${API_BASE_URL}/create_booking.php`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                booking_type: 'bus',
+                item_id: selectedBus.bus_id,
+                travel_date: travelDate,
+                passengers: seats,
+                passenger_details: []
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Booking failed');
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
+        showToast(`🚌 Booking confirmed for ${selectedBus.operator_name}!`, 'success');
+    } catch (error) {
+        showToast(error.message || 'Unable to create booking', 'warning');
+    }
 }
 
 /**

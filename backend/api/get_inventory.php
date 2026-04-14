@@ -69,6 +69,9 @@ try {
 
     $items = [];
     $summary = [];
+    $users = [];
+    $bookings = [];
+    $recentBookings = [];
 
     // Fetch data for each inventory type based on the 'type' parameter.
     if ($type === 'all' || $type === 'flight') {
@@ -96,6 +99,16 @@ try {
         $summary['places'] = count($items['places']);
     }
 
+    // Dashboard-focused datasets for admin panel overview.
+    if ($type === 'all') {
+        $users = getUsers($db);
+        $bookings = getBookings($db);
+        $recentBookings = getBookings($db, 5);
+
+        $summary['users'] = count($users);
+        $summary['bookings'] = count($bookings);
+    }
+
     // If a specific type was requested but is not valid, throw an error.
     if ($type !== 'all' && !isset($items[pluralizeType($type)])) {
         throw new Exception('Invalid inventory type specified.');
@@ -108,7 +121,10 @@ try {
         "type" => $type,
         "items" => $type === 'all' ? $items : $items[pluralizeType($type)],
         "summary" => $summary,
-        "support" => $support
+        "support" => $support,
+        "users" => $users,
+        "bookings" => $bookings,
+        "recent_bookings" => $recentBookings
     ]);
 } catch (Exception $e) {
     // If any error occurs, return a 500 server error.
@@ -154,6 +170,7 @@ function getFlights($db) {
               LEFT JOIN airlines a ON df.airline_id = a.airline_id
               LEFT JOIN locations ol ON df.origin_location_id = ol.location_id
               LEFT JOIN locations dl ON df.destination_location_id = dl.location_id
+              WHERE df.is_active = 1
               ORDER BY df.flight_id DESC";
 
     $stmt = $db->prepare($query);
@@ -176,6 +193,7 @@ function getBuses($db) {
               LEFT JOIN bus_operators bo ON b.operator_id = bo.operator_id
               LEFT JOIN locations ol ON b.origin_location_id = ol.location_id
               LEFT JOIN locations dl ON b.destination_location_id = dl.location_id
+              WHERE b.is_active = 1
               ORDER BY b.bus_id DESC";
 
     $stmt = $db->prepare($query);
@@ -194,6 +212,7 @@ function getHotels($db) {
                      l.location_name, l.province
               FROM hotels h
               LEFT JOIN locations l ON h.location_id = l.location_id
+              WHERE h.is_active = 1
               ORDER BY h.hotel_id DESC";
 
     $stmt = $db->prepare($query);
@@ -207,7 +226,7 @@ function getHotels($db) {
  * @return array An array of package records.
  */
 function getPackages($db) {
-    $query = "SELECT * FROM tour_packages ORDER BY package_id DESC";
+    $query = "SELECT * FROM tour_packages WHERE is_active = 1 ORDER BY package_id DESC";
     $stmt = $db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -225,6 +244,7 @@ function getPlaces($db) {
                      l.location_name, l.province
               FROM places p
               LEFT JOIN locations l ON p.location_id = l.location_id
+              WHERE p.is_active = 1
               ORDER BY p.place_id DESC";
 
     $stmt = $db->prepare($query);
@@ -263,6 +283,44 @@ function getOperators($db) {
  */
 function getLocations($db) {
     $query = "SELECT location_id, location_name, location_type, province FROM locations ORDER BY location_name ASC";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Fetches all users for admin management.
+ * @param PDO $db The database connection object.
+ * @return array An array of user records.
+ */
+function getUsers($db) {
+    $query = "SELECT user_id, first_name, last_name, email, phone, role, is_active, created_at
+              FROM users
+              ORDER BY user_id DESC";
+
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Fetches bookings for admin overview and management.
+ * @param PDO $db The database connection object.
+ * @param int|null $limit Optional row limit for recent bookings.
+ * @return array An array of booking records.
+ */
+function getBookings($db, $limit = null) {
+    $query = "SELECT b.booking_id, b.booking_reference, b.booking_type, b.booking_status,
+                     b.total_amount, b.currency, b.payment_status, b.booking_date,
+                     b.user_id, u.first_name, u.last_name, u.email
+              FROM bookings b
+              INNER JOIN users u ON b.user_id = u.user_id
+              ORDER BY b.booking_date DESC";
+
+    if ($limit !== null) {
+        $query .= " LIMIT " . (int) $limit;
+    }
+
     $stmt = $db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
