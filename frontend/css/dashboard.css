@@ -165,6 +165,22 @@
     box-shadow: 0 2px 8px rgba(220, 20, 60, 0.2);
 }
 
+/* Status badges used in data tables */
+.badge-status {
+    display: inline-block;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.status-pending    { background: #fff3cd; color: #856404; }
+.status-confirmed  { background: #d4edda; color: #155724; }
+.status-cancelled  { background: #f8d7da; color: #721c24; }
+.status-completed  { background: #cce5ff; color: #004085; }
+
+/* text helper */
+.text-danger { color: #dc3545; }
+
 /*
     A grid for displaying statistics, such as user counts or bookings.
     It's responsive and adjusts the number of columns based on screen size.
