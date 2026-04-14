@@ -5,7 +5,14 @@
 */
 
 // Base URL for the backend API.
-const API_BASE_URL = '/backend/api';
+// When running frontend from Live Server (e.g., :5500), target PHP backend on :8000.
+const API_BASE_URL = (() => {
+    const { protocol, port, hostname } = window.location;
+    if (protocol === 'file:' || port === '5500') {
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
+    }
+    return '/backend/api';
+})();
 
 /**
  * Retrieves the current user's data from local storage.
@@ -112,15 +119,28 @@ function formatDate(dateString) {
  */
 async function apiRequest(endpoint, options = {}) {
     try {
+        const method = options.method || 'GET';
+        const isFormData = options.body instanceof FormData;
+        const headers = {
+            ...(!isFormData ? { 'Content-Type': 'application/json' } : {}),
+            ...(options.headers || {})
+        };
+
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            },
-            ...options
+            ...options,
+            method,
+            credentials: 'include',
+            headers
         });
 
-        const data = await response.json();
+        const raw = await response.text();
+        let data;
+        try {
+            data = raw ? JSON.parse(raw) : {};
+        } catch (_parseError) {
+            const preview = raw.slice(0, 120).replace(/\s+/g, ' ').trim();
+            throw new Error(`Unexpected response from server: ${preview || 'empty response'}`);
+        }
 
         if (!response.ok) {
             throw new Error(data.message || 'API request failed');
