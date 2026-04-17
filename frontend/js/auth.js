@@ -4,19 +4,97 @@
     It communicates with the backend API to verify credentials and create users.
 */
 
-// Resolve backend API URL for common local development modes.
-const API_BASE_URL = (() => {
-    const { protocol, port, hostname } = window.location;
+const API_BASE_STORAGE_KEY = 'royalNepalApiBaseUrl';
 
-    // Live Server or local file preview should call the PHP dev server directly.
-    if (protocol === 'file:' || port === '5500') {
-        // Keep the same host family (localhost vs 127.0.0.1) to preserve session cookies.
-        return `http://${hostname || 'localhost'}:8000/backend/api`;
+/**
+ * Builds preferred API base candidates for local development and same-origin serving.
+ * @returns {string[]}
+ */
+function buildApiBaseCandidates() {
+    const { protocol, port, hostname, origin } = window.location;
+    const candidates = new Set();
+
+    try {
+        const savedBase = localStorage.getItem(API_BASE_STORAGE_KEY);
+        if (savedBase) {
+            candidates.add(savedBase);
+        }
+    } catch (error) {
+        console.warn('Unable to read saved API base URL:', error);
     }
 
-    // When frontend and backend are served from the same host.
-    return '/backend/api';
-})();
+    if (protocol === 'file:' || port === '5500') {
+        const currentHost = hostname || 'localhost';
+        candidates.add(`http://${currentHost}:8000/backend/api`);
+        candidates.add('http://127.0.0.1:8000/backend/api');
+        candidates.add('http://localhost:8000/backend/api');
+    }
+
+    candidates.add(`${origin}/backend/api`);
+    candidates.add('/backend/api');
+
+    return Array.from(candidates);
+}
+
+const API_BASE_CANDIDATES = buildApiBaseCandidates();
+let activeApiBaseUrl = API_BASE_CANDIDATES[0] || '/backend/api';
+
+/**
+ * Persists and updates the active API base URL after a successful request.
+ * @param {string} apiBaseUrl
+ */
+function rememberApiBaseUrl(apiBaseUrl) {
+    activeApiBaseUrl = apiBaseUrl;
+    try {
+        localStorage.setItem(API_BASE_STORAGE_KEY, apiBaseUrl);
+    } catch (error) {
+        console.warn('Unable to persist API base URL:', error);
+    }
+}
+
+/**
+ * Fetches an API path using fallback base URLs when network errors or non-JSON 404 pages occur.
+ * @param {string} path
+ * @param {RequestInit} options
+ * @returns {Promise<{response: Response, apiBaseUrl: string}>}
+ */
+async function apiFetch(path, options = {}) {
+    const tried = new Set();
+    const orderedBases = [activeApiBaseUrl, ...API_BASE_CANDIDATES];
+    let lastNetworkError = null;
+
+    for (const apiBaseUrl of orderedBases) {
+        if (!apiBaseUrl || tried.has(apiBaseUrl)) {
+            continue;
+        }
+        tried.add(apiBaseUrl);
+
+        try {
+            const response = await fetch(`${apiBaseUrl}${path}`, options);
+            const contentType = (response.headers.get('content-type') || '').toLowerCase();
+
+            // Skip common local 404 HTML pages and continue fallback resolution.
+            if (response.status === 404 && !contentType.includes('application/json')) {
+                continue;
+            }
+
+            rememberApiBaseUrl(apiBaseUrl);
+            return { response, apiBaseUrl };
+        } catch (error) {
+            if (error instanceof TypeError) {
+                lastNetworkError = error;
+                continue;
+            }
+            throw error;
+        }
+    }
+
+    if (lastNetworkError) {
+        throw lastNetworkError;
+    }
+
+    throw new Error('Unable to resolve a working backend API URL.');
+}
 
 /**
  * Displays a message to the user.
@@ -60,9 +138,9 @@ function toggleButtonLoading(button, isLoading) {
 /**
  * Fetches and sets the CSRF token.
  */
-async function fetchAndSetCsrfToken() {
+async function fetchAndSetCsrfToken(silent = false) {
     try {
-        const response = await fetch(`${API_BASE_URL}/get-csrf-token.php`, {
+        const { response, apiBaseUrl } = await apiFetch('/get-csrf-token.php', {
             credentials: 'include' // Send cookies with the request
         });
 
@@ -76,14 +154,24 @@ async function fetchAndSetCsrfToken() {
             if (csrfTokenInput) {
                 csrfTokenInput.value = data.csrf_token;
             }
+            rememberApiBaseUrl(apiBaseUrl);
             return data.csrf_token;
         } else {
-            showMessage(data.message || 'Failed to fetch security token.', 'error');
+            if (!silent) {
+                showMessage(data.message || 'Failed to fetch security token.', 'error');
+            }
             return '';
         }
     } catch (error) {
         console.error('Error fetching CSRF token:', error);
-        showMessage('An error occurred while fetching the security token.', 'error');
+        if (!silent) {
+            const backendUrl = `${activeApiBaseUrl}/get-csrf-token.php`;
+            if (error instanceof TypeError) {
+                showMessage(`Cannot reach backend API. Start PHP server and retry. Endpoint: ${backendUrl}`, 'error');
+            } else {
+                showMessage(`Security token request failed: ${error.message}`, 'error');
+            }
+        }
         return '';
     }
 }
@@ -118,23 +206,42 @@ if (loginForm) {
         toggleButtonLoading(loginBtn, true);
 
         try {
-            // Sends the login credentials to the backend API.
-            const response = await fetch(`${API_BASE_URL}/login.php`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', // Send cookies with the request
-                body: JSON.stringify({
-                    email,
-                    password,
-                    csrf_token: csrfToken
-                })
-            });
+            let data = null;
 
-            const data = await response.json();
+            // Retry once with a freshly fetched token when backend reports CSRF failure.
+            for (let attempt = 0; attempt < 2; attempt += 1) {
+                const { response } = await apiFetch('/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Send cookies with the request
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        csrf_token: csrfToken
+                    })
+                });
 
-            if (data.success) {
+                data = await response.json();
+
+                if (data.success) {
+                    break;
+                }
+
+                const isCsrfFailure = response.status === 403 || /csrf/i.test(data.message || '');
+                if (attempt === 0 && isCsrfFailure) {
+                    csrfToken = await fetchAndSetCsrfToken(true);
+                    if (!csrfToken) {
+                        break;
+                    }
+                    continue;
+                }
+
+                break;
+            }
+
+            if (data && data.success) {
                 // Store user data in localStorage for dashboard verification
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('user', JSON.stringify(data.data));
@@ -156,7 +263,7 @@ if (loginForm) {
                     }
                 }, 1500);
             } else {
-                showMessage(data.message || 'Login failed', 'error');
+                showMessage((data && data.message) || 'Login failed', 'error');
             }
         } catch (error) {
             console.error('Login error:', error);
@@ -224,7 +331,7 @@ if (registerForm) {
 
         try {
             // Sends the new user data to the backend API.
-            const response = await fetch(`${API_BASE_URL}/register.php`, {
+            const { response } = await apiFetch('/register.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -354,6 +461,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupForgotPassword();
 
     if (document.getElementById('loginForm') || document.getElementById('registerForm')) {
-        fetchAndSetCsrfToken();
+        fetchAndSetCsrfToken(true);
     }
 });
