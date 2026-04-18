@@ -73,8 +73,8 @@ async function apiFetch(path, options = {}) {
             const response = await fetch(`${apiBaseUrl}${path}`, options);
             const contentType = (response.headers.get('content-type') || '').toLowerCase();
 
-            // Skip common local 404 HTML pages and continue fallback resolution.
-            if (response.status === 404 && !contentType.includes('application/json')) {
+            // Skip non-JSON pages (like raw PHP files served by Live Server) so it doesn't break
+            if (!contentType.includes('application/json')) {
                 continue;
             }
 
