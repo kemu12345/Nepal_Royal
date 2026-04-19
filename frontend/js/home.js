@@ -43,6 +43,7 @@ function initBackToTop() {
     const backToTop = document.getElementById('backToTop');
     
     window.addEventListener('scroll', () => {
+        if (!backToTop) return;
         if (window.scrollY > 500) {
             backToTop.style.display = 'flex';
         } else {
@@ -60,19 +61,19 @@ function initBackToTop() {
  * If logged in, it shows a user dropdown with dashboard and logout links.
  */
 function initAuthButtons() {
-    const authButtons = document.getElementById('authButtons');
+    const navAuth = document.getElementById('navAuth');
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
-    if (authButtons && isLoggedIn) {
-        authButtons.innerHTML = `
+    if (navAuth && isLoggedIn) {
+        navAuth.innerHTML = `
             <div class="dropdown">
                 <button class="btn btn-warning btn-sm dropdown-toggle px-3" type="button" data-bs-toggle="dropdown">
                     <i class="bi bi-person-circle me-1"></i>${user.first_name || 'User'}
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="pages/dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                    <li><a class="dropdown-item" href="pages/dashboard.html?tab=bookings"><i class="bi bi-clipboard-check me-2"></i>My Bookings</a></li>
+                    <li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                    <li><a class="dropdown-item" href="dashboard.html?tab=bookings"><i class="bi bi-clipboard-check me-2"></i>My Bookings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                 </ul>

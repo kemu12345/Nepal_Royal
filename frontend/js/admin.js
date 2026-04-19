@@ -518,6 +518,11 @@ async function createFlight() {
         const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id');
         if (destinationId === null) return;
 
+        if (originId === destinationId) {
+            window.alert('Error: Origin and destination cannot be the same');
+            return;
+        }
+
         const flightNumber = promptRequired('Flight number (e.g. RN-101)');
         if (!flightNumber) return;
 
@@ -654,6 +659,11 @@ async function createBus() {
 
         const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id');
         if (destinationId === null) return;
+
+        if (originId === destinationId) {
+            window.alert('Error: Origin and destination cannot be the same');
+            return;
+        }
 
         const busNumber = promptRequired('Bus number (e.g. RN-BUS-12)');
         if (!busNumber) return;
@@ -1131,7 +1141,18 @@ function promptId(label, sourceList, idField) {
 
     const value = promptNumber(label, 1);
     if (value === null) return null;
-    return Math.trunc(value);
+    
+    const parsedId = Math.trunc(value);
+    
+    if (Array.isArray(sourceList) && sourceList.length > 0) {
+        const exists = sourceList.some(item => Number(item[idField]) === parsedId);
+        if (!exists) {
+            window.alert(`Invalid ID. Please enter a valid ID from the available list.`);
+            return null;
+        }
+    }
+    
+    return parsedId;
 }
 
 /**

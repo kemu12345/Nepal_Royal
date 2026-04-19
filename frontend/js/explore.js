@@ -5,7 +5,22 @@
 */
 
 // Base URL for the backend API.
-const API_BASE_URL = '../../backend/api';
+const API_BASE_URL = (() => {
+    const { origin, protocol, port, hostname, pathname } = window.location;
+    
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
+    }
+    
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        return `${origin}${projectBase}/backend/api`;
+    }
+    
+    return '../../backend/api';
+})();
 
 // Global variables to store place data.
 let allPlaces = [];         // Holds all places fetched from the API.
@@ -183,15 +198,15 @@ async function loadPlaces() {
     const placesEl = document.getElementById('placesContainer');
     const emptyEl = document.getElementById('emptyState');
 
-    loadingEl.style.display = 'flex';
-    placesEl.innerHTML = '';
-    emptyEl.style.display = 'none';
+    if (loadingEl) loadingEl.style.display = 'flex';
+    if (placesEl) placesEl.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'none';
 
     try {
         const response = await fetch(`${API_BASE_URL}/get_places.php`);
         const data = await response.json();
 
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
 
         if (data.success && data.data && data.data.length > 0) {
             allPlaces = data.data;
@@ -204,7 +219,7 @@ async function loadPlaces() {
         applyFilters();
     } catch (error) {
         console.error('Error loading places:', error);
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
         // Fallback to demo data on API error.
         allPlaces = getDemoPlaces();
         filteredPlaces = [...allPlaces];
@@ -279,15 +294,19 @@ function displayPlaces(places) {
     const resultsCountEl = document.getElementById('resultsCount');
     const emptyEl = document.getElementById('emptyState');
 
-    resultsCountEl.textContent = `${places.length} place${places.length !== 1 ? 's' : ''} found`;
+    if (!placesEl) return;
+
+    if (resultsCountEl) {
+        resultsCountEl.textContent = `${places.length} place${places.length !== 1 ? 's' : ''} found`;
+    }
 
     if (places.length === 0) {
         placesEl.innerHTML = '';
-        emptyEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'block';
         return;
     }
 
-    emptyEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'none';
     placesEl.innerHTML = places.map(place => createPlaceCard(place)).join('');
 }
 
@@ -379,7 +398,13 @@ function formatCategory(category) {
  * @param {string} type - The type of toast ('info', 'success', 'warning', 'danger').
  */
 function showToast(message, type = 'info') {
-    const container = document.querySelector('.toast-container');
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1100';
+        document.body.appendChild(container);
+    }
     const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : type === 'danger' ? 'bg-danger' : 'bg-info';
     
     const toastHtml = `
