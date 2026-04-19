@@ -40,6 +40,14 @@ function buildApiBaseCandidates() {
         candidates.add(`${origin}${projectBase}/backend/api`);
     }
 
+    // Support for subdirectories (like XAMPP's htdocs/Nepal_Royal/)
+    const pathParts = pathname.split('/');
+    const frontendIndex = pathParts.indexOf('frontend');
+    if (frontendIndex > 0) {
+        const basePath = pathParts.slice(0, frontendIndex).join('/');
+        candidates.add(`${origin}${basePath}/backend/api`);
+    }
+
     candidates.add(`${origin}/backend/api`);
     candidates.add('/backend/api');
 

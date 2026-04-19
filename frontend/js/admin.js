@@ -515,8 +515,13 @@ async function createFlight() {
         const originId = promptId('Enter Origin Location ID', adminState.support.locations, 'location_id');
         if (originId === null) return;
 
-        const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id');
+        const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id', 2);
         if (destinationId === null) return;
+
+        if (originId === destinationId) {
+            window.alert('Error: Origin and destination cannot be the same');
+            return;
+        }
 
         const flightNumber = promptRequired('Flight number (e.g. RN-101)');
         if (!flightNumber) return;
@@ -652,8 +657,13 @@ async function createBus() {
         const originId = promptId('Enter Origin Location ID', adminState.support.locations, 'location_id');
         if (originId === null) return;
 
-        const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id');
+        const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id', 2);
         if (destinationId === null) return;
+
+        if (originId === destinationId) {
+            window.alert('Error: Origin and destination cannot be the same');
+            return;
+        }
 
         const busNumber = promptRequired('Bus number (e.g. RN-BUS-12)');
         if (!busNumber) return;
@@ -1120,7 +1130,7 @@ function promptNumber(label, defaultValue = 0) {
     return parsed;
 }
 
-function promptId(label, sourceList, idField) {
+function promptId(label, sourceList, idField, defaultValue = 1) {
     if (Array.isArray(sourceList) && sourceList.length) {
         const preview = sourceList
             .slice(0, 10)
@@ -1129,9 +1139,20 @@ function promptId(label, sourceList, idField) {
         showMessage(`Available IDs: ${preview}`, 'info');
     }
 
-    const value = promptNumber(label, 1);
+    const value = promptNumber(label, defaultValue);
     if (value === null) return null;
-    return Math.trunc(value);
+    
+    const parsedId = Math.trunc(value);
+    
+    if (Array.isArray(sourceList) && sourceList.length > 0) {
+        const exists = sourceList.some(item => Number(item[idField]) === parsedId);
+        if (!exists) {
+            window.alert(`Invalid ID. Please enter a valid ID from the available list.`);
+            return null;
+        }
+    }
+    
+    return parsedId;
 }
 
 /**
