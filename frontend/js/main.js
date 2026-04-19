@@ -5,13 +5,24 @@
 */
 
 // Base URL for the backend API.
-// When running frontend from Live Server (e.g., :5500), target PHP backend on :8000.
 const API_BASE_URL = (() => {
-    const { protocol, port, hostname } = window.location;
-    if (protocol === 'file:' || port === '5500') {
+    const { protocol, port, hostname, pathname } = window.location;
+    
+    // For local development with separate servers (e.g. Live Server + PHP Server)
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
-    return '/backend/api';
+    
+    // Dynamic detection for XAMPP subdirectories (e.g., /Nepal_Royal/)
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        return `${projectBase}/backend/api`;
+    }
+    
+    // Since all HTML files are in frontend/pages/, the backend is always at ../../backend/api
+    return '../../backend/api';
 })();
 
 /**
