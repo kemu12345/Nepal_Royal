@@ -11,7 +11,7 @@ const API_BASE_STORAGE_KEY = 'royalNepalApiBaseUrl';
  * @returns {string[]}
  */
 function buildApiBaseCandidates() {
-    const { protocol, port, hostname, origin } = window.location;
+    const { protocol, port, hostname, origin, pathname } = window.location;
     const candidates = new Set();
 
     try {
@@ -28,6 +28,14 @@ function buildApiBaseCandidates() {
         candidates.add(`http://${currentHost}:8000/backend/api`);
         candidates.add('http://127.0.0.1:8000/backend/api');
         candidates.add('http://localhost:8000/backend/api');
+    }
+
+    // Support for subdirectories (like XAMPP's htdocs/Nepal_Royal/)
+    const pathParts = pathname.split('/');
+    const frontendIndex = pathParts.indexOf('frontend');
+    if (frontendIndex > 0) {
+        const basePath = pathParts.slice(0, frontendIndex).join('/');
+        candidates.add(`${origin}${basePath}/backend/api`);
     }
 
     candidates.add(`${origin}/backend/api`);

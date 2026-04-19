@@ -74,10 +74,15 @@ try {
     }
 } catch (Exception $e) {
     // If any exception occurs, send a 500 Internal Server Error response with the error message.
+    $errorMessage = $e->getMessage();
+    if (strpos($errorMessage, '1452 Cannot add or update a child row: a foreign key constraint fails') !== false) {
+        $errorMessage = "Invalid ID provided for a related entity. Please ensure that all selected locations, airlines, operators, etc. exist.";
+    }
+
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "message" => "Error: " . $e->getMessage()
+        "message" => "Error: " . $errorMessage
     ]);
 }
 
@@ -104,6 +109,10 @@ function handleCreate($db, $data) {
         case 'flight':
             // Define required fields for creating a flight.
             requireFields($data, ['airline_id', 'flight_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
+
+            if ($data->origin_location_id == $data->destination_location_id) {
+                throw new Exception("Origin and destination cannot be the same");
+            }
 
             // SQL query to insert a new flight into the database.
             $query = "INSERT INTO domestic_flights
@@ -135,6 +144,10 @@ function handleCreate($db, $data) {
         case 'bus':
             // Define required fields for creating a bus.
             requireFields($data, ['operator_id', 'bus_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
+
+            if ($data->origin_location_id == $data->destination_location_id) {
+                throw new Exception("Origin and destination cannot be the same");
+            }
 
             // SQL query to insert a new bus.
             $query = "INSERT INTO buses
@@ -289,6 +302,9 @@ function handleUpdate($db, $data) {
     // Use a switch statement to handle updates for different item types.
     switch($item_type) {
         case 'flight':
+            if (isset($data->origin_location_id) && isset($data->destination_location_id) && $data->origin_location_id == $data->destination_location_id) {
+                throw new Exception("Origin and destination cannot be the same");
+            }
             // SQL query to update an existing flight record.
             $query = "UPDATE domestic_flights SET
                       airline_id = ?, flight_number = ?, origin_location_id = ?, destination_location_id = ?,
@@ -319,6 +335,9 @@ function handleUpdate($db, $data) {
             break;
 
         case 'bus':
+            if (isset($data->origin_location_id) && isset($data->destination_location_id) && $data->origin_location_id == $data->destination_location_id) {
+                throw new Exception("Origin and destination cannot be the same");
+            }
             // SQL query to update an existing bus record.
             $query = "UPDATE buses SET
                       operator_id = ?, bus_number = ?, origin_location_id = ?, destination_location_id = ?,
