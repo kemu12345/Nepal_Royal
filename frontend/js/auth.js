@@ -23,11 +23,21 @@ function buildApiBaseCandidates() {
         console.warn('Unable to read saved API base URL:', error);
     }
 
-    if (protocol === 'file:' || port === '5500') {
-        const currentHost = hostname || 'localhost';
-        candidates.add(`http://${currentHost}:8000/backend/api`);
-        candidates.add('http://127.0.0.1:8000/backend/api');
-        candidates.add('http://localhost:8000/backend/api');
+    // For local development with separate servers
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
+        candidates.add(`http://${hostname || 'localhost'}:8000/backend/api`);
+    }
+
+    // Since all HTML files are in frontend/pages/, the backend is always at ../../backend/api
+    candidates.add('../../backend/api');
+
+    // Dynamic detection for XAMPP subdirectories (e.g., /Nepal_Royal/)
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        candidates.add(`${projectBase}/backend/api`);
+        candidates.add(`${origin}${projectBase}/backend/api`);
     }
 
     // Support for subdirectories (like XAMPP's htdocs/Nepal_Royal/)

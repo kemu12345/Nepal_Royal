@@ -6,20 +6,23 @@
 
 // Base URL for the backend API.
 const API_BASE_URL = (() => {
-    const { protocol, port, hostname, origin, pathname } = window.location;
-    if (protocol === 'file:' || port === '5500') {
+    const { protocol, port, hostname, pathname } = window.location;
+    
+    // For local development with separate servers (e.g. Live Server + PHP Server)
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
     
-    // Support for subdirectories (like XAMPP's htdocs/Nepal_Royal/)
-    const pathParts = pathname.split('/');
-    const frontendIndex = pathParts.indexOf('frontend');
-    if (frontendIndex > 0) {
-        const basePath = pathParts.slice(0, frontendIndex).join('/');
-        return `${origin}${basePath}/backend/api`;
+    // Dynamic detection for XAMPP subdirectories (e.g., /Nepal_Royal/)
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        return `${projectBase}/backend/api`;
     }
     
-    return '/backend/api';
+    // Since all HTML files are in frontend/pages/, the backend is always at ../../backend/api
+    return '../../backend/api';
 })();
 
 /**

@@ -6,11 +6,20 @@
 
 // Resolve backend API URL for common local development modes.
 const API_BASE_URL = (() => {
-    const { protocol, port, hostname } = window.location;
-    if (protocol === 'file:' || port === '5500') {
+    const { origin, protocol, port, hostname, pathname } = window.location;
+    
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
-    return '/backend/api';
+    
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        return `${origin}${projectBase}/backend/api`;
+    }
+    
+    return '../../backend/api';
 })();
 
 // Global variables to store hotel data.
@@ -36,17 +45,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Set up event listeners for the filter and sort controls.
-    document.getElementById('hotelTypeFilter')?.addEventListener('change', applyFilters);
-    document.getElementById('starFilter')?.addEventListener('change', applyFilters);
-    document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
-    document.getElementById('priceRange')?.addEventListener('input', function() {
-        document.getElementById('priceValue').textContent = `NPR ${this.value}`;
-        applyFilters();
-    });
+    document.getElementById('filter-type')?.addEventListener('change', applyFilters);
+    document.getElementById('filter-rating')?.addEventListener('change', applyFilters);
+    document.getElementById('sort-by')?.addEventListener('change', applyFilters);
+    document.getElementById('filter-price')?.addEventListener('input', debounce(applyFilters, 300));
     
     // Update the authentication buttons based on the user's login status.
     updateAuthButtons();
 });
+
+/**
+ * A debounce function to limit the rate at which a function gets called.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - The debounce delay in milliseconds.
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
 
 /**
  * Updates the authentication buttons in the navbar.
@@ -160,7 +179,8 @@ function getDemoHotels() {
  * Loads and displays the demo hotel data.
  */
 function loadDemoHotels() {
-    document.getElementById('loadingState').style.display = 'none';
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) loadingEl.style.display = 'none';
     allHotels = getDemoHotels();
     filteredHotels = [...allHotels];
     applyFilters();
@@ -206,13 +226,13 @@ function calculateNights(checkin, checkout) {
  * Fetches hotel data from the API based on the search criteria.
  */
 async function searchHotels(city, checkin, checkout) {
-    const loadingEl = document.getElementById('loadingState');
-    const resultsEl = document.getElementById('hotelsContainer');
-    const emptyEl = document.getElementById('emptyState');
+    const loadingEl = document.getElementById('loading');
+    const resultsEl = document.getElementById('results-list');
+    const emptyEl = document.getElementById('no-results');
 
-    loadingEl.style.display = 'flex';
-    resultsEl.innerHTML = '';
-    emptyEl.style.display = 'none';
+    if (loadingEl) loadingEl.style.display = 'block';
+    if (resultsEl) resultsEl.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'none';
 
     try {
         const response = await fetch(
@@ -220,7 +240,7 @@ async function searchHotels(city, checkin, checkout) {
         );
         const data = await response.json();
 
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
 
         if (data.success && data.data && data.data.length > 0) {
             allHotels = data.data;
@@ -233,7 +253,7 @@ async function searchHotels(city, checkin, checkout) {
         applyFilters();
     } catch (error) {
         console.error('Error searching hotels:', error);
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
         // Fallback to demo hotels on API error.
         allHotels = getDemoHotels();
         filteredHotels = [...allHotels];
@@ -257,10 +277,10 @@ function resetFilters() {
  * Applies the selected filters and sorting to the list of hotels.
  */
 function applyFilters() {
-    const typeFilter = document.getElementById('hotelTypeFilter')?.value || '';
-    const ratingFilter = document.getElementById('starFilter')?.value || '';
-    const priceFilter = document.getElementById('priceRange')?.value || 20000;
-    const sortBy = document.getElementById('sortFilter')?.value || 'rating-desc';
+    const typeFilter = document.getElementById('filter-type')?.value || '';
+    const ratingFilter = document.getElementById('filter-rating')?.value || '';
+    const priceFilter = document.getElementById('filter-price')?.value || '';
+    const sortBy = document.getElementById('sort-by')?.value || 'price-asc';
 
     // Filter the hotels based on the selected criteria.
     filteredHotels = allHotels.filter(hotel => {
@@ -294,16 +314,23 @@ function applyFilters() {
  * Renders the list of hotels on the page.
  */
 function displayHotels(hotels) {
-    const resultsEl = document.getElementById('hotelsContainer');
-    const emptyEl = document.getElementById('emptyState');
+    const resultsEl = document.getElementById('results-list');
+    const resultsCountEl = document.getElementById('results-count');
+    const emptyEl = document.getElementById('no-results');
+
+    if (resultsCountEl) {
+        resultsCountEl.textContent = `${hotels.length} hotel${hotels.length !== 1 ? 's' : ''} found`;
+    }
+
+    if (!resultsEl) return;
 
     if (hotels.length === 0) {
         resultsEl.innerHTML = '';
-        emptyEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'block';
         return;
     }
 
-    emptyEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'none';
     resultsEl.innerHTML = hotels.map(hotel => createHotelCard(hotel)).join('');
 }
 
@@ -384,7 +411,7 @@ function openBookingModal(roomId) {
     
     const stars = '⭐'.repeat(Math.floor(selectedHotel.star_rating));
     
-    const modalBody = document.getElementById('bookingModalBody');
+    const modalBody = document.getElementById('booking-details');
     modalBody.innerHTML = `
         <div class="text-center mb-4">
             <div class="hotel-type-badge badge-${selectedHotel.hotel_type} mb-2" style="font-size: 0.9rem; padding: 0.4rem 1rem;">
@@ -497,10 +524,24 @@ async function confirmBooking() {
             throw new Error(data.message || 'Booking failed');
         }
 
-        bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
-        showToast(`🏨 Booking confirmed at ${selectedHotel.hotel_name}!`, 'success');
+        showToast('Booking confirmed! Redirecting to your dashboard...', 'success');
+        
+        const modalEl = document.getElementById('bookingModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) {
+            // Blur the active element to prevent aria-hidden/focus warnings.
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
+            modal.hide();
+        }
+        
+        // Redirect to dashboard after a short delay so the user can see the success message.
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 2000);
     } catch (error) {
-        showToast(error.message || 'Unable to create booking', 'warning');
+        showToast(error.message || 'Unable to create booking', 'danger');
     }
 }
 
@@ -508,7 +549,13 @@ async function confirmBooking() {
  * Shows a Bootstrap toast notification.
  */
 function showToast(message, type = 'info') {
-    const container = document.querySelector('.toast-container');
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1100';
+        document.body.appendChild(container);
+    }
     const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning text-dark' : 'bg-info';
     
     const toastHtml = `

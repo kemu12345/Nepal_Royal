@@ -6,11 +6,20 @@
 
 // Resolve backend API URL for common local development modes.
 const API_BASE_URL = (() => {
-    const { protocol, port, hostname } = window.location;
-    if (protocol === 'file:' || port === '5500') {
+    const { origin, protocol, port, hostname, pathname } = window.location;
+    
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
-    return '/backend/api';
+    
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        return `${origin}${projectBase}/backend/api`;
+    }
+    
+    return '../../backend/api';
 })();
 
 // Global variables to store package data.
@@ -147,15 +156,15 @@ async function loadPackages() {
     const packagesEl = document.getElementById('packagesContainer');
     const emptyEl = document.getElementById('emptyState');
 
-    loadingEl.style.display = 'flex';
-    packagesEl.innerHTML = '';
-    emptyEl.style.display = 'none';
+    if (loadingEl) loadingEl.style.display = 'flex';
+    if (packagesEl) packagesEl.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'none';
 
     try {
         const response = await fetch(`${API_BASE_URL}/get_packages.php`);
         const data = await response.json();
 
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
 
         if (data.success && data.data && data.data.length > 0) {
             allPackages = data.data;
@@ -168,7 +177,7 @@ async function loadPackages() {
         applyFilters();
     } catch (error) {
         console.error('Error loading packages:', error);
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
         // Fallback to demo packages on API error.
         allPackages = getDemoPackages();
         filteredPackages = [...allPackages];
@@ -271,13 +280,15 @@ function displayPackages(packages) {
     const packagesEl = document.getElementById('packagesContainer');
     const emptyEl = document.getElementById('emptyState');
 
+    if (!packagesEl) return;
+
     if (packages.length === 0) {
         packagesEl.innerHTML = '';
-        emptyEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'block';
         return;
     }
 
-    emptyEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'none';
     packagesEl.innerHTML = packages.map(pkg => createPackageCard(pkg)).join('');
 }
 
@@ -481,8 +492,22 @@ async function confirmBooking() {
             throw new Error(data.message || 'Booking failed');
         }
 
-        bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
-        showToast(`🎉 Booking confirmed for ${selectedPackage.package_name}!`, 'success');
+        showToast('Booking confirmed! Redirecting to your dashboard...', 'success');
+        
+        const modalEl = document.getElementById('bookingModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) {
+            // Blur the active element to prevent aria-hidden/focus warnings.
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
+            modal.hide();
+        }
+        
+        // Redirect to dashboard after a short delay so the user can see the success message.
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 2000);
     } catch (error) {
         showToast(error.message || 'Unable to create booking', 'danger');
     }
@@ -492,7 +517,13 @@ async function confirmBooking() {
  * Shows a Bootstrap toast notification.
  */
 function showToast(message, type = 'info') {
-    const container = document.querySelector('.toast-container');
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1100';
+        document.body.appendChild(container);
+    }
     const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : type === 'danger' ? 'bg-danger' : 'bg-info';
     
     const toastHtml = `
