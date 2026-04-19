@@ -6,11 +6,20 @@
 
 // Resolve backend API URL for common local development modes.
 const API_BASE_URL = (() => {
-    const { protocol, port, hostname } = window.location;
-    if (protocol === 'file:' || port === '5500') {
+    const { origin, protocol, port, hostname, pathname } = window.location;
+    
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
-    return '/backend/api';
+    
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        return `${origin}${projectBase}/backend/api`;
+    }
+    
+    return '../../backend/api';
 })();
 
 // Global variables to store flight data.
@@ -41,8 +50,36 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set up event listeners for the filter and sort controls.
     document.getElementById('filter-airline').addEventListener('change', applyFilters);
     document.getElementById('filter-price').addEventListener('input', debounce(applyFilters, 300));
-    document.getElementById('sort-by').addEventListener('change', applyFilters);
+    document.getElementById('sort-by')?.addEventListener('change', applyFilters);
+    
+    // Update the navigation bar to show user info if logged in.
+    updateAuthButtons();
 });
+
+/**
+ * Updates the authentication buttons in the navigation bar to show the user's name
+ * and a dropdown menu if they are logged in.
+ */
+function updateAuthButtons() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const navAuth = document.getElementById('navAuth');
+    
+    if (navAuth && isLoggedIn && user.first_name) {
+        navAuth.innerHTML = `
+            <div class="dropdown">
+                <button class="btn btn-warning btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle me-1"></i>${user.first_name}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="dashboard.html"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        `;
+    }
+}
 
 /**
  * A debounce function to limit the rate at which a function gets called.
@@ -105,9 +142,9 @@ async function searchFlights(from, to, date) {
     const resultsEl = document.getElementById('results-list');
     const noResultsEl = document.getElementById('no-results');
 
-    loadingEl.style.display = 'block';
-    resultsEl.innerHTML = '';
-    noResultsEl.style.display = 'none';
+    if (loadingEl) loadingEl.style.display = 'block';
+    if (resultsEl) resultsEl.innerHTML = '';
+    if (noResultsEl) noResultsEl.style.display = 'none';
 
     try {
         const response = await fetch(
@@ -115,7 +152,7 @@ async function searchFlights(from, to, date) {
         );
         const data = await response.json();
 
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
 
         if (data.success && data.data && data.data.length > 0) {
             allFlights = data.data;
@@ -131,7 +168,7 @@ async function searchFlights(from, to, date) {
         }
     } catch (error) {
         console.error('Error searching flights:', error);
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
         // Fallback to demo flights on API error.
         allFlights = getDemoFlights(from, to, date);
         filteredFlights = [...allFlights];
@@ -242,15 +279,19 @@ function displayFlights(flights) {
     const resultsCountEl = document.getElementById('results-count');
     const noResultsEl = document.getElementById('no-results');
 
-    resultsCountEl.textContent = `${flights.length} flight${flights.length !== 1 ? 's' : ''} found`;
+    if (resultsCountEl) {
+        resultsCountEl.textContent = `${flights.length} flight${flights.length !== 1 ? 's' : ''} found`;
+    }
+
+    if (!resultsEl) return;
 
     if (flights.length === 0) {
         resultsEl.innerHTML = '';
-        noResultsEl.style.display = 'block';
+        if (noResultsEl) noResultsEl.style.display = 'block';
         return;
     }
 
-    noResultsEl.style.display = 'none';
+    if (noResultsEl) noResultsEl.style.display = 'none';
     resultsEl.innerHTML = flights.map(flight => createFlightCard(flight)).join('');
 
     // Re-add event listeners to the "Book Now" buttons after rendering.
@@ -410,10 +451,22 @@ async function confirmBooking() {
             throw new Error(data.message || 'Booking failed');
         }
 
-        showToast('Booking confirmed! It is now visible in your dashboard history.', 'success');
-
-        const modal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
-        modal.hide();
+        showToast('Booking confirmed! Redirecting to your dashboard...', 'success');
+        
+        const modalEl = document.getElementById('bookingModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) {
+            // Blur the active element to prevent aria-hidden/focus warnings.
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
+            modal.hide();
+        }
+        
+        // Redirect to dashboard after a short delay so the user can see the success message.
+        setTimeout(() => {
+            window.location.href = 'dashboard.html';
+        }, 2000);
     } catch (error) {
         showToast(error.message || 'Unable to create booking', 'danger');
     }
