@@ -511,23 +511,27 @@
     <script>
         const WISHLIST_KEY = 'royalNepalWishlist';
         const API_BASE_URL = (() => {
-            const { protocol, port, hostname, pathname } = window.location;
-            
-            // For local development with separate servers (e.g. Live Server)
+            const { protocol, port, hostname, origin, pathname } = window.location;
+
+            // Dev mode: file:// pages or Live Server ports
             if (protocol === 'file:' || port === '5500' || port === '5501') {
                 return `http://${hostname || 'localhost'}:8000/backend/api`;
             }
-            
-            // Dynamic detection for XAMPP subdirectories (e.g., /Nepal_Royal/)
+
             const parts = pathname.split('/');
-            const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
-            if (index !== -1) {
-                const projectBase = parts.slice(0, index + 1).join('/');
-                return `${projectBase}/backend/api`;
+            const projectIndex = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+            if (projectIndex !== -1) {
+                const projectBase = parts.slice(0, projectIndex + 1).join('/');
+                return `${origin}${projectBase}/backend/api`;
             }
-            
-            // Fallback
-            return '../../backend/api';
+
+            const frontendIndex = parts.findIndex(part => part.toLowerCase() === 'frontend');
+            if (frontendIndex > 0) {
+                const basePath = parts.slice(0, frontendIndex).join('/');
+                return `${origin}${basePath}/backend/api`;
+            }
+
+            return `${origin}/backend/api`;
         })();
 
         function readWishlist() {
@@ -660,6 +664,10 @@
 
             const data = await response.json();
             if (!response.ok || !data.success) {
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = 'login.html?redirect=dashboard.html';
+                    return;
+                }
                 throw new Error(data.message || 'Unable to load booking history');
             }
 
