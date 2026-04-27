@@ -313,10 +313,13 @@ function createPlaceCard(place) {
     return `
         <div class="col-md-6 col-lg-4">
             <div class="place-card animate__animated animate__fadeInUp">
-                <div class="place-image">
+                <div class="place-image" style="position: relative; overflow: hidden;">
                     ${heritageBadge}
-                    <span class="place-category-badge ${badgeClass}">${formatCategory(place.category)}</span>
-                    <span style="font-size: 4rem;">${categoryIcon}</span>
+                    <span class="place-category-badge ${badgeClass}" style="position: relative; z-index: 2;">${formatCategory(place.category)}</span>
+                    ${place.image_url 
+                        ? `<img src="${place.image_url}" alt="${place.place_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 0;">` 
+                        : `<span style="font-size: 4rem; position: relative; z-index: 1;">${categoryIcon}</span>`
+                    }
                 </div>
                 <div class="place-body">
                     <h5 class="place-title">${place.place_name}</h5>

@@ -350,11 +350,14 @@ function createHotelCard(hotel) {
             <div class="hotel-card animate__animated animate__fadeInUp">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="hotel-image">
-                            <span class="hotel-type-badge ${typeClass}">${hotel.hotel_type}</span>
-                            <div class="d-flex align-items-center justify-content-center h-100">
-                                <i class="bi bi-building fs-1 text-white"></i>
-                            </div>
+                        <div class="hotel-image" style="position: relative; overflow: hidden;">
+                            <span class="hotel-type-badge ${typeClass}" style="position: absolute; top: 10px; left: 10px; z-index: 2;">${hotel.hotel_type}</span>
+                            ${hotel.image_url 
+                                ? `<img src="${hotel.image_url}" alt="${hotel.hotel_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">` 
+                                : `<div class="d-flex align-items-center justify-content-center h-100" style="position: relative; z-index: 1;">
+                                       <i class="bi bi-building fs-1 text-white"></i>
+                                   </div>`
+                            }
                         </div>
                     </div>
                     <div class="col-md-5">

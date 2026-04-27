@@ -306,14 +306,17 @@ function createPackageCard(pkg) {
     return `
         <div class="col-md-6 col-lg-4">
             <div class="package-card animate__animated animate__fadeInUp">
-                <div class="package-image">
+                <div class="package-image" style="position: relative; overflow: hidden;">
                     ${featuredRibbon}
-                    <div class="d-flex align-items-center justify-content-center h-100 text-white" style="font-size: 4rem;">
-                        ${typeEmoji}
-                    </div>
-                    <span class="package-badge ${badgeClass}">${pkg.package_type}</span>
-                    <span class="package-duration"><i class="bi bi-calendar3 me-1"></i>${pkg.duration_days}D/${pkg.duration_nights}N</span>
-                    <div class="package-price-tag">$${formatPrice(pkg.base_price)}</div>
+                    ${pkg.image_url 
+                        ? `<img src="${pkg.image_url}" alt="${pkg.package_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 0;">` 
+                        : `<div class="d-flex align-items-center justify-content-center h-100 text-white" style="font-size: 4rem; position: relative; z-index: 1;">
+                               ${typeEmoji}
+                           </div>`
+                    }
+                    <span class="package-badge ${badgeClass}" style="position: relative; z-index: 2;">${pkg.package_type}</span>
+                    <span class="package-duration" style="position: relative; z-index: 2;"><i class="bi bi-calendar3 me-1"></i>${pkg.duration_days}D/${pkg.duration_nights}N</span>
+                    <div class="package-price-tag" style="position: relative; z-index: 2;">$${formatPrice(pkg.base_price)}</div>
                 </div>
                 <div class="package-body">
                     <h5 class="package-title">${pkg.package_name}</h5>
