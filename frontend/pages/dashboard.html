@@ -502,11 +502,27 @@
     <script>
         const WISHLIST_KEY = 'royalNepalWishlist';
         const API_BASE_URL = (() => {
-            const { protocol, port, hostname } = window.location;
-            if (protocol === 'file:' || port === '5500') {
+            const { protocol, port, hostname, origin, pathname } = window.location;
+
+            // Dev mode: file:// pages or Live Server ports
+            if (protocol === 'file:' || port === '5500' || port === '5501') {
                 return `http://${hostname || 'localhost'}:8000/backend/api`;
             }
-            return '/backend/api';
+
+            const parts = pathname.split('/');
+            const projectIndex = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+            if (projectIndex !== -1) {
+                const projectBase = parts.slice(0, projectIndex + 1).join('/');
+                return `${origin}${projectBase}/backend/api`;
+            }
+
+            const frontendIndex = parts.findIndex(part => part.toLowerCase() === 'frontend');
+            if (frontendIndex > 0) {
+                const basePath = parts.slice(0, frontendIndex).join('/');
+                return `${origin}${basePath}/backend/api`;
+            }
+
+            return `${origin}/backend/api`;
         })();
 
         function readWishlist() {
@@ -639,6 +655,10 @@
 
             const data = await response.json();
             if (!response.ok || !data.success) {
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = 'login.html?redirect=dashboard.html';
+                    return;
+                }
                 throw new Error(data.message || 'Unable to load booking history');
             }
 
