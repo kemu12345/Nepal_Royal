@@ -5,7 +5,22 @@
 */
 
 // Base URL for the backend API.
-const API_BASE_URL = '../../backend/api';
+const API_BASE_URL = (() => {
+    const { origin, protocol, port, hostname, pathname } = window.location;
+
+    if (protocol === 'file:' || port === '5500' || port === '5501') {
+        return `http://${hostname || 'localhost'}:8000/backend/api`;
+    }
+
+    const parts = pathname.split('/');
+    const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
+    if (index !== -1) {
+        const projectBase = parts.slice(0, index + 1).join('/');
+        return `${origin}${projectBase}/backend/api`;
+    }
+
+    return '../../backend/api';
+})();
 
 // Global variables to store place data.
 let allPlaces = [];         // Holds all places fetched from the API.
@@ -16,12 +31,12 @@ let currentCategory = '';   // The currently selected category filter.
 document.addEventListener('DOMContentLoaded', () => {
     // Load all places from the API.
     loadPlaces();
-    
+
     // Set up a debounced event listener for the search input to avoid excessive filtering.
     document.getElementById('searchInput')?.addEventListener('input', debounce(applyFilters, 300));
     // Set up an event listener for the sort dropdown.
     document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
-    
+
     // Set up click handlers for the category filter pills.
     document.querySelectorAll('.category-pill').forEach(pill => {
         pill.addEventListener('click', () => {
@@ -32,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilters();
         });
     });
-    
+
     // Update the navigation bar to show user info if logged in.
     updateAuthButtons();
 });
@@ -59,7 +74,7 @@ function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const navAuth = document.getElementById('navAuth');
-    
+
     if (navAuth && isLoggedIn && user.first_name) {
         navAuth.innerHTML = `
             <div class="dropdown">
@@ -183,15 +198,15 @@ async function loadPlaces() {
     const placesEl = document.getElementById('placesContainer');
     const emptyEl = document.getElementById('emptyState');
 
-    loadingEl.style.display = 'flex';
-    placesEl.innerHTML = '';
-    emptyEl.style.display = 'none';
+    if (loadingEl) loadingEl.style.display = 'flex';
+    if (placesEl) placesEl.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'none';
 
     try {
         const response = await fetch(`${API_BASE_URL}/get_places.php`);
         const data = await response.json();
 
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
 
         if (data.success && data.data && data.data.length > 0) {
             allPlaces = data.data;
@@ -199,12 +214,12 @@ async function loadPlaces() {
             // Fallback to demo data if API fails or returns no data.
             allPlaces = getDemoPlaces();
         }
-        
+
         filteredPlaces = [...allPlaces];
         applyFilters();
     } catch (error) {
         console.error('Error loading places:', error);
-        loadingEl.style.display = 'none';
+        if (loadingEl) loadingEl.style.display = 'none';
         // Fallback to demo data on API error.
         allPlaces = getDemoPlaces();
         filteredPlaces = [...allPlaces];
@@ -279,15 +294,19 @@ function displayPlaces(places) {
     const resultsCountEl = document.getElementById('resultsCount');
     const emptyEl = document.getElementById('emptyState');
 
-    resultsCountEl.textContent = `${places.length} place${places.length !== 1 ? 's' : ''} found`;
+    if (!placesEl) return;
+
+    if (resultsCountEl) {
+        resultsCountEl.textContent = `${places.length} place${places.length !== 1 ? 's' : ''} found`;
+    }
 
     if (places.length === 0) {
         placesEl.innerHTML = '';
-        emptyEl.style.display = 'block';
+        if (emptyEl) emptyEl.style.display = 'block';
         return;
     }
 
-    emptyEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'none';
     placesEl.innerHTML = places.map(place => createPlaceCard(place)).join('');
 }
 
@@ -300,7 +319,7 @@ function createPlaceCard(place) {
     const categoryIcon = getCategoryIcon(place.category);
     const badgeClass = `badge-${place.category}`;
     const heritageBadge = place.is_unesco_heritage == 1 ? '<div class="heritage-badge"><i class="bi bi-award-fill me-1"></i>UNESCO</div>' : '';
-    
+
     // Generate feature tags like "World Heritage" and entry fee.
     const features = [];
     if (place.is_unesco_heritage == 1) features.push('World Heritage');
@@ -382,9 +401,15 @@ function formatCategory(category) {
  * @param {string} type - The type of toast ('info', 'success', 'warning', 'danger').
  */
 function showToast(message, type = 'info') {
-    const container = document.querySelector('.toast-container');
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1100';
+        document.body.appendChild(container);
+    }
     const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : type === 'danger' ? 'bg-danger' : 'bg-info';
-    
+
     const toastHtml = `
         <div class="toast align-items-center text-white ${bgClass} border-0" role="alert">
             <div class="d-flex">
@@ -393,7 +418,7 @@ function showToast(message, type = 'info') {
             </div>
         </div>
     `;
-    
+
     container.insertAdjacentHTML('beforeend', toastHtml);
     const toast = new bootstrap.Toast(container.lastElementChild);
     toast.show();

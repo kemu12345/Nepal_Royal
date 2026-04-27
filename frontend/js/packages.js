@@ -7,18 +7,18 @@
 // Resolve backend API URL for common local development modes.
 const API_BASE_URL = (() => {
     const { origin, protocol, port, hostname, pathname } = window.location;
-    
+
     if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
-    
+
     const parts = pathname.split('/');
     const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
     if (index !== -1) {
         const projectBase = parts.slice(0, index + 1).join('/');
         return `${origin}${projectBase}/backend/api`;
     }
-    
+
     return '../../backend/api';
 })();
 
@@ -31,13 +31,13 @@ let selectedPackage = null;  // Holds the package object selected for booking.
 document.addEventListener('DOMContentLoaded', () => {
     // Load all tour packages from the API.
     loadPackages();
-    
+
     // Set up event listeners for the filter and sort controls.
     document.getElementById('categoryFilter')?.addEventListener('change', applyFilters);
     document.getElementById('durationFilter')?.addEventListener('change', applyFilters);
     document.getElementById('priceFilter')?.addEventListener('change', applyFilters);
     document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
-    
+
     // Update the authentication buttons based on the user's login status.
     updateAuthButtons();
 });
@@ -50,7 +50,7 @@ function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const navAuth = document.getElementById('navAuth');
-    
+
     if (navAuth && isLoggedIn && user.first_name) {
         navAuth.innerHTML = `
             <div class="dropdown">
@@ -172,7 +172,7 @@ async function loadPackages() {
             // Fallback to demo packages if the API returns no results.
             allPackages = getDemoPackages();
         }
-        
+
         filteredPackages = [...allPackages];
         applyFilters();
     } catch (error) {
@@ -384,7 +384,7 @@ function getDefaultHighlights(type) {
 function openBookingModal(packageId) {
     selectedPackage = allPackages.find(p => p.package_id === packageId);
     if (!selectedPackage) return;
-    
+
     const modalBody = document.getElementById('bookingModalBody');
     modalBody.innerHTML = `
         <div class="row">
@@ -438,7 +438,7 @@ function openBookingModal(packageId) {
             </div>
         </div>
     `;
-    
+
     const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
     modal.show();
 }
@@ -449,7 +449,7 @@ function openBookingModal(packageId) {
  */
 async function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    
+
     if (!isLoggedIn) {
         bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
         showToast('Please login to book a package', 'warning');
@@ -459,13 +459,13 @@ async function confirmBooking() {
         }, 1500);
         return;
     }
-    
+
     const travelDate = document.getElementById('travelDate').value;
     if (!travelDate) {
         showToast('Please select a travel date', 'warning');
         return;
     }
-    
+
     try {
         const travelers = Number.parseInt(document.getElementById('travelers')?.value || '1', 10);
         const start = new Date(travelDate);
@@ -496,7 +496,7 @@ async function confirmBooking() {
         }
 
         showToast('Booking confirmed! Redirecting to your dashboard...', 'success');
-        
+
         const modalEl = document.getElementById('bookingModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) {
@@ -506,7 +506,7 @@ async function confirmBooking() {
             }
             modal.hide();
         }
-        
+
         // Redirect to dashboard after a short delay so the user can see the success message.
         setTimeout(() => {
             window.location.href = 'dashboard.html';
@@ -528,7 +528,7 @@ function showToast(message, type = 'info') {
         document.body.appendChild(container);
     }
     const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : type === 'danger' ? 'bg-danger' : 'bg-info';
-    
+
     const toastHtml = `
         <div class="toast align-items-center text-white ${bgClass} border-0" role="alert">
             <div class="d-flex">
@@ -537,7 +537,7 @@ function showToast(message, type = 'info') {
             </div>
         </div>
     `;
-    
+
     container.insertAdjacentHTML('beforeend', toastHtml);
     const toast = new bootstrap.Toast(container.lastElementChild);
     toast.show();
