@@ -7,18 +7,18 @@
 // Resolve backend API URL for common local development modes.
 const API_BASE_URL = (() => {
     const { origin, protocol, port, hostname, pathname } = window.location;
-    
+
     if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
-    
+
     const parts = pathname.split('/');
     const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
     if (index !== -1) {
         const projectBase = parts.slice(0, index + 1).join('/');
         return `${origin}${projectBase}/backend/api`;
     }
-    
+
     return '../../backend/api';
 })();
 
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filter-rating')?.addEventListener('change', applyFilters);
     document.getElementById('sort-by')?.addEventListener('change', applyFilters);
     document.getElementById('filter-price')?.addEventListener('input', debounce(applyFilters, 300));
-    
+
     // Update the authentication buttons based on the user's login status.
     updateAuthButtons();
 });
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function debounce(func, wait) {
     let timeout;
-    return function(...args) {
+    return function (...args) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
@@ -75,7 +75,7 @@ function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const navAuth = document.getElementById('navAuth');
-    
+
     if (navAuth && isLoggedIn && user.first_name) {
         navAuth.innerHTML = `
             <div class="dropdown">
@@ -192,7 +192,7 @@ function loadDemoHotels() {
 async function displaySearchSummary(cityId, checkin, checkout) {
     const summaryEl = document.getElementById('searchSummary');
     if (!summaryEl) return;
-    
+
     try {
         const response = await fetch(`${API_BASE_URL}/get_locations.php`);
         const data = await response.json();
@@ -248,7 +248,7 @@ async function searchHotels(city, checkin, checkout) {
             // Fallback to demo hotels if the API returns no results.
             allHotels = getDemoHotels();
         }
-        
+
         filteredHotels = [...allHotels];
         applyFilters();
     } catch (error) {
@@ -344,17 +344,20 @@ function createHotelCard(hotel) {
     const typeClass = `badge-${hotel.hotel_type}`;
     const roomsClass = hotel.available_rooms > 5 ? 'text-success' : hotel.available_rooms > 0 ? 'text-warning' : 'text-danger';
     const amenities = hotel.amenities ? hotel.amenities.split(',').slice(0, 4) : [];
-    
+
     return `
         <div class="col-12">
             <div class="hotel-card animate__animated animate__fadeInUp">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="hotel-image">
-                            <span class="hotel-type-badge ${typeClass}">${hotel.hotel_type}</span>
-                            <div class="d-flex align-items-center justify-content-center h-100">
-                                <i class="bi bi-building fs-1 text-white"></i>
-                            </div>
+                        <div class="hotel-image" style="position: relative; overflow: hidden;">
+                            <span class="hotel-type-badge ${typeClass}" style="position: absolute; top: 10px; left: 10px; z-index: 2;">${hotel.hotel_type}</span>
+                            ${hotel.image_url 
+                                ? `<img src="${hotel.image_url}" alt="${hotel.hotel_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">` 
+                                : `<div class="d-flex align-items-center justify-content-center h-100" style="position: relative; z-index: 1;">
+                                       <i class="bi bi-building fs-1 text-white"></i>
+                                   </div>`
+                            }
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -408,9 +411,9 @@ function createHotelCard(hotel) {
 function openBookingModal(roomId) {
     selectedHotel = allHotels.find(h => h.room_id === roomId);
     if (!selectedHotel) return;
-    
+
     const stars = '⭐'.repeat(Math.floor(selectedHotel.star_rating));
-    
+
     const modalBody = document.getElementById('booking-details');
     modalBody.innerHTML = `
         <div class="text-center mb-4">
@@ -451,18 +454,18 @@ function openBookingModal(roomId) {
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Number of Rooms</label>
                 <select class="form-select" id="roomCount">
-                    ${[1,2,3].map(n => `<option value="${n}">${n} Room${n > 1 ? 's' : ''}</option>`).join('')}
+                    ${[1, 2, 3].map(n => `<option value="${n}">${n} Room${n > 1 ? 's' : ''}</option>`).join('')}
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Guests</label>
                 <select class="form-select" id="guestCount">
-                    ${[1,2,3,4].map(n => `<option value="${n}">${n} Guest${n > 1 ? 's' : ''}</option>`).join('')}
+                    ${[1, 2, 3, 4].map(n => `<option value="${n}">${n} Guest${n > 1 ? 's' : ''}</option>`).join('')}
                 </select>
             </div>
         </div>
     `;
-    
+
     const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
     modal.show();
 }
@@ -473,7 +476,7 @@ function openBookingModal(roomId) {
  */
 async function confirmBooking() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    
+
     if (!isLoggedIn) {
         bootstrap.Modal.getInstance(document.getElementById('bookingModal')).hide();
         showToast('Please login to book a hotel', 'warning');
@@ -483,7 +486,7 @@ async function confirmBooking() {
         }, 1500);
         return;
     }
-    
+
     const checkin = document.getElementById('modalCheckin').value;
     const checkout = document.getElementById('modalCheckout').value;
     if (!checkin || !checkout) {
@@ -525,7 +528,7 @@ async function confirmBooking() {
         }
 
         showToast('Booking confirmed! Redirecting to your dashboard...', 'success');
-        
+
         const modalEl = document.getElementById('bookingModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) {
@@ -535,7 +538,7 @@ async function confirmBooking() {
             }
             modal.hide();
         }
-        
+
         // Redirect to dashboard after a short delay so the user can see the success message.
         setTimeout(() => {
             window.location.href = 'dashboard.html';
@@ -557,7 +560,7 @@ function showToast(message, type = 'info') {
         document.body.appendChild(container);
     }
     const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning text-dark' : 'bg-info';
-    
+
     const toastHtml = `
         <div class="toast align-items-center text-white ${bgClass} border-0" role="alert">
             <div class="d-flex">
@@ -566,7 +569,7 @@ function showToast(message, type = 'info') {
             </div>
         </div>
     `;
-    
+
     container.insertAdjacentHTML('beforeend', toastHtml);
     const toast = new bootstrap.Toast(container.lastElementChild);
     toast.show();

@@ -7,18 +7,18 @@
 // Base URL for the backend API.
 const API_BASE_URL = (() => {
     const { origin, protocol, port, hostname, pathname } = window.location;
-    
+
     if (protocol === 'file:' || port === '5500' || port === '5501') {
         return `http://${hostname || 'localhost'}:8000/backend/api`;
     }
-    
+
     const parts = pathname.split('/');
     const index = parts.findIndex(part => part.toLowerCase() === 'nepal_royal');
     if (index !== -1) {
         const projectBase = parts.slice(0, index + 1).join('/');
         return `${origin}${projectBase}/backend/api`;
     }
-    
+
     return '../../backend/api';
 })();
 
@@ -31,12 +31,12 @@ let currentCategory = '';   // The currently selected category filter.
 document.addEventListener('DOMContentLoaded', () => {
     // Load all places from the API.
     loadPlaces();
-    
+
     // Set up a debounced event listener for the search input to avoid excessive filtering.
     document.getElementById('searchInput')?.addEventListener('input', debounce(applyFilters, 300));
     // Set up an event listener for the sort dropdown.
     document.getElementById('sortFilter')?.addEventListener('change', applyFilters);
-    
+
     // Set up click handlers for the category filter pills.
     document.querySelectorAll('.category-pill').forEach(pill => {
         pill.addEventListener('click', () => {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilters();
         });
     });
-    
+
     // Update the navigation bar to show user info if logged in.
     updateAuthButtons();
 });
@@ -74,7 +74,7 @@ function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const navAuth = document.getElementById('navAuth');
-    
+
     if (navAuth && isLoggedIn && user.first_name) {
         navAuth.innerHTML = `
             <div class="dropdown">
@@ -214,7 +214,7 @@ async function loadPlaces() {
             // Fallback to demo data if API fails or returns no data.
             allPlaces = getDemoPlaces();
         }
-        
+
         filteredPlaces = [...allPlaces];
         applyFilters();
     } catch (error) {
@@ -319,7 +319,7 @@ function createPlaceCard(place) {
     const categoryIcon = getCategoryIcon(place.category);
     const badgeClass = `badge-${place.category}`;
     const heritageBadge = place.is_unesco_heritage == 1 ? '<div class="heritage-badge"><i class="bi bi-award-fill me-1"></i>UNESCO</div>' : '';
-    
+
     // Generate feature tags like "World Heritage" and entry fee.
     const features = [];
     if (place.is_unesco_heritage == 1) features.push('World Heritage');
@@ -332,10 +332,13 @@ function createPlaceCard(place) {
     return `
         <div class="col-md-6 col-lg-4">
             <div class="place-card animate__animated animate__fadeInUp">
-                <div class="place-image">
+                <div class="place-image" style="position: relative; overflow: hidden;">
                     ${heritageBadge}
-                    <span class="place-category-badge ${badgeClass}">${formatCategory(place.category)}</span>
-                    <span style="font-size: 4rem;">${categoryIcon}</span>
+                    <span class="place-category-badge ${badgeClass}" style="position: relative; z-index: 2;">${formatCategory(place.category)}</span>
+                    ${place.image_url 
+                        ? `<img src="${place.image_url}" alt="${place.place_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 0;">` 
+                        : `<span style="font-size: 4rem; position: relative; z-index: 1;">${categoryIcon}</span>`
+                    }
                 </div>
                 <div class="place-body">
                     <h5 class="place-title">${place.place_name}</h5>
@@ -406,7 +409,7 @@ function showToast(message, type = 'info') {
         document.body.appendChild(container);
     }
     const bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : type === 'danger' ? 'bg-danger' : 'bg-info';
-    
+
     const toastHtml = `
         <div class="toast align-items-center text-white ${bgClass} border-0" role="alert">
             <div class="d-flex">
@@ -415,7 +418,7 @@ function showToast(message, type = 'info') {
             </div>
         </div>
     `;
-    
+
     container.insertAdjacentHTML('beforeend', toastHtml);
     const toast = new bootstrap.Toast(container.lastElementChild);
     toast.show();
