@@ -92,6 +92,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         .top-bar h1 { font-weight: 700; color: #333; }
         
@@ -209,8 +211,10 @@
             background: rgba(255,255,255,0.15);
             color: #fff;
             border-radius: 999px;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.7rem;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            cursor: pointer;
+            width: 100%;
         }
         .destination-card .wishlist-toggle.active {
             background: #fff;
@@ -244,10 +248,19 @@
         
         @media (max-width: 767.98px) {
             .sidebar { display: none; }
-            .main-content { margin-left: 0; }
+            .main-content { 
+                margin-left: 0; 
+                padding: 1.25rem; 
+                padding-bottom: 90px; 
+            }
+            .top-bar h1 { font-size: 1.5rem; }
+            .dashboard-card { padding: 1rem; margin-bottom: 1rem; }
+            .stat-card { padding: 1rem; }
+            .quick-action { padding: 1rem 0.5rem; }
+            .quick-action i { font-size: 2rem; }
+            .mobile-nav { display: flex; justify-content: space-around; }
         }
         
-        /* Mobile Nav */
         .mobile-nav {
             display: none;
             position: fixed;
@@ -255,13 +268,9 @@
             left: 0;
             right: 0;
             background: white;
-            padding: 0.5rem;
+            padding: 0.5rem 0;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
             z-index: 1000;
-        }
-        @media (max-width: 767.98px) {
-            .mobile-nav { display: flex; justify-content: space-around; }
-            .main-content { padding-bottom: 80px; }
         }
         .mobile-nav a {
             text-align: center;
