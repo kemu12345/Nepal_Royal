@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\classes;
+
 /**
  * Represents a single hotel entity and provides methods for managing hotel data.
  * This class handles operations such as searching for hotels, retrieving hotel details
@@ -29,7 +31,7 @@ class Hotel {
     /**
      * Constructor to initialize the Hotel object with a database connection.
      *
-     * @param PDO $db An active PDO database connection.
+     * @param \PDO $db An active \PDO database connection.
      */
     public function __construct($db) {
         $this->conn = $db;
@@ -87,7 +89,7 @@ class Hotel {
 
         // Execute the query and return all matching records.
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -111,7 +113,7 @@ class Hotel {
         $stmt->execute();
 
         // Fetch the hotel record.
-        $hotel = $stmt->fetch(PDO::FETCH_ASSOC);
+        $hotel = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // If the hotel is found, fetch its associated rooms.
         if ($hotel) {
@@ -139,7 +141,7 @@ class Hotel {
         $stmt->bindParam(":hotel_id", $hotel_id);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -161,7 +163,7 @@ class Hotel {
         $stmt->bindParam(":room_id", $room_id);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -188,4 +190,3 @@ class Hotel {
         return $stmt->execute() && $stmt->rowCount() > 0;
     }
 }
-?>

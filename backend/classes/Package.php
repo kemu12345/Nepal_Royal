@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\classes;
+
 /**
  * Represents a tour package and provides methods for managing package data.
  * This class handles operations such as retrieving all packages with filters,
@@ -35,7 +37,7 @@ class Package {
     /**
      * Constructor to initialize the Package object with a database connection.
      *
-     * @param PDO $db An active PDO database connection.
+     * @param \PDO $db An active \PDO database connection.
      */
     public function __construct($db) {
         $this->conn = $db;
@@ -83,7 +85,7 @@ class Package {
 
         // Execute the query and return all matching records.
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -104,7 +106,7 @@ class Package {
         $stmt->execute();
 
         // Fetch the package record.
-        $package = $stmt->fetch(PDO::FETCH_ASSOC);
+        $package = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // If the package is found, fetch its associated locations (itinerary).
         if ($package) {
@@ -134,7 +136,7 @@ class Package {
         $stmt->bindParam(":package_id", $package_id);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -153,10 +155,9 @@ class Package {
         // Prepare the statement.
         $stmt = $this->conn->prepare($query);
         // Bind the limit as an integer parameter.
-        $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
+        $stmt->bindParam(":limit", $limit, \PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
-?>

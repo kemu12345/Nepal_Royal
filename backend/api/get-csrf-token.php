@@ -12,14 +12,14 @@
  * @package RoyalNepal
  * @author  Your Name
  */
+use RoyalNepal\middleware\CSRFToken;
+
 
 // Set the content type of the response to JSON.
 header("Content-Type: application/json; charset=UTF-8");
 
 // Include necessary configuration and middleware files.
 include_once '../config/config.php';
-include_once '../middleware/CSRFToken.php';
-
 // Start a new session or resume the existing one to store the token.
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -51,4 +51,3 @@ try {
         "message" => "Error generating CSRF token: " . $e->getMessage()
     ]);
 }
-?>

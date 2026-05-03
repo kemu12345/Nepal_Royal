@@ -12,13 +12,14 @@
  * @package RoyalNepal
  * @author  Your Name
  */
+use RoyalNepal\config\Database;
+
 
 // Set the content type of the response to JSON.
 header("Content-Type: application/json; charset=UTF-8");
 
 // Include necessary configuration and database files.
 include_once '../config/config.php';
-include_once '../config/database.php';
 
 // Start a new session or resume the existing one.
 if (session_status() === PHP_SESSION_NONE) {
@@ -166,4 +167,3 @@ try {
 
 // Close the database connection.
 $database->closeConnection();
-?>

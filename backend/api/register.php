@@ -3,13 +3,13 @@
  * Royal Nepal - User Registration API
  * Endpoint: POST /backend/api/register.php
  */
+use RoyalNepal\classes\User;
+use RoyalNepal\config\Database;
+
 
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once '../config/config.php';
-include_once '../config/database.php';
-include_once '../classes/User.php';
-
 // Only allow POST requests
 if($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -117,4 +117,3 @@ if($user->register()) {
 }
 
 $database->closeConnection();
-?>

@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\classes;
+
 /**
  * Represents a single flight entity and provides methods for managing flight data.
  * This class handles operations such as searching for flights, retrieving flight details,
@@ -31,7 +33,7 @@ class Flight {
     /**
      * Constructor to initialize the Flight object with a database connection.
      *
-     * @param PDO $db An active PDO database connection.
+     * @param \PDO $db An active \PDO database connection.
      */
     public function __construct($db) {
         $this->conn = $db;
@@ -99,7 +101,7 @@ class Flight {
 
         // Execute the query and return all matching records.
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -127,7 +129,7 @@ class Flight {
         $stmt->execute();
 
         // Fetch and return the single record.
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -203,7 +205,6 @@ class Flight {
         $query = "SELECT * FROM airlines WHERE is_active = 1 ORDER BY airline_name";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
-?>

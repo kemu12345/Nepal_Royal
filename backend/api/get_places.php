@@ -11,15 +11,15 @@
  * @package RoyalNepal
  * @author  Your Name
  */
+use RoyalNepal\classes\Place;
+use RoyalNepal\config\Database;
+
 
 // Set the content type of the response to JSON.
 header("Content-Type: application/json; charset=UTF-8");
 
 // Include necessary configuration, database, and class files.
 include_once '../config/config.php';
-include_once '../config/database.php';
-include_once '../classes/Place.php';
-
 // Only allow GET requests. If any other method is used, return a 405 error.
 if($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405); // Method Not Allowed
@@ -79,4 +79,3 @@ try {
 
 // Close the database connection.
 $database->closeConnection();
-?>

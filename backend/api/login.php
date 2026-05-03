@@ -3,14 +3,14 @@
  * Royal Nepal - User Login API
  * Endpoint: POST /backend/api/login.php
  */
+use RoyalNepal\classes\User;
+use RoyalNepal\config\Database;
+use RoyalNepal\middleware\CSRFToken;
+
 
 include_once '../config/config.php';
 
 header("Content-Type: application/json; charset=UTF-8");
-include_once '../config/database.php';
-include_once '../classes/User.php';
-include_once '../middleware/CSRFToken.php';
-
 // Start session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

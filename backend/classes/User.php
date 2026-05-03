@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\classes;
+
 /**
  * Royal Nepal - User Class
  * Handles user authentication and management
@@ -84,7 +86,7 @@ class User {
         $stmt->execute();
 
         if($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             // Verify password
             if(password_verify($this->password, $row['password_hash'])) {
@@ -133,7 +135,7 @@ class User {
         $stmt->execute();
 
         if($stmt->rowCount() > 0) {
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            return $stmt->fetch(\PDO::FETCH_ASSOC);
         }
 
         return false;
@@ -194,7 +196,7 @@ class User {
         $stmt->execute();
 
         if($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if(password_verify($old_password, $row['password_hash'])) {
                 // Update password
@@ -214,4 +216,3 @@ class User {
         return false;
     }
 }
-?>

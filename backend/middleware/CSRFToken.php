@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\middleware;
+
 /**
  * Royal Nepal - CSRF (Cross-Site Request Forgery) Protection Middleware
  *
@@ -150,4 +152,3 @@ class CSRFToken {
         unset($_SESSION['csrf_token']);
     }
 }
-?>

@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\classes;
+
 /**
  * Represents a geographical location and provides methods for retrieving location data.
  * This class handles operations such as fetching all locations, popular locations,
@@ -25,7 +27,7 @@ class Location {
     /**
      * Constructor to initialize the Location object with a database connection.
      *
-     * @param PDO $db An active PDO database connection.
+     * @param \PDO $db An active \PDO database connection.
      */
     public function __construct($db) {
         $this->conn = $db;
@@ -59,7 +61,7 @@ class Location {
 
         // Execute and return all results.
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -77,7 +79,7 @@ class Location {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -96,7 +98,7 @@ class Location {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -120,7 +122,7 @@ class Location {
         $stmt->bindParam(":search", $search);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -140,7 +142,6 @@ class Location {
         $stmt->bindParam(":location_id", $location_id);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 }
-?>

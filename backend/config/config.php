@@ -42,26 +42,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Application constants
-define('APP_NAME', 'Royal Nepal');
-define('APP_TAGLINE', 'Experience the pride of Nepalese');
-define('APP_VERSION', '1.0.0');
-define('BASE_URL', 'http://localhost');
-define('API_BASE_URL', BASE_URL . '/backend/api');
+// Include application constants (PSR-1 separation of declarations and side effects)
+require_once __DIR__ . '/constants.php';
 
-// Security
-define('JWT_SECRET_KEY', 'your-secret-key-change-in-production-2024');
-define('PASSWORD_MIN_LENGTH', 6);
+/**
+ * PSR-4 Autoloader
+ * Automatically loads classes based on their namespace.
+ */
+spl_autoload_register(function ($class) {
+    // Project-specific namespace prefix
+    $prefix = 'RoyalNepal\\';
 
-// Pagination
-define('DEFAULT_PAGE_SIZE', 20);
-define('MAX_PAGE_SIZE', 100);
+    // Base directory for the namespace prefix
+    $base_dir = __DIR__ . '/../';
 
-// File upload settings
-define('UPLOAD_MAX_SIZE', 5242880); // 5MB
-define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/jpg', 'image/webp']);
+    // Does the class use the namespace prefix?
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        // No, move to the next registered autoloader
+        return;
+    }
 
-// Currency settings
-define('DEFAULT_CURRENCY', 'NPR');
-define('NPR_TO_USD_RATE', 0.0075); // Approximate conversion rate
-?>
+    // Get the relative class name
+    $relative_class = substr($class, $len);
+
+    // Replace namespace separators with directory separators in the relative class name,
+    // append with .php
+    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+    // If the file exists, require it
+    if (file_exists($file)) {
+        require_once $file;
+    }
+});

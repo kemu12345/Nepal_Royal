@@ -1,7 +1,9 @@
 <?php
+namespace RoyalNepal\config;
+
 /**
  * Royal Nepal - Database Configuration
- * Secure PDO MySQL connection handler
+ * Secure \PDO MySQL connection handler
  */
 
 class Database {
@@ -16,7 +18,7 @@ class Database {
 
     /**
      * Get database connection
-     * @return PDO|null
+     * @return \PDO|null
      */
     public function getConnection() {
         $this->conn = null;
@@ -24,20 +26,20 @@ class Database {
         try {
             $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=" . $this->charset;
 
-            $initCommandOption = defined('Pdo\\Mysql::ATTR_INIT_COMMAND')
-                ? Pdo\Mysql::ATTR_INIT_COMMAND
-                : PDO::MYSQL_ATTR_INIT_COMMAND;
+            $initCommandOption = defined('\\Pdo\\Mysql::ATTR_INIT_COMMAND')
+                ? \Pdo\Mysql::ATTR_INIT_COMMAND
+                : \PDO::MYSQL_ATTR_INIT_COMMAND;
 
             $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                \PDO::ATTR_EMULATE_PREPARES => false,
                 $initCommandOption => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
             ];
 
-            $this->conn = new PDO($dsn, $this->username, $this->password, $options);
+            $this->conn = new \PDO($dsn, $this->username, $this->password, $options);
 
-        } catch(PDOException $exception) {
+        } catch(\PDOException $exception) {
             error_log("Connection error: " . $exception->getMessage());
             return null;
         }
@@ -52,4 +54,3 @@ class Database {
         $this->conn = null;
     }
 }
-?>

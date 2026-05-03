@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\classes;
+
 /**
  * Represents a single bus entity and provides methods for interacting with bus data.
  * This class handles operations like searching for buses, retrieving bus details,
@@ -32,7 +34,7 @@ class Bus {
     /**
      * Constructor to initialize the Bus object with a database connection.
      *
-     * @param PDO $db An active PDO database connection.
+     * @param \PDO $db An active \PDO database connection.
      */
     public function __construct($db) {
         $this->conn = $db;
@@ -100,7 +102,7 @@ class Bus {
 
         // Execute the query and return all matching records.
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -128,7 +130,7 @@ class Bus {
         $stmt->execute();
 
         // Fetch and return the single record.
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -166,7 +168,6 @@ class Bus {
         $query = "SELECT * FROM bus_operators WHERE is_active = 1 ORDER BY operator_name";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
-?>

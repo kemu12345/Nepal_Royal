@@ -1,4 +1,6 @@
 <?php
+namespace RoyalNepal\classes;
+
 /**
  * Represents a place of interest or attraction and provides methods for managing its data.
  * This class handles operations like retrieving all places with filters, getting details
@@ -32,7 +34,7 @@ class Place {
     /**
      * Constructor to initialize the Place object with a database connection.
      *
-     * @param PDO $db An active PDO database connection.
+     * @param \PDO $db An active \PDO database connection.
      */
     public function __construct($db) {
         $this->conn = $db;
@@ -74,7 +76,7 @@ class Place {
 
         // Execute the query and return all matching records.
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -96,7 +98,7 @@ class Place {
         $stmt->bindParam(":place_id", $place_id);
         $stmt->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -119,7 +121,7 @@ class Place {
         $stmt->bindParam(":category", $category);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -140,7 +142,6 @@ class Place {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 }
-?>
