@@ -181,6 +181,26 @@ function displayUserInfo() {
     if (userRoleElement) {
         userRoleElement.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
     }
+
+    // Replace login links with user dropdown in the navbar
+    const loginLinks = document.querySelectorAll('a[href="login.html"], a[href*="/login.html"]');
+    loginLinks.forEach(link => {
+        const parentLi = link.closest('.nav-item');
+        if (parentLi) {
+            parentLi.innerHTML = `
+                <div class="dropdown">
+                    <button class="btn btn-warning btn-sm px-4 fw-semibold dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-2"></i>${user.first_name}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger logout-btn" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            `;
+        }
+    });
 }
 
 // This event listener runs when the HTML document is fully loaded.
