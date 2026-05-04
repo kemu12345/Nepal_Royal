@@ -73,26 +73,21 @@ function debounce(func, wait) {
 function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (isLoggedIn && user.first_name) {
-        const loginLinks = document.querySelectorAll('a[href="login.html"], a[href*="/login.html"]');
-        loginLinks.forEach(link => {
-            const parentLi = link.closest('.nav-item');
-            if (parentLi) {
-                parentLi.innerHTML = `
-                    <div class="dropdown">
-                        <button class="btn btn-warning btn-sm px-4 fw-semibold dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-2"></i>${user.first_name}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                        </ul>
-                    </div>
-                `;
-            }
-        });
+    const navAuth = document.getElementById('navAuth');
+
+    if (isLoggedIn && user.first_name && navAuth) {
+        navAuth.innerHTML = `
+            <div class="dropdown">
+                <button class="btn btn-warning btn-sm px-4 fw-semibold dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle me-2"></i>${user.first_name}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        `;
     }
 }
 

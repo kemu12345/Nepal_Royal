@@ -26,9 +26,13 @@ body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
     padding: 0.5rem 1rem !important;
     transition: all 0.3s ease;
 }
-.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link:hover {
+    color: var(--nepal-gold) !important;
+}
 .navbar-custom .nav-link.active {
     color: var(--nepal-gold) !important;
+    border-bottom: 2px solid var(--nepal-gold);
+    padding-bottom: calc(0.5rem - 2px) !important;
 }
 
 /* Page Header */
