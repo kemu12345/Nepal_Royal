@@ -313,9 +313,14 @@ function getUsers($db) {
 function getBookings($db, $limit = null) {
     $query = "SELECT b.booking_id, b.booking_reference, b.booking_type, b.booking_status,
                      b.total_amount, b.currency, b.payment_status, b.booking_date,
-                     b.user_id, u.first_name, u.last_name, u.email
+                     b.user_id, u.first_name, u.last_name, u.email,
+                     COALESCE(fb.travel_date, bb.travel_date, hb.check_in_date, pb.start_date) AS travel_date
               FROM bookings b
               INNER JOIN users u ON b.user_id = u.user_id
+              LEFT JOIN flight_bookings fb ON b.booking_id = fb.booking_id AND b.booking_type = 'flight'
+              LEFT JOIN bus_bookings bb ON b.booking_id = bb.booking_id AND b.booking_type = 'bus'
+              LEFT JOIN hotel_bookings hb ON b.booking_id = hb.booking_id AND b.booking_type = 'hotel'
+              LEFT JOIN package_bookings pb ON b.booking_id = pb.booking_id AND b.booking_type = 'package'
               ORDER BY b.booking_date DESC";
 
     if ($limit !== null) {

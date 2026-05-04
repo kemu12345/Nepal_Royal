@@ -422,6 +422,18 @@ function renderBookingsTable(bookings) {
 
     tbody.innerHTML = bookings.map((b) => {
         const name = `${b.first_name || ''} ${b.last_name || ''}`.trim();
+        const status = capitalize(b.booking_status || 'pending');
+        const statusBadge = status === 'Pending'
+            ? '<span class="badge bg-warning text-dark">Pending</span>'
+            : status === 'Confirmed'
+                ? '<span class="badge bg-success">Confirmed</span>'
+                : '<span class="badge bg-danger">Cancelled</span>';
+
+        const actions = (b.booking_status || 'pending') === 'pending'
+            ? `<button class="btn btn-success btn-sm me-1" data-booking-approve="${b.booking_id}">Approve</button>
+               <button class="btn btn-danger btn-sm" data-booking-cancel="${b.booking_id}">Cancel</button>`
+            : '-';
+
         return `
             <tr>
                 <td>${escapeHtml(b.booking_reference || String(b.booking_id))}</td>
@@ -429,12 +441,25 @@ function renderBookingsTable(bookings) {
                 <td>${escapeHtml(capitalize(b.booking_type || '-'))}</td>
                 <td>${formatAmount(b.total_amount, b.currency)}</td>
                 <td>${formatDateShort(b.booking_date)}</td>
-                <td>-</td>
-                <td>${escapeHtml(capitalize(b.booking_status || 'pending'))}</td>
-                <td>-</td>
+                <td>${formatDateShort(b.travel_date)}</td>
+                <td>${statusBadge}</td>
+                <td>${actions}</td>
             </tr>
         `;
     }).join('');
+
+    // Attach event listeners for approve/cancel buttons
+    tbody.querySelectorAll('[data-booking-approve]').forEach((button) => {
+        button.addEventListener('click', () => {
+            updateBookingStatus(Number(button.getAttribute('data-booking-approve')), 'confirmed');
+        });
+    });
+
+    tbody.querySelectorAll('[data-booking-cancel]').forEach((button) => {
+        button.addEventListener('click', () => {
+            updateBookingStatus(Number(button.getAttribute('data-booking-cancel')), 'cancelled');
+        });
+    });
 }
 
 function renderRecentBookingsTable(bookings) {
@@ -1178,4 +1203,30 @@ function showMessage(text, type = 'info') {
     setTimeout(() => {
         messageBox.className = 'message-box';
     }, 5000);
+}
+
+/**
+ * Update the status of a booking (approve or cancel).
+ * @param {number} bookingId - The booking ID to update.
+ * @param {string} newStatus - The new status ('confirmed' or 'cancelled').
+ */
+async function updateBookingStatus(bookingId, newStatus) {
+    const actionLabel = newStatus === 'confirmed' ? 'approve' : 'cancel';
+    const approved = window.confirm(`Are you sure you want to ${actionLabel} booking #${bookingId}?`);
+    if (!approved) return;
+
+    try {
+        await RoyalNepal.apiRequest('update_booking_status.php', {
+            method: 'PUT',
+            body: JSON.stringify({
+                booking_id: bookingId,
+                booking_status: newStatus
+            })
+        });
+
+        showMessage(`Booking ${actionLabel}d successfully`, 'success');
+        await loadDashboardData();
+    } catch (error) {
+        showMessage(error.message || `Failed to ${actionLabel} booking`, 'error');
+    }
 }
