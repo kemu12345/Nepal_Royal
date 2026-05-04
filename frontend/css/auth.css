@@ -1,320 +1,223 @@
-/*
-    This file provides the styling for the authentication pages,
-    including the login and registration forms. It defines the layout,
-    colors, and responsive behavior for these pages.
-*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-/*
-    The main container for the authentication pages.
-    It centers the content vertically and horizontally
-    and sets a gradient background.
-*/
-.auth-container {
+body {
+    font-family: 'Poppins', sans-serif;
     min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+}
+
+.auth-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.auth-left {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #003893 0%, #DC143C 100%);
-    padding: var(--spacing-lg);
-}
-
-/*
-    The card that holds the authentication form.
-    It has a white background, rounded corners, and a shadow
-    to make it stand out from the background.
-*/
-.auth-card {
-    background: var(--bg-white);
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-    max-width: 480px;
-    width: 100%;
+    padding: 2rem;
+    position: relative;
     overflow: hidden;
 }
 
-/*
-    The header section of the authentication card.
-    It has a gradient background and contains the main title
-    and a tagline.
-*/
-.auth-header {
+/* Backgrounds for different pages */
+.login-page {
+    background: linear-gradient(135deg, rgba(0, 56, 147, 0.5) 0%, rgba(220, 20, 60, 0.5) 100%),
+                url('https://images.pexels.com/photos/10208987/pexels-photo-10208987.jpeg') center/cover fixed;
+}
+
+.register-page {
     background: linear-gradient(135deg, #DC143C 0%, #003893 100%);
-    color: var(--nepal-white);
-    padding: var(--spacing-xxl) var(--spacing-lg);
+}
+
+.auth-left::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.3; }
+}
+
+.auth-branding {
     text-align: center;
+    color: white;
+    position: relative;
+    z-index: 1;
 }
 
-/* The main heading in the auth header. */
-.auth-header h1 {
-    font-size: 2rem;
-    margin-bottom: var(--spacing-sm);
-    font-weight: 700;
-    letter-spacing: 1px;
+.auth-branding i {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
 }
 
-/* The tagline text below the main heading. */
-.auth-header .tagline {
-    font-size: 0.9rem;
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.auth-branding h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.auth-branding p {
+    font-size: 1.1rem;
     opacity: 0.9;
-    margin: 0;
-    font-style: italic;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
 
-/*
-    The main form area within the authentication card.
-    It contains the input fields, labels, and buttons.
-*/
-.auth-form {
-    padding: var(--spacing-xxl) var(--spacing-lg);
+.feature-list {
+    margin-top: 3rem;
+    text-align: left;
 }
 
-/* The title for the form (e.g., "Login" or "Create Account"). */
-.auth-form h2 {
-    color: var(--text-dark);
-    font-size: 1.75rem;
-    margin-bottom: var(--spacing-xs);
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
 }
 
-/* The subtitle or introductory text for the form. */
-.auth-form .subtitle {
-    color: var(--text-light);
-    font-size: 0.95rem;
-    margin-bottom: var(--spacing-xl);
+.feature-item i {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: #FFD700;
 }
 
-/*
-    Styling for form groups, which wrap a label and an input field.
-*/
-.form-group {
-    margin-bottom: var(--spacing-lg);
+.auth-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
 }
 
-/*
-    A row that can contain multiple form fields, arranged in a grid.
-    Used for first name and last name on the registration page.
-*/
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-md);
+.register-page .auth-right {
+    flex: 1.2;
+    background: white;
+    border-radius: 30px 0 0 30px;
 }
 
-/* Styling for form labels. */
-.form-group label {
-    display: block;
-    font-weight: 500;
-    color: var(--text-dark);
-    margin-bottom: var(--spacing-sm);
-    font-size: 0.9rem;
-}
-
-/*
-    Styling for text-based input fields.
-    This includes a transition for a smooth focus effect.
-*/
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="password"],
-.form-group input[type="tel"] {
+.auth-card {
     width: 100%;
-    padding: 0.75rem;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
+    max-width: 420px;
+}
+
+.register-page .auth-card {
+    max-width: 520px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #6c757d;
+}
+
+.form-floating {
+    margin-bottom: 1rem;
+}
+
+.form-floating .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    height: 60px;
     font-size: 1rem;
-    transition: all 0.3s ease;
-    font-family: inherit;
 }
 
-/*
-    Style for input fields when they are focused.
-    It changes the border color and adds a box shadow to highlight the active field.
-*/
-.form-group input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+.form-floating .form-control:focus {
+    border-color: #DC143C;
+    box-shadow: 0 0 0 0.25rem rgba(220, 20, 60, 0.1);
 }
 
-/* A small hint or helper text displayed below a form field. */
-.form-hint {
-    display: block;
-    font-size: 0.85rem;
-    color: var(--text-light);
-    margin-top: var(--spacing-xs);
+.register-page .form-floating .form-control:focus {
+    border-color: #003893;
+    box-shadow: 0 0 0 0.25rem rgba(0, 56, 147, 0.1);
 }
 
-/* Styling for checkboxes. */
-.checkbox {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-size: 0.9rem;
-}
-
-/* The actual checkbox input element. */
-.checkbox input[type="checkbox"] {
-    margin-right: var(--spacing-sm);
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-}
-
-/* Styling for links within the checkbox label (e.g., "Terms of Service"). */
-.checkbox span a {
-    color: var(--primary-color);
-    font-weight: 500;
-}
-
-/*
-    Container for additional form options, like the "Remember me" checkbox
-    and the "Forgot password" link.
-*/
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--spacing-lg);
-    font-size: 0.9rem;
-}
-
-/* Styling for the "Forgot password" link. */
-.forgot-password {
-    color: var(--primary-color);
-    font-weight: 500;
-}
-
-/* Styling for the main submission button in the form. */
-.auth-form .btn {
-    width: 100%;
-    padding: 1rem;
+.btn-auth {
+    height: 55px;
     font-size: 1.1rem;
     font-weight: 600;
-    margin-top: var(--spacing-md);
-    position: relative;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: none;
+    width: 100%;
 }
 
-/* A loader/spinner icon that can be shown on the button during submission. */
-.btn-loader {
+.btn-login {
+    background: linear-gradient(135deg, #DC143C 0%, #b8102f 100%);
+    color: white;
+}
+
+.btn-register {
+    background: linear-gradient(135deg, #003893 0%, #002266 100%);
+    color: white;
+}
+
+.btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.message-box {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
     display: none;
 }
 
-/* Styling for the button when it is disabled. */
-.btn[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
+.message-box.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+.message-box.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+
+.password-strength {
+    height: 5px;
+    border-radius: 3px;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
 }
 
-/*
-    The footer section of the authentication card, typically containing a link
-    to the other authentication page (e.g., "Don't have an account? Sign up").
-*/
-.auth-footer {
-    text-align: center;
-    margin-top: var(--spacing-xl);
-    padding-top: var(--spacing-lg);
-    border-top: 1px solid var(--border-color);
-}
+.strength-weak { background: #dc3545; width: 33%; }
+.strength-medium { background: #ffc107; width: 66%; }
+.strength-strong { background: #28a745; width: 100%; }
 
-/* Text within the auth footer. */
-.auth-footer p {
-    color: var(--text-light);
-    font-size: 0.95rem;
-}
-
-/* Links within the auth footer. */
-.auth-footer a {
-    color: var(--primary-color);
-    font-weight: 600;
-}
-
-/*
-    A message box used to display success, error, or informational messages
-    to the user after a form submission.
-*/
-.message-box {
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    margin-bottom: var(--spacing-lg);
-    font-size: 0.9rem;
-}
-
-/* Styling for a success message. */
-.message-box.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-/* Styling for an error message. */
-.message-box.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-/* Styling for an informational message. */
-.message-box.info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
-
-/*
-    A section to display demo credentials for easy testing of the login functionality.
-*/
-.demo-credentials {
-    background-color: var(--bg-light);
-    padding: var(--spacing-lg);
-    border-top: 1px solid var(--border-color);
-    font-size: 0.85rem;
-}
-
-/* Text within the demo credentials section. */
-.demo-credentials p {
-    margin: 0.25rem 0;
-    color: var(--text-light);
-}
-
-/* Strong (bold) text within the demo credentials section. */
-.demo-credentials strong {
-    color: var(--text-dark);
-}
-
-/*
-    Responsive styles for smaller screens (max-width: 576px).
-    This adjusts padding, font sizes, and layout to ensure the form
-    is usable on mobile devices.
-*/
-@media (max-width: 576px) {
-    /* Adjust padding on the main container for smaller screens. */
-    .auth-container {
-        padding: var(--spacing-md);
-    }
-
-    /* Adjust padding on the auth header. */
-    .auth-header {
-        padding: var(--spacing-lg) var(--spacing-md);
-    }
-
-    /* Reduce the font size of the main heading. */
-    .auth-header h1 {
-        font-size: 1.5rem;
-    }
-
-    /* Adjust padding on the auth form. */
-    .auth-form {
-        padding: var(--spacing-lg) var(--spacing-md);
-    }
-
-    /* Stack form row elements vertically on small screens. */
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    /* Adjust the layout of form options for better readability. */
-    .form-options {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-sm);
-    }
+@media (max-width: 991.98px) {
+    .auth-left { display: none; }
+    .auth-right { border-radius: 0 !important; flex: 1 !important; }
 }

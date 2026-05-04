@@ -473,10 +473,49 @@ function setupForgotPassword() {
     });
 }
 
+/**
+ * Updates the password strength meter based on the password's complexity.
+ * @param {string} password - The password to evaluate.
+ */
+function updatePasswordStrength(password) {
+    const strengthMeter = document.getElementById('passwordStrength');
+    if (!strengthMeter) return;
+
+    strengthMeter.className = 'password-strength';
+    if (!password) return;
+
+    if (password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password)) {
+        strengthMeter.classList.add('strength-strong');
+    } else if (password.length >= 6) {
+        strengthMeter.classList.add('strength-medium');
+    } else {
+        strengthMeter.classList.add('strength-weak');
+    }
+}
+
+/**
+ * Validates names to ensure they only contain letters.
+ * @param {HTMLInputElement} input - The input element to validate.
+ */
+function setupNameValidation(input) {
+    if (!input) return;
+    input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^a-zA-Z]/g, '');
+    });
+}
+
 // When the page content is fully loaded, run initial checks.
 document.addEventListener('DOMContentLoaded', () => {
     checkAuthStatus();
     setupForgotPassword();
+
+    const passwordInput = document.getElementById('password');
+    if (passwordInput && document.getElementById('passwordStrength')) {
+        passwordInput.addEventListener('input', (e) => updatePasswordStrength(e.target.value));
+    }
+
+    setupNameValidation(document.getElementById('firstName'));
+    setupNameValidation(document.getElementById('lastName'));
 
     if (document.getElementById('loginForm') || document.getElementById('registerForm')) {
         fetchAndSetCsrfToken(true);
