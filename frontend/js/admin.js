@@ -167,7 +167,10 @@ function renderUsersTable(users) {
 
     tbody.innerHTML = users.map((u) => {
         const fullName = `${u.first_name || ''} ${u.last_name || ''}`.trim();
-        const status = Number(u.is_active) === 1 ? 'Active' : 'Inactive';
+        const isActive = Number(u.is_active) === 1;
+        const status = isActive ? 'Active' : 'Inactive';
+        const toggleLabel = isActive ? 'Deactivate' : 'Activate';
+        const toggleClass = isActive ? 'btn-warning' : 'btn-success';
         return `
             <tr>
                 <td>${u.user_id}</td>
@@ -176,10 +179,60 @@ function renderUsersTable(users) {
                 <td>${escapeHtml(u.phone || '-')}</td>
                 <td>${escapeHtml(capitalize(u.role || 'user'))}</td>
                 <td>${status}</td>
-                <td>-</td>
+                <td>
+                    <button class="btn ${toggleClass} btn-sm me-1" data-user-toggle="${u.user_id}" data-user-active="${u.is_active}">${toggleLabel}</button>
+                    <button class="btn btn-danger btn-sm" data-user-delete="${u.user_id}" data-user-name="${escapeHtml(fullName)}">Delete</button>
+                </td>
             </tr>
         `;
     }).join('');
+
+    tbody.querySelectorAll('[data-user-toggle]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const id = Number(button.getAttribute('data-user-toggle'));
+            const currentActive = Number(button.getAttribute('data-user-active'));
+            toggleUserStatus(id, currentActive === 1);
+        });
+    });
+
+    tbody.querySelectorAll('[data-user-delete]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const id = Number(button.getAttribute('data-user-delete'));
+            const name = button.getAttribute('data-user-name');
+            deleteUser(id, name);
+        });
+    });
+}
+
+async function toggleUserStatus(userId, isCurrentlyActive) {
+    const action = isCurrentlyActive ? 'deactivate' : 'activate';
+    if (!window.confirm(`Are you sure you want to ${action} this user?`)) return;
+
+    try {
+        await RoyalNepal.apiRequest('manage_users.php', {
+            method: 'PUT',
+            body: JSON.stringify({ user_id: userId, is_active: !isCurrentlyActive })
+        });
+        showMessage(`User ${action}d successfully`, 'success');
+        await loadDashboardData();
+    } catch (error) {
+        showMessage(error.message || `Failed to ${action} user`, 'error');
+    }
+}
+
+async function deleteUser(userId, name) {
+    if (!window.confirm(`Permanently delete user "${name}"? This cannot be undone.`)) return;
+
+    try {
+        await RoyalNepal.apiRequest('manage_users.php', {
+            method: 'DELETE',
+            body: JSON.stringify({ user_id: userId })
+        });
+        showMessage('User deleted successfully', 'success');
+        await loadDashboardData();
+    } catch (error) {
+        showMessage(error.message || 'Failed to delete user', 'error');
+    }
 }
 
 function renderFlightsTable(flights) {
@@ -289,8 +342,8 @@ function renderHotelsTable(hotels) {
             <td>${escapeHtml(h.hotel_name || '-')}</td>
             <td>${escapeHtml(h.location_name || '-')}</td>
             <td>${h.star_rating ?? '-'}</td>
-            <td>-</td>
-            <td>-</td>
+            <td>${h.min_price_per_night != null ? formatAmount(h.min_price_per_night, 'NPR') : '-'}</td>
+            <td>${h.total_available_rooms != null ? h.total_available_rooms : '-'}</td>
             <td>${Number(h.is_active) === 1 ? 'Active' : 'Inactive'}</td>
             <td>
                 <button class="btn btn-secondary btn-sm" type="button" data-hotel-edit="${h.hotel_id}">Edit</button>
@@ -335,8 +388,8 @@ function renderPackagesTable(packages) {
             <td>${escapeHtml(p.package_name || '-')}</td>
             <td>${p.duration_days || 0}D/${p.duration_nights || 0}N</td>
             <td>${formatAmount(p.base_price, p.currency)}</td>
-            <td>-</td>
-            <td>-</td>
+            <td>${escapeHtml(p.destinations || '-')}</td>
+            <td>${p.group_size_max ?? '-'}</td>
             <td>${Number(p.is_active) === 1 ? 'Active' : 'Inactive'}</td>
             <td>
                 <button class="btn btn-secondary btn-sm" type="button" data-package-edit="${p.package_id}">Edit</button>
@@ -381,7 +434,7 @@ function renderPlacesTable(places) {
             <td>${escapeHtml(p.place_name || '-')}</td>
             <td>${escapeHtml(p.location_name || '-')}</td>
             <td>${p.altitude_meters ?? '-'}</td>
-            <td>-</td>
+            <td>${p.latitude && p.longitude ? `${p.latitude}, ${p.longitude}` : '-'}</td>
             <td>${escapeHtml((p.description || '').slice(0, 60))}${(p.description || '').length > 60 ? '...' : ''}</td>
             <td>
                 <button class="btn btn-secondary btn-sm" type="button" data-place-edit="${p.place_id}">Edit</button>
