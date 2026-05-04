@@ -27,6 +27,13 @@ let allPlaces = [];         // Holds all places fetched from the API.
 let filteredPlaces = [];    // Holds the places after applying filters.
 let currentCategory = '';   // The currently selected category filter.
 
+// Curated images for popular places to ensure the UI looks premium even if DB URLs are missing.
+const placeImages = {
+    'Boudhanath Stupa': 'https://www.acethehimalaya.com/wp-content/uploads/2018/01/boudhanath-stupa.jpg',
+    'Nagarkot Hill Station': 'https://gobeyond.asia/var/site/storage/images/media/images/country-pages/nepal/kathmandu-and-nearby/trips/nagarkot-discovery/nagarkot-discovery-4/3664577-1-eng-GB/nagarkot-discovery-4_product_gallery.jpg',
+    'Sagarmatha National Park': 'https://www.acethehimalaya.com/wp-content/uploads/2024/03/sagarmatha-national-park-sign-with-mount-everest-1024x768.jpg.webp'
+};
+
 // This event listener runs when the HTML document is fully loaded.
 document.addEventListener('DOMContentLoaded', () => {
     // Load all places from the API.
@@ -248,16 +255,16 @@ function applyFilters() {
 
     // Map pill category values to actual DB category values.
     const pillToDbCategories = {
-        'temple':       ['religious'],
-        'monastery':    ['religious', 'cultural'],
-        'palace':       ['historical', 'heritage_site', 'cultural'],
-        'mountain':     ['natural', 'adventure', 'viewpoint', 'national_park'],
-        'lake':         ['natural'],
-        'park':         ['national_park', 'wildlife', 'natural'],
-        'heritage_site':['heritage_site', 'cultural', 'historical'],
-        'viewpoint':    ['viewpoint'],
-        'wildlife':     ['wildlife'],
-        'adventure':    ['adventure']
+        'temple': ['religious'],
+        'monastery': ['religious', 'cultural'],
+        'palace': ['historical', 'heritage_site', 'cultural'],
+        'mountain': ['natural', 'adventure', 'viewpoint', 'national_park'],
+        'lake': ['natural'],
+        'park': ['national_park', 'wildlife', 'natural'],
+        'heritage_site': ['heritage_site', 'cultural', 'historical'],
+        'viewpoint': ['viewpoint'],
+        'wildlife': ['wildlife'],
+        'adventure': ['adventure']
     };
 
     // Filter the places based on the search query and selected category.
@@ -346,15 +353,18 @@ function createPlaceCard(place) {
         features.push('Free Entry');
     }
 
+    const imageUrl = placeImages[place.place_name] || place.image_url;
+
     return `
         <div class="col-md-6 col-lg-4">
             <div class="place-card animate__animated animate__fadeInUp">
                 <div class="place-image" style="position: relative; overflow: hidden;">
                     ${heritageBadge}
                     <span class="place-category-badge ${badgeClass}" style="position: relative; z-index: 2;">${formatCategory(place.category)}</span>
-                    ${place.image_url 
-                        ? `<img src="${place.image_url}" alt="${place.place_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 0;">` 
-                        : `<span style="font-size: 4rem; position: relative; z-index: 1;">${categoryIcon}</span>`
+                    ${imageUrl 
+                        ? `<img src="${imageUrl}" alt="${place.place_name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">
+                           <span class="place-icon-fallback" style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; position: relative; z-index: 0; font-size: 3rem;">${categoryIcon}</span>` 
+                        : `<span class="place-icon-fallback" style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; position: relative; z-index: 0; font-size: 3rem;">${categoryIcon}</span>`
                     }
                 </div>
                 <div class="place-body">
@@ -374,14 +384,56 @@ function createPlaceCard(place) {
 }
 
 /**
- * Placeholder function for viewing more details about a place.
- * In a full application, this might navigate to a new page or open a modal.
+ * Opens a detailed modal for a specific place.
+ * @param {number} placeId - The ID of the place to view.
  */
 function viewPlace(placeId) {
     const place = allPlaces.find(p => p.place_id === placeId);
-    if (place) {
-        showToast(`🗺️ Exploring ${place.place_name}!`, 'info');
+    if (!place) return;
+
+    // Populate modal elements
+    const titleEl = document.getElementById('modalTitle');
+    const locationEl = document.getElementById('modalLocation');
+    const descriptionEl = document.getElementById('modalDescription');
+    const imageContainer = document.getElementById('modalImageContainer');
+    const categoryBadge = document.getElementById('modalCategoryBadge');
+    const entryFeeEl = document.getElementById('modalEntryFee');
+    const unescoStatusEl = document.getElementById('modalUnescoStatus');
+
+    if (titleEl) titleEl.textContent = place.place_name;
+    if (locationEl) locationEl.innerHTML = `<i class="bi bi-geo-alt-fill me-1"></i>${place.location_name || 'Nepal'}`;
+    if (descriptionEl) descriptionEl.textContent = place.description || 'Discover the beauty of this amazing place in Nepal.';
+
+    const imageUrl = placeImages[place.place_name] || place.image_url;
+
+    if (imageContainer) {
+        if (imageUrl) {
+            imageContainer.style.backgroundImage = `url('${imageUrl}')`;
+            imageContainer.innerHTML = '';
+        } else {
+            imageContainer.style.backgroundImage = 'linear-gradient(135deg, #6f42c1, #4a1d96)';
+            imageContainer.innerHTML = `<div class="d-flex align-items-center justify-content-center h-100 text-white" style="font-size: 5rem;">${getCategoryIcon(place.category)}</div>`;
+        }
     }
+
+    if (categoryBadge) {
+        categoryBadge.textContent = formatCategory(place.category);
+        categoryBadge.className = `badge rounded-pill mb-2 badge-${place.category}`;
+    }
+
+    if (entryFeeEl) {
+        const fee = parseFloat(place.entry_fee);
+        entryFeeEl.textContent = fee > 0 ? `${place.currency} ${fee.toLocaleString()}` : 'Free Entry';
+    }
+
+    if (unescoStatusEl) {
+        unescoStatusEl.textContent = place.is_unesco_heritage == 1 ? 'Yes, World Heritage' : 'Not Listed';
+        unescoStatusEl.className = place.is_unesco_heritage == 1 ? 'fw-bold mb-0 text-success' : 'fw-bold mb-0 text-secondary';
+    }
+
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('placeModal'));
+    modal.show();
 }
 
 /**
