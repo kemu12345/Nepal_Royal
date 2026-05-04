@@ -29,17 +29,7 @@ let currentCategory = '';   // The currently selected category filter.
 
 // Curated images for popular places to ensure the UI looks premium even if DB URLs are missing.
 const placeImages = {
-    'Pashupatinath Temple': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Pashupatinath_Temple-2020.jpg/1200px-Pashupatinath_Temple-2020.jpg',
     'Boudhanath Stupa': 'https://www.acethehimalaya.com/wp-content/uploads/2018/01/boudhanath-stupa.jpg',
-    'Kathmandu Durbar Square': 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Kathmandu_Durbar_Square_2013.jpg/1200px-Kathmandu_Durbar_Square_2013.jpg',
-    'Bhaktapur Durbar Square': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Bhaktapur_Durbar_Square_2014.jpg/1200px-Bhaktapur_Durbar_Square_2014.jpg',
-    'Patan Durbar Square': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Patan_Durbar_Square_2014.jpg/1200px-Patan_Durbar_Square_2014.jpg',
-    'Swayambhunath (Monkey Temple)': 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Swayambhunath_Stupa-Kathmandu.jpg/1200px-Swayambhunath_Stupa-Kathmandu.jpg',
-    'Mount Everest': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/1200px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg',
-    'Phewa Lake': 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Phewa_Lake_Pokhara.jpg/1200px-Phewa_Lake_Pokhara.jpg',
-    'Chitwan National Park': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Chitwan_National_Park_Nepal.jpg/1200px-Chitwan_National_Park_Nepal.jpg',
-    'Annapurna Conservation Area': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Under_stars_and_snows.jpg/1200px-Under_stars_and_snows.jpg',
-    'Janaki Mandir': 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Janaki_Temple_Janakpur.jpg/1200px-Janaki_Temple_Janakpur.jpg',
     'Nagarkot Hill Station': 'https://gobeyond.asia/var/site/storage/images/media/images/country-pages/nepal/kathmandu-and-nearby/trips/nagarkot-discovery/nagarkot-discovery-4/3664577-1-eng-GB/nagarkot-discovery-4_product_gallery.jpg',
     'Sagarmatha National Park': 'https://www.acethehimalaya.com/wp-content/uploads/2024/03/sagarmatha-national-park-sign-with-mount-everest-1024x768.jpg.webp'
 };
