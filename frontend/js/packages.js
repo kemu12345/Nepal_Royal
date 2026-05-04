@@ -299,24 +299,41 @@ function displayPackages(packages) {
  */
 function createPackageCard(pkg) {
     const badgeClass = `badge-${pkg.package_type}`;
-    const typeEmoji = getTypeEmoji(pkg.package_type);
     const highlights = getDefaultHighlights(pkg.package_type);
-    const featuredRibbon = pkg.is_featured == 1 ? '<div class="position-absolute top-0 start-0 bg-warning text-dark px-3 py-1 fw-bold" style="border-radius: 20px 0 15px 0;"><i class="bi bi-star-fill me-1"></i>FEATURED</div>' : '';
+    const featuredRibbon = pkg.is_featured == 1 ? '<div class="position-absolute top-0 start-0 bg-warning text-dark px-3 py-1 fw-bold" style="border-radius: 20px 0 15px 0; z-index: 3;"><i class="bi bi-star-fill me-1"></i>FEATURED</div>' : '';
+    // Curated images keyed by exact package name — checked FIRST so they
+    // always override the generic database image_url.
+    // Only packages whose DB image_url is wrong/generic are listed here.
+    const packageNameImages = {
+        'Chitwan Jungle Safari':          'https://chitwanjunglesafaritour.com/wp-content/uploads/2026/05/Chitwan-National-Park-Tourism-Updates.webp',
+        'Everest Base Camp Trek':         'https://www.nepalhightrek.com/wp-content/uploads/2023/10/Everest-Base-Camp-Trek-8.jpg',
+        'Kathmandu Valley Heritage Tour': 'https://media.sublimetrails.com/uploads/img/untitled-design--81-.webp',
+        'Pokhara Adventure Package':      'https://www.himalayasdiscovery.com/assets/images/nepal-tour/pokhara/weather/Phewa-Lake-summer.jpg',
+        'Poon Hill Sunrise Trek':         'https://www.himalayanglacier.com/wp-content/uploads/2020/03/poonhill-ghorepani-768x512.jpg',
+        'Lumbini Pilgrimage Tour':        'https://khangchen.com/wp-content/uploads/2026/01/Lumbini-scaled.jpg'
+    };
+    const defaultImages = {
+        'trekking':   'https://picsum.photos/id/29/600/300',
+        'adventure':  'https://picsum.photos/id/1043/600/300',
+        'cultural':   'https://picsum.photos/id/164/600/300',
+        'wildlife':   'https://picsum.photos/id/582/600/300',
+        'pilgrimage': 'https://picsum.photos/id/327/600/300',
+        'heritage':   'https://picsum.photos/id/318/600/300',
+        'combined':   'https://picsum.photos/id/15/600/300'
+    };
+    const fallbackImg = 'https://picsum.photos/id/29/600/300';
+    // Priority: curated name-based image → database image_url → type default → fallback
+    const imageUrl = packageNameImages[pkg.package_name] || pkg.image_url || defaultImages[pkg.package_type] || fallbackImg;
 
     return `
         <div class="col-md-6 col-lg-4">
             <div class="package-card animate__animated animate__fadeInUp">
-                <div class="package-image" style="position: relative; overflow: hidden;">
+                <div class="package-image">
                     ${featuredRibbon}
-                    ${pkg.image_url 
-                        ? `<img src="${pkg.image_url}" alt="${pkg.package_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 0;">` 
-                        : `<div class="d-flex align-items-center justify-content-center h-100 text-white" style="font-size: 4rem; position: relative; z-index: 1;">
-                               ${typeEmoji}
-                           </div>`
-                    }
-                    <span class="package-badge ${badgeClass}" style="position: relative; z-index: 2;">${pkg.package_type}</span>
-                    <span class="package-duration" style="position: relative; z-index: 2;"><i class="bi bi-calendar3 me-1"></i>${pkg.duration_days}D/${pkg.duration_nights}N</span>
-                    <div class="package-price-tag" style="position: relative; z-index: 2;">$${formatPrice(pkg.base_price)}</div>
+                    <img src="${imageUrl}" alt="${pkg.package_name}" onerror="this.src='${fallbackImg}'">
+                    <span class="package-badge ${badgeClass}">${pkg.package_type}</span>
+                    <span class="package-duration"><i class="bi bi-calendar3 me-1"></i>${pkg.duration_days}D/${pkg.duration_nights}N</span>
+                    <div class="package-price-tag">रू ${formatPrice(pkg.base_price)}</div>
                 </div>
                 <div class="package-body">
                     <h5 class="package-title">${pkg.package_name}</h5>

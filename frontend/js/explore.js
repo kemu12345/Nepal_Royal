@@ -246,6 +246,20 @@ function applyFilters() {
     const searchQuery = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const sortBy = document.getElementById('sortFilter')?.value || 'name-asc';
 
+    // Map pill category values to actual DB category values.
+    const pillToDbCategories = {
+        'temple':       ['religious'],
+        'monastery':    ['religious', 'cultural'],
+        'palace':       ['historical', 'heritage_site', 'cultural'],
+        'mountain':     ['natural', 'adventure', 'viewpoint', 'national_park'],
+        'lake':         ['natural'],
+        'park':         ['national_park', 'wildlife', 'natural'],
+        'heritage_site':['heritage_site', 'cultural', 'historical'],
+        'viewpoint':    ['viewpoint'],
+        'wildlife':     ['wildlife'],
+        'adventure':    ['adventure']
+    };
+
     // Filter the places based on the search query and selected category.
     filteredPlaces = allPlaces.filter(place => {
         // Search filter checks name, description, and location.
@@ -258,9 +272,12 @@ function applyFilters() {
             }
         }
 
-        // Category filter.
-        if (currentCategory && place.category !== currentCategory) {
-            return false;
+        // Category filter using pill-to-DB mapping.
+        if (currentCategory) {
+            const allowed = pillToDbCategories[currentCategory] || [currentCategory];
+            if (!allowed.includes(place.category)) {
+                return false;
+            }
         }
 
         return true;
