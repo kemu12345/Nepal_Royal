@@ -73,26 +73,21 @@ function debounce(func, wait) {
 function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (isLoggedIn && user.first_name) {
-        const loginLinks = document.querySelectorAll('a[href="login.html"], a[href*="/login.html"]');
-        loginLinks.forEach(link => {
-            const parentLi = link.closest('.nav-item');
-            if (parentLi) {
-                parentLi.innerHTML = `
-                    <div class="dropdown">
-                        <button class="btn btn-warning btn-sm px-4 fw-semibold dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-2"></i>${user.first_name}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                        </ul>
-                    </div>
-                `;
-            }
-        });
+    const navAuth = document.getElementById('navAuth');
+
+    if (isLoggedIn && user.first_name && navAuth) {
+        navAuth.innerHTML = `
+            <div class="dropdown">
+                <button class="btn btn-warning btn-sm px-4 fw-semibold dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle me-2"></i>${user.first_name}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        `;
     }
 }
 
@@ -251,6 +246,20 @@ function applyFilters() {
     const searchQuery = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const sortBy = document.getElementById('sortFilter')?.value || 'name-asc';
 
+    // Map pill category values to actual DB category values.
+    const pillToDbCategories = {
+        'temple':       ['religious'],
+        'monastery':    ['religious', 'cultural'],
+        'palace':       ['historical', 'heritage_site', 'cultural'],
+        'mountain':     ['natural', 'adventure', 'viewpoint', 'national_park'],
+        'lake':         ['natural'],
+        'park':         ['national_park', 'wildlife', 'natural'],
+        'heritage_site':['heritage_site', 'cultural', 'historical'],
+        'viewpoint':    ['viewpoint'],
+        'wildlife':     ['wildlife'],
+        'adventure':    ['adventure']
+    };
+
     // Filter the places based on the search query and selected category.
     filteredPlaces = allPlaces.filter(place => {
         // Search filter checks name, description, and location.
@@ -263,9 +272,12 @@ function applyFilters() {
             }
         }
 
-        // Category filter.
-        if (currentCategory && place.category !== currentCategory) {
-            return false;
+        // Category filter using pill-to-DB mapping.
+        if (currentCategory) {
+            const allowed = pillToDbCategories[currentCategory] || [currentCategory];
+            if (!allowed.includes(place.category)) {
+                return false;
+            }
         }
 
         return true;

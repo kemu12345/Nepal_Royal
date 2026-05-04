@@ -210,10 +210,14 @@ function getBuses($db) {
 function getHotels($db) {
     $query = "SELECT h.hotel_id, h.vendor_id, h.hotel_name, h.location_id, h.address, h.description,
                      h.star_rating, h.hotel_type, h.contact_number, h.email, h.image_url, h.is_active,
-                     l.location_name, l.province
+                     l.location_name, l.province,
+                     MIN(hr.base_price_per_night) AS min_price_per_night,
+                     COALESCE(SUM(hr.available_rooms), 0) AS total_available_rooms
               FROM hotels h
               LEFT JOIN locations l ON h.location_id = l.location_id
+              LEFT JOIN hotel_rooms hr ON h.hotel_id = hr.hotel_id AND hr.is_available = 1
               WHERE h.is_active = 1
+              GROUP BY h.hotel_id
               ORDER BY h.hotel_id DESC";
 
     $stmt = $db->prepare($query);
@@ -227,7 +231,15 @@ function getHotels($db) {
  * @return array An array of package records.
  */
 function getPackages($db) {
-    $query = "SELECT * FROM tour_packages WHERE is_active = 1 ORDER BY package_id DESC";
+    $query = "SELECT tp.*,
+                     GROUP_CONCAT(DISTINCT l.location_name ORDER BY pl.sequence_order SEPARATOR ', ') AS destinations,
+                     COUNT(DISTINCT pl.location_id) AS destination_count
+              FROM tour_packages tp
+              LEFT JOIN package_locations pl ON tp.package_id = pl.package_id
+              LEFT JOIN locations l ON pl.location_id = l.location_id
+              WHERE tp.is_active = 1
+              GROUP BY tp.package_id
+              ORDER BY tp.package_id DESC";
     $stmt = $db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -242,7 +254,7 @@ function getPlaces($db) {
     $query = "SELECT p.place_id, p.place_name, p.location_id, p.category, p.description, p.history,
                      p.best_time_to_visit, p.entry_fee, p.currency, p.opening_hours, p.unesco_site,
                      p.altitude_meters, p.image_url, p.tips_and_guidelines, p.is_active,
-                     l.location_name, l.province
+                     l.location_name, l.province, l.latitude, l.longitude
               FROM places p
               LEFT JOIN locations l ON p.location_id = l.location_id
               WHERE p.is_active = 1
@@ -313,9 +325,14 @@ function getUsers($db) {
 function getBookings($db, $limit = null) {
     $query = "SELECT b.booking_id, b.booking_reference, b.booking_type, b.booking_status,
                      b.total_amount, b.currency, b.payment_status, b.booking_date,
-                     b.user_id, u.first_name, u.last_name, u.email
+                     b.user_id, u.first_name, u.last_name, u.email,
+                     COALESCE(fb.travel_date, bb.travel_date, hb.check_in_date, pb.start_date) AS travel_date
               FROM bookings b
               INNER JOIN users u ON b.user_id = u.user_id
+              LEFT JOIN flight_bookings fb ON b.booking_id = fb.booking_id AND b.booking_type = 'flight'
+              LEFT JOIN bus_bookings bb ON b.booking_id = bb.booking_id AND b.booking_type = 'bus'
+              LEFT JOIN hotel_bookings hb ON b.booking_id = hb.booking_id AND b.booking_type = 'hotel'
+              LEFT JOIN package_bookings pb ON b.booking_id = pb.booking_id AND b.booking_type = 'package'
               ORDER BY b.booking_date DESC";
 
     if ($limit !== null) {

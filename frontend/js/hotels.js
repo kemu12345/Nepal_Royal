@@ -74,26 +74,21 @@ function debounce(func, wait) {
 function updateAuthButtons() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    if (isLoggedIn && user.first_name) {
-        const loginLinks = document.querySelectorAll('a[href="login.html"], a[href*="/login.html"]');
-        loginLinks.forEach(link => {
-            const parentLi = link.closest('.nav-item');
-            if (parentLi) {
-                parentLi.innerHTML = `
-                    <div class="dropdown">
-                        <button class="btn btn-warning btn-sm px-4 fw-semibold dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-2"></i>${user.first_name}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-                        </ul>
-                    </div>
-                `;
-            }
-        });
+    const navAuth = document.getElementById('navAuth');
+
+    if (isLoggedIn && user.first_name && navAuth) {
+        navAuth.innerHTML = `
+            <div class="dropdown">
+                <button class="btn btn-warning btn-sm px-4 fw-semibold dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle me-2"></i>${user.first_name}
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                </ul>
+            </div>
+        `;
     }
 }
 
@@ -115,7 +110,8 @@ function getDemoHotels() {
             base_price_per_night: 12000,
             currency: 'NPR',
             available_rooms: 8,
-            amenities: 'WiFi,Pool,Spa,Restaurant,Bar'
+            amenities: 'WiFi,Pool,Spa,Restaurant,Bar',
+            image_url: 'https://picsum.photos/id/164/600/300'
         },
         {
             hotel_id: 2,
@@ -130,7 +126,8 @@ function getDemoHotels() {
             base_price_per_night: 8500,
             currency: 'NPR',
             available_rooms: 12,
-            amenities: 'WiFi,Pool,Garden,Restaurant'
+            amenities: 'WiFi,Pool,Garden,Restaurant',
+            image_url: 'https://picsum.photos/id/145/600/300'
         },
         {
             hotel_id: 3,
@@ -145,7 +142,8 @@ function getDemoHotels() {
             base_price_per_night: 3500,
             currency: 'NPR',
             available_rooms: 5,
-            amenities: 'WiFi,Heating,Restaurant'
+            amenities: 'WiFi,Heating,Restaurant',
+            image_url: 'https://picsum.photos/id/1080/600/300'
         },
         {
             hotel_id: 4,
@@ -160,7 +158,8 @@ function getDemoHotels() {
             base_price_per_night: 6500,
             currency: 'NPR',
             available_rooms: 10,
-            amenities: 'WiFi,Safari,Restaurant,Bar'
+            amenities: 'WiFi,Safari,Restaurant,Bar',
+            image_url: 'https://picsum.photos/id/137/600/300'
         },
         {
             hotel_id: 5,
@@ -175,7 +174,8 @@ function getDemoHotels() {
             base_price_per_night: 1500,
             currency: 'NPR',
             available_rooms: 8,
-            amenities: 'Meals,Heating'
+            amenities: 'Meals,Heating',
+            image_url: 'https://picsum.photos/id/16/600/300'
         }
     ];
 }
@@ -350,19 +350,26 @@ function createHotelCard(hotel) {
     const roomsClass = hotel.available_rooms > 5 ? 'text-success' : hotel.available_rooms > 0 ? 'text-warning' : 'text-danger';
     const amenities = hotel.amenities ? hotel.amenities.split(',').slice(0, 4) : [];
 
+    const hotelTypeImages = {
+        'hotel':      'https://picsum.photos/id/164/600/300',
+        'resort':     'https://picsum.photos/id/145/600/300',
+        'teahouse':   'https://picsum.photos/id/16/600/300',
+        'guesthouse': 'https://picsum.photos/id/1080/600/300',
+        'lodge':      'https://picsum.photos/id/137/600/300'
+    };
+    const fallbackImg = 'https://picsum.photos/id/164/600/300';
+    const imageUrl = hotel.image_url || hotelTypeImages[hotel.hotel_type] || fallbackImg;
+
     return `
         <div class="col-12">
             <div class="hotel-card animate__animated animate__fadeInUp">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="hotel-image" style="position: relative; overflow: hidden;">
+                        <div class="hotel-image" style="position: relative; overflow: hidden; height: 200px; background: #1a1a2e;">
                             <span class="hotel-type-badge ${typeClass}" style="position: absolute; top: 10px; left: 10px; z-index: 2;">${hotel.hotel_type}</span>
-                            ${hotel.image_url 
-                                ? `<img src="${hotel.image_url}" alt="${hotel.hotel_name}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;">` 
-                                : `<div class="d-flex align-items-center justify-content-center h-100" style="position: relative; z-index: 1;">
-                                       <i class="bi bi-building fs-1 text-white"></i>
-                                   </div>`
-                            }
+                            <img src="${imageUrl}" alt="${hotel.hotel_name}"
+                                 onerror="this.src='${fallbackImg}'"
+                                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
                         </div>
                     </div>
                     <div class="col-md-5">
