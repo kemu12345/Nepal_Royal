@@ -169,6 +169,57 @@
         </div>
     </footer>
 
+    <!-- Place Details Modal -->
+    <div class="modal fade" id="placeModal" tabindex="-1" aria-labelledby="placeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 overflow-hidden shadow-lg">
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <div class="col-lg-6">
+                            <div id="modalImageContainer" class="h-100 min-vh-50" style="background-size: cover; background-position: center; min-height: 400px;"></div>
+                        </div>
+                        <div class="col-lg-6 p-4 p-md-5 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <span id="modalCategoryBadge" class="badge rounded-pill mb-2">Category</span>
+                                    <h2 id="modalTitle" class="fw-bold mb-1">Place Name</h2>
+                                    <p id="modalLocation" class="text-muted"><i class="bi bi-geo-alt-fill me-1"></i>Location</p>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            
+                            <div class="flex-grow-1">
+                                <p id="modalDescription" class="text-secondary lh-lg">Description goes here...</p>
+                                
+                                <div class="row g-3 mt-2">
+                                    <div class="col-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <p class="small text-muted mb-1">Entry Fee</p>
+                                            <p id="modalEntryFee" class="fw-bold mb-0">Free</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 bg-light rounded-3">
+                                            <p class="small text-muted mb-1">UNESCO Site</p>
+                                            <p id="modalUnescoStatus" class="fw-bold mb-0">No</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-3 border-top d-grid gap-2">
+                                <a href="packages.html" class="btn btn-warning fw-bold py-2">
+                                    <i class="bi bi-gift me-2"></i>Find Related Packages
+                                </a>
+                                <button type="button" class="btn btn-outline-secondary py-2" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Container -->
     <div class="toast-container"></div>
 
