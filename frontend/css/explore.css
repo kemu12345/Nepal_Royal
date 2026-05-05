@@ -147,6 +147,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.place-icon-fallback {
     font-size: 4rem;
 }
 
@@ -324,7 +327,51 @@ body {
 /* Toast */
 .toast-container {
     position: fixed;
-    top: 20px;
+    top: 80px; /* Below navbar */
     right: 20px;
-    z-index: 9999;
+    z-index: 1060;
+}
+
+/* Modal Styles */
+#placeModal .modal-content {
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+}
+
+#modalImageContainer {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+#modalImageContainer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+}
+
+.min-vh-50 {
+    min-height: 50vh;
+}
+
+/* Responsive adjustments for modal */
+@media (max-width: 991.98px) {
+    #modalImageContainer {
+        min-height: 250px !important;
+    }
+}
+
+#modalCategoryBadge {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+
+.badge-religious {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
 }
