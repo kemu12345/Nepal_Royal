@@ -2,24 +2,21 @@
 <html lang="en-US">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Login - Royal Nepal</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <!-- Animate.css -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+    
     <link rel="stylesheet" href="../css/auth.css" />
 </head>
 <body class="login-page">
     <main class="auth-wrapper">
-        <!-- Left Side - Branding -->
+        <!-- Left Side - Branding & Features -->
         <section class="auth-left">
-            <div class="auth-branding animate__animated animate__fadeInLeft">
-                <i class="bi bi-mountains"></i>
+            <div class="auth-branding">
                 <h1>Royal Nepal</h1>
                 <p>Experience the pride of Nepalese 🇳🇵</p>
                 
@@ -46,7 +43,7 @@
 
         <!-- Right Side - Login Form -->
         <section class="auth-right">
-            <div class="auth-card animate__animated animate__fadeInRight">
+            <div class="auth-card">
                 <div class="auth-header">
                     <h2>Welcome Back! 👋</h2>
                     <p>Login to explore Nepal's wonders</p>
@@ -55,78 +52,114 @@
                 <div id="messageBox" class="message-box"></div>
 
                 <form id="loginForm">
-                    <div class="form-floating">
-                        <input type="email" class="form-control" id="email" placeholder="your@email.com" required>
-                        <label for="email"><i class="bi bi-envelope me-2"></i>Email Address</label>
-                    </div>
-
-                    <div class="form-floating">
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
-                        <label for="password"><i class="bi bi-lock me-2"></i>Password</label>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                    <div class="form-group-custom">
+                        <label for="email">Email Address</label>
+                        <div class="input-container">
+                            <i class="bi bi-envelope"></i>
+                            <input type="email" id="email" placeholder="admin@royalnepal.com" required>
                         </div>
-                        <a href="#" id="forgotPasswordLink" class="text-decoration-none text-danger">Forgot Password?</a>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label for="password">Password</label>
+                        <div class="input-container">
+                            <i class="bi bi-lock"></i>
+                            <input type="password" id="password" placeholder="••••••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" id="forgotPasswordLink" class="forgot-link">Forgot Password?</a>
                     </div>
 
                     <!-- Hidden CSRF Token -->
                     <input type="hidden" id="csrfToken" name="csrf_token">
 
-                    <button type="submit" class="btn btn-danger btn-login w-100" id="loginBtn">
-                        <span class="btn-text"><i class="bi bi-box-arrow-in-right me-2"></i>Login</span>
+                    <button type="submit" class="btn-login" id="loginBtn">
+                        <span class="btn-text"><i class="bi bi-box-arrow-in-right"></i> Login</span>
                         <span class="btn-loader" style="display: none;">
-                            <span class="spinner-border spinner-border-sm me-2"></span>Logging in...
+                            <i class="bi bi-arrow-repeat spin"></i> Logging in...
                         </span>
                     </button>
                 </form>
 
-                <div class="mt-3 text-center text-muted small">
-                    Enter your email in "Forgot Password" to receive a reset link.
+                <div class="auth-footer">
+                    <p>Enter your email in "Forgot Password" to receive a reset link.</p>
+                    <p class="mt-3">
+                        Don't have an account? 
+                        <a href="register.html">Register here</a>
+                    </p>
                 </div>
-
-                <p class="text-center mt-4 text-muted">
-                    Don't have an account? 
-                    <a href="register.html" class="text-danger fw-semibold text-decoration-none">Register here</a>
-                </p>
             </div>
         </section>
     </main>
 
-    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="forgotPasswordModalLabel">Reset your password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="forgotPasswordForm">
-                    <div class="modal-body">
-                        <p class="text-muted mb-3">Enter your account email and we will send a reset link.</p>
-                        <div class="form-floating">
-                            <input type="email" class="form-control" id="resetEmail" placeholder="your@email.com" required>
-                            <label for="resetEmail"><i class="bi bi-envelope me-2"></i>Email Address</label>
+    <!-- Forgot Password Modal (Simplified but styled) -->
+    <div id="forgotPasswordModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content-custom">
+            <div class="modal-header-custom">
+                <h3>Reset your password</h3>
+                <button type="button" class="close-modal">&times;</button>
+            </div>
+            <form id="forgotPasswordForm">
+                <div class="modal-body-custom">
+                    <p>Enter your account email and we will send a reset link.</p>
+                    <div class="form-group-custom mt-3">
+                        <div class="input-container">
+                            <i class="bi bi-envelope"></i>
+                            <input type="email" id="resetEmail" placeholder="your@email.com" required>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger" id="resetPasswordBtn">
-                            <span class="btn-text">Send Reset Link</span>
-                            <span class="btn-loader" style="display: none;">
-                                <span class="spinner-border spinner-border-sm me-2"></span>Sending...
-                            </span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer-custom">
+                    <button type="submit" class="btn-login" id="resetPasswordBtn">Send Reset Link</button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JS for any remaining deps, but we might not need it if we handle modal manually -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/auth.js"></script>
+    <style>
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        /* Minimal Modal CSS since we removed Bootstrap classes */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content-custom {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+        }
+    </style>
 </body>
 </html>

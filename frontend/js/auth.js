@@ -421,29 +421,39 @@ function logout() {
 function setupForgotPassword() {
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
     const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-    const forgotPasswordModalEl = document.getElementById('forgotPasswordModal');
+    const modalOverlay = document.getElementById('forgotPasswordModal');
+    const closeBtn = modalOverlay?.querySelector('.close-modal');
 
-    if (!forgotPasswordLink || !forgotPasswordForm || !forgotPasswordModalEl || !window.bootstrap) {
+    if (!forgotPasswordLink || !forgotPasswordForm || !modalOverlay) {
         return;
     }
 
-    const forgotPasswordModal = new bootstrap.Modal(forgotPasswordModalEl);
-
-    // Show the modal when the "Forgot Password" link is clicked.
+    // Show the modal
     forgotPasswordLink.addEventListener('click', (e) => {
         e.preventDefault();
         const currentEmail = document.getElementById('email')?.value?.trim() || '';
         const resetEmailInput = document.getElementById('resetEmail');
 
-        // Pre-fill the email in the modal if it's already entered in the login form.
         if (resetEmailInput && currentEmail) {
             resetEmailInput.value = currentEmail;
         }
 
-        forgotPasswordModal.show();
+        modalOverlay.style.display = 'flex';
     });
 
-    // Handle the submission of the forgot password form.
+    // Hide the modal
+    const hideModal = () => {
+        modalOverlay.style.display = 'none';
+    };
+
+    closeBtn?.addEventListener('click', hideModal);
+    
+    // Close on outside click
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) hideModal();
+    });
+
+    // Handle form submission
     forgotPasswordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -458,15 +468,14 @@ function setupForgotPassword() {
         toggleButtonLoading(resetPasswordBtn, true);
 
         try {
-            // This is a simulation. In a real application, this would send a request
-            // to a backend endpoint to handle the password reset process.
-            await new Promise((resolve) => setTimeout(resolve, 800));
-            forgotPasswordModal.hide();
+            // Simulation of reset link process
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            hideModal();
             forgotPasswordForm.reset();
             showMessage('If this email exists, a reset link has been sent.', 'success');
         } catch (error) {
             console.error('Forgot password error:', error);
-            showMessage('Unable to process reset request right now. Please try again.', 'error');
+            showMessage('Unable to process reset request right now.', 'error');
         } finally {
             toggleButtonLoading(resetPasswordBtn, false);
         }
