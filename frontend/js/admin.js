@@ -48,6 +48,22 @@ function initializeEventListeners() {
             handleQuickAction(action);
         });
     });
+
+    const addFlightForm = document.getElementById('addFlightForm');
+    if (addFlightForm) {
+        addFlightForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewFlight();
+        });
+    }
+
+    const addBusForm = document.getElementById('addBusForm');
+    if (addBusForm) {
+        addBusForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewBus();
+        });
+    }
 }
 
 /**
@@ -100,7 +116,9 @@ function updatePageTitle(section) {
         'hotels': 'Hotels Management',
         'packages': 'Packages Management',
         'places': 'Places Management',
-        'bookings': 'Bookings Management'
+        'bookings': 'Bookings Management',
+        'add-flight': 'Add New Flight',
+        'add-bus': 'Add New Bus'
     };
 
     if (pageTitle && titles[section]) {
@@ -130,6 +148,8 @@ async function loadDashboardData() {
         const bookings = payload.bookings || [];
         const recentBookings = payload.recent_bookings || bookings.slice(0, 5);
         adminState.support = payload.support || adminState.support;
+
+        populateSupportDropdowns();
 
         // Update the UI with stats
         const totalUsers = document.getElementById('totalUsers');
@@ -572,9 +592,15 @@ function escapeHtml(value) {
  * Handle quick action button clicks
  */
 function handleQuickAction(action) {
+    if (action === 'add-flight') {
+        switchSection('add-flight');
+        return;
+    }
+    if (action === 'add-bus') {
+        switchSection('add-bus');
+        return;
+    }
     const actions = {
-        'add-flight': createFlight,
-        'add-bus': createBus,
         'add-hotel': createHotel,
         'add-package': createPackage,
         'add-place': createPlace
@@ -585,57 +611,72 @@ function handleQuickAction(action) {
     }
 }
 
-async function createFlight() {
+function populateSupportDropdowns() {
+    // Flight Dropdowns
+    const airlinesSelect = document.getElementById('flightAirlineId');
+    const flightOriginSelect = document.getElementById('flightOriginId');
+    const flightDestSelect = document.getElementById('flightDestinationId');
+    
+    if (airlinesSelect && adminState.support.airlines) {
+        airlinesSelect.innerHTML = '<option value="">Select Airline...</option>' + 
+            adminState.support.airlines.map(a => `<option value="${a.airline_id}">${a.airline_name}</option>`).join('');
+    }
+    
+    // Bus Dropdowns
+    const busOperatorSelect = document.getElementById('busOperatorId');
+    const busOriginSelect = document.getElementById('busOriginId');
+    const busDestSelect = document.getElementById('busDestinationId');
+    
+    if (busOperatorSelect && adminState.support.operators) {
+        busOperatorSelect.innerHTML = '<option value="">Select Operator...</option>' + 
+            adminState.support.operators.map(o => `<option value="${o.operator_id}">${o.operator_name}</option>`).join('');
+    }
+
+    // Locations (shared)
+    if (adminState.support.locations) {
+        const locs = adminState.support.locations.map(l => `<option value="${l.location_id}">${l.location_name}</option>`).join('');
+        
+        if (flightOriginSelect) flightOriginSelect.innerHTML = '<option value="">Select Origin...</option>' + locs;
+        if (flightDestSelect) flightDestSelect.innerHTML = '<option value="">Select Destination...</option>' + locs;
+        
+        if (busOriginSelect) busOriginSelect.innerHTML = '<option value="">Select Origin...</option>' + locs;
+        if (busDestSelect) busDestSelect.innerHTML = '<option value="">Select Destination...</option>' + locs;
+    }
+}
+
+async function submitNewFlight() {
     try {
-        const airlineId = promptId('Enter Airline ID', adminState.support.airlines, 'airline_id');
-        if (airlineId === null) return;
-
-        const originId = promptId('Enter Origin Location ID', adminState.support.locations, 'location_id');
-        if (originId === null) return;
-
-        const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id', 2);
-        if (destinationId === null) return;
-
+        const airlineId = document.getElementById('flightAirlineId').value;
+        const originId = document.getElementById('flightOriginId').value;
+        const destinationId = document.getElementById('flightDestinationId').value;
+        
         if (originId === destinationId) {
             window.alert('Error: Origin and destination cannot be the same');
             return;
         }
 
-        const flightNumber = promptRequired('Flight number (e.g. RN-101)');
-        if (!flightNumber) return;
-
-        const departureTime = promptRequired('Departure time (HH:MM:SS)', '09:00:00');
-        if (!departureTime) return;
-
-        const arrivalTime = promptRequired('Arrival time (HH:MM:SS)', '10:00:00');
-        if (!arrivalTime) return;
-
-        const durationMinutes = promptNumber('Duration minutes', 60);
-        if (durationMinutes === null) return;
-
-        const totalSeats = promptNumber('Total seats', 40);
-        if (totalSeats === null) return;
-
-        const basePrice = promptNumber('Base price (NPR)', 5000);
-        if (basePrice === null) return;
-
-        const operatesOnDays = promptRequired('Operating days (e.g. Mon,Tue,Wed,Thu,Fri,Sat,Sun)', 'Mon,Tue,Wed,Thu,Fri,Sat,Sun');
-        if (!operatesOnDays) return;
+        const flightNumber = document.getElementById('flightNumber').value;
+        const departureTime = document.getElementById('flightDeparture').value;
+        const arrivalTime = document.getElementById('flightArrival').value;
+        const durationMinutes = document.getElementById('flightDuration').value;
+        const totalSeats = document.getElementById('flightSeats').value;
+        const basePrice = document.getElementById('flightPrice').value;
+        const operatesOnDays = document.getElementById('flightDays').value;
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'POST',
             body: JSON.stringify({
                 item_type: 'flight',
-                airline_id: airlineId,
+                airline_id: Number(airlineId),
                 flight_number: flightNumber,
-                origin_location_id: originId,
-                destination_location_id: destinationId,
+                origin_location_id: Number(originId),
+                destination_location_id: Number(destinationId),
                 departure_time: departureTime,
                 arrival_time: arrivalTime,
-                duration_minutes: durationMinutes,
-                total_seats: totalSeats,
-                available_seats: totalSeats,
-                base_price: basePrice,
+                duration_minutes: Number(durationMinutes),
+                total_seats: Number(totalSeats),
+                available_seats: Number(totalSeats),
+                base_price: Number(basePrice),
                 currency: 'NPR',
                 operates_on_days: operatesOnDays,
                 is_active: 1
@@ -643,6 +684,7 @@ async function createFlight() {
         });
 
         showMessage('Flight created successfully', 'success');
+        document.getElementById('addFlightForm').reset();
         switchSection('flights');
         await loadDashboardData();
     } catch (error) {
@@ -727,58 +769,40 @@ async function deleteFlight(flight) {
     }
 }
 
-async function createBus() {
+async function submitNewBus() {
     try {
-        const operatorId = promptId('Enter Bus Operator ID', adminState.support.operators, 'operator_id');
-        if (operatorId === null) return;
-
-        const originId = promptId('Enter Origin Location ID', adminState.support.locations, 'location_id');
-        if (originId === null) return;
-
-        const destinationId = promptId('Enter Destination Location ID', adminState.support.locations, 'location_id', 2);
-        if (destinationId === null) return;
-
+        const operatorId = document.getElementById('busOperatorId').value;
+        const originId = document.getElementById('busOriginId').value;
+        const destinationId = document.getElementById('busDestinationId').value;
+        
         if (originId === destinationId) {
             window.alert('Error: Origin and destination cannot be the same');
             return;
         }
 
-        const busNumber = promptRequired('Bus number (e.g. RN-BUS-12)');
-        if (!busNumber) return;
-
-        const departureTime = promptRequired('Departure time (HH:MM:SS)', '07:00:00');
-        if (!departureTime) return;
-
-        const arrivalTime = promptRequired('Arrival time (HH:MM:SS)', '13:00:00');
-        if (!arrivalTime) return;
-
-        const durationMinutes = promptNumber('Duration minutes', 360);
-        if (durationMinutes === null) return;
-
-        const totalSeats = promptNumber('Total seats', 32);
-        if (totalSeats === null) return;
-
-        const basePrice = promptNumber('Base price (NPR)', 1500);
-        if (basePrice === null) return;
-
-        const operatesOnDays = promptRequired('Operating days (e.g. Mon,Tue,Wed,Thu,Fri,Sat,Sun)', 'Mon,Tue,Wed,Thu,Fri,Sat,Sun');
-        if (!operatesOnDays) return;
+        const busNumber = document.getElementById('busNumber').value;
+        const departureTime = document.getElementById('busDeparture').value;
+        const arrivalTime = document.getElementById('busArrival').value;
+        const durationMinutes = document.getElementById('busDuration').value;
+        const totalSeats = document.getElementById('busSeats').value;
+        const basePrice = document.getElementById('busPrice').value;
+        const operatesOnDays = document.getElementById('busDays').value;
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'POST',
             body: JSON.stringify({
                 item_type: 'bus',
-                operator_id: operatorId,
+                operator_id: Number(operatorId),
                 bus_number: busNumber,
-                origin_location_id: originId,
-                destination_location_id: destinationId,
+                origin_location_id: Number(originId),
+                destination_location_id: Number(destinationId),
                 departure_time: departureTime,
                 arrival_time: arrivalTime,
-                duration_minutes: durationMinutes,
+                duration_minutes: Number(durationMinutes),
                 bus_type: 'tourist',
-                total_seats: totalSeats,
-                available_seats: totalSeats,
-                base_price: basePrice,
+                total_seats: Number(totalSeats),
+                available_seats: Number(totalSeats),
+                base_price: Number(basePrice),
                 currency: 'NPR',
                 operates_on_days: operatesOnDays,
                 is_active: 1
@@ -786,6 +810,7 @@ async function createBus() {
         });
 
         showMessage('Bus created successfully', 'success');
+        document.getElementById('addBusForm').reset();
         switchSection('buses');
         await loadDashboardData();
     } catch (error) {

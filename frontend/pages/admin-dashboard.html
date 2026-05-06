@@ -212,6 +212,71 @@
                     </div>
                 </div>
 
+                <!-- ADD FLIGHT SECTION -->
+                <div id="section-add-flight" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Add New Flight</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('flights')">Back to Flights</button>
+                        </div>
+                        <form id="addFlightForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="flightAirlineId">Airline</label>
+                                <select id="flightAirlineId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">Select Airline...</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightOriginId">Origin Location</label>
+                                    <select id="flightOriginId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">Select Origin...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightDestinationId">Destination Location</label>
+                                    <select id="flightDestinationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">Select Destination...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightNumber">Flight Number</label>
+                                    <input type="text" id="flightNumber" class="form-control" placeholder="e.g. RN-101" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightDeparture">Departure Time (HH:MM:SS)</label>
+                                    <input type="text" id="flightDeparture" class="form-control" value="09:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightArrival">Arrival Time (HH:MM:SS)</label>
+                                    <input type="text" id="flightArrival" class="form-control" value="10:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightDuration">Duration (minutes)</label>
+                                    <input type="number" id="flightDuration" class="form-control" value="60" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightSeats">Total Seats</label>
+                                    <input type="number" id="flightSeats" class="form-control" value="40" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="flightPrice">Base Price (NPR)</label>
+                                    <input type="number" id="flightPrice" class="form-control" value="5000" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="flightDays">Operating Days</label>
+                                <input type="text" id="flightDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Flight</button>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- BUSES SECTION -->
                 <div id="section-buses" class="section">
                     <div class="card">
@@ -240,6 +305,71 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                <!-- ADD BUS SECTION -->
+                <div id="section-add-bus" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Add New Bus</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('buses')">Back to Buses</button>
+                        </div>
+                        <form id="addBusForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="busOperatorId">Bus Operator</label>
+                                <select id="busOperatorId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <option value="">Select Operator...</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busOriginId">Origin Location</label>
+                                    <select id="busOriginId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">Select Origin...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busDestinationId">Destination Location</label>
+                                    <select id="busDestinationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">Select Destination...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busNumber">Bus Number</label>
+                                    <input type="text" id="busNumber" class="form-control" placeholder="e.g. RN-BUS-12" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busDeparture">Departure Time (HH:MM:SS)</label>
+                                    <input type="text" id="busDeparture" class="form-control" value="07:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busArrival">Arrival Time (HH:MM:SS)</label>
+                                    <input type="text" id="busArrival" class="form-control" value="13:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busDuration">Duration (minutes)</label>
+                                    <input type="number" id="busDuration" class="form-control" value="360" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busSeats">Total Seats</label>
+                                    <input type="number" id="busSeats" class="form-control" value="32" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="busPrice">Base Price (NPR)</label>
+                                    <input type="number" id="busPrice" class="form-control" value="1500" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="busDays">Operating Days</label>
+                                <input type="text" id="busDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Bus</button>
+                        </form>
                     </div>
                 </div>
 
