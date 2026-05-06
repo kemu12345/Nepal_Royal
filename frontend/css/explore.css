@@ -17,30 +17,7 @@ body {
     background: #f8f9fa;
 }
 
-/* Navbar */
-.navbar-custom {
-    background: linear-gradient(135deg, var(--nepal-red) 0%, var(--nepal-blue) 100%);
-    padding: 1rem 0;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-}
 
-.navbar-custom .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: white !important;
-}
-
-.navbar-custom .nav-link {
-    color: rgba(255, 255, 255, 0.9) !important;
-    font-weight: 500;
-    padding: 0.5rem 1rem !important;
-    transition: all 0.3s ease;
-}
-
-.navbar-custom .nav-link:hover,
-.navbar-custom .nav-link.active {
-    color: var(--nepal-gold) !important;
-}
 
 /* Page Header */
 .page-header {

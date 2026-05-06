@@ -17,27 +17,44 @@
 
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNavbar">
         <div class="container">
-            <a class="navbar-brand" href="home.html">
-                <i class="bi bi-mountains me-2"></i>Royal Nepal
+            <a class="navbar-brand d-flex align-items-center" href="home.html">
+                <i class="bi bi-mountains me-2 fs-3 text-white"></i>
+                <div>
+                    <span class="fw-bold fs-4 text-white">Royal <span class="brand-nepal" style="color: #DC143C;">Nepal</span></span>
+                    <small class="d-block text-white-50" style="font-size: 0.7rem;">Experience the pride of Nepalese</small>
+                </div>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto me-3">
-                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="flights.html">Flights</a></li>
-                    <li class="nav-item"><a class="nav-link" href="buses.html">Buses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="hotels.html">Hotels</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="packages.html">Packages</a></li>
-                    <li class="nav-item"><a class="nav-link" href="explore.html">Explore</a></li>
+                <ul class="navbar-nav mx-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="home.html"><i class="bi bi-house-door me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="explore.html"><i class="bi bi-compass me-1"></i>Explore</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="flights.html"><i class="bi bi-airplane me-1"></i>Flights</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="buses.html"><i class="bi bi-bus-front me-1"></i>Buses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-3" href="hotels.html"><i class="bi bi-building me-1"></i>Hotels</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active px-3" href="packages.html"><i class="bi bi-gift me-1"></i>Packages</a>
+                    </li>
                 </ul>
-                <div class="nav-auth" id="navAuth">
-                    <a href="login.html" class="btn btn-outline-light btn-sm me-2">Login</a>
-                    <a href="register.html" class="btn btn-warning btn-sm">Register</a>
+                <div class="nav-item ms-lg-3" id="navAuth">
+                    <a class="btn btn-warning btn-sm px-4 fw-semibold" href="login.html">
+                        <i class="bi bi-person-circle me-1"></i>Login
+                    </a>
                 </div>
             </div>
         </div>

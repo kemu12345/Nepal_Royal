@@ -34,6 +34,10 @@ body {
     transition: all 0.3s ease;
 }
 
+.brand-nepal {
+    color: #DC143C !important;
+}
+
 /*
     Style applied to the navbar when the user scrolls down the page.
     The background becomes opaque and a shadow is added.
@@ -49,11 +53,17 @@ body {
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
+    color: rgba(255, 255, 255, 0.8) !important; /* Dark light white */
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--nepal-red) !important; /* Red on hover */
 }
 
 /*
     An underline effect for navigation links that appears on hover or when active.
-*/
+ */
 .navbar-nav .nav-link::after {
     content: '';
     position: absolute;
@@ -61,7 +71,7 @@ body {
     left: 50%;
     width: 0;
     height: 2px;
-    background: var(--nepal-gold);
+    background: var(--nepal-red);
     transition: all 0.3s ease;
     transform: translateX(-50%);
 }
