@@ -35,17 +35,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const to = urlParams.get('to');
     const date = urlParams.get('date');
 
-    // If search parameters are missing, redirect to the home page.
+    // If search parameters are missing, load demo flights with default values.
     if (!from || !to || !date) {
-        window.location.href = 'home.html';
-        return;
+        const defaultFrom = '1'; // Kathmandu
+        const defaultTo = '2';   // Pokhara
+        const defaultDate = new Date().toISOString().split('T')[0];
+        
+        displaySearchSummary(defaultFrom, defaultTo, defaultDate);
+        
+        const loadingEl = document.getElementById('loading');
+        if (loadingEl) loadingEl.style.display = 'none';
+
+        allFlights = getDemoFlights(defaultFrom, defaultTo, defaultDate);
+        filteredFlights = [...allFlights];
+        populateAirlineFilter(allFlights);
+        applyFilters();
+    } else {
+        // Display a summary of the search in the page header.
+        displaySearchSummary(from, to, date);
+
+        // Fetch flights from the API based on the search criteria.
+        searchFlights(from, to, date);
     }
-
-    // Display a summary of the search in the page header.
-    displaySearchSummary(from, to, date);
-
-    // Fetch flights from the API based on the search criteria.
-    searchFlights(from, to, date);
 
     // Set up event listeners for the filter and sort controls.
     document.getElementById('filter-airline').addEventListener('change', applyFilters);
@@ -403,14 +414,45 @@ function openBookingModal(flightId) {
             <span class="fw-semibold text-success">${selectedFlight.available_seats}</span>
         </div>
         <hr>
+        <div class="mb-3">
+            <label class="form-label fw-bold">Passengers</label>
+            <div class="d-flex gap-3">
+                <div class="flex-fill">
+                    <label class="form-label small text-muted mb-1">Adults</label>
+                    <input type="number" class="form-control" id="adult-count" value="1" min="1" max="10" onchange="updateBookingTotal()">
+                </div>
+                <div class="flex-fill">
+                    <label class="form-label small text-muted mb-1">Children (2-12)</label>
+                    <input type="number" class="form-control" id="child-count" value="0" min="0" max="10" onchange="updateBookingTotal()">
+                </div>
+            </div>
+        </div>
+        <hr>
         <div class="d-flex justify-content-between align-items-center">
             <span class="fw-bold fs-5">Total Price</span>
-            <span class="fw-bold fs-4 text-danger">NPR ${formatPrice(selectedFlight.base_price)}</span>
+            <span class="fw-bold fs-4 text-danger" id="modal-total-price">NPR ${formatPrice(selectedFlight.base_price)}</span>
         </div>
     `;
     
     const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
     modal.show();
+}
+
+/**
+ * Updates the total price in the booking modal based on selected passengers.
+ */
+function updateBookingTotal() {
+    if (!selectedFlight) return;
+    
+    const adults = parseInt(document.getElementById('adult-count').value) || 1;
+    const children = parseInt(document.getElementById('child-count').value) || 0;
+    
+    // Assuming children pay 75% of base price
+    const adultPrice = selectedFlight.base_price * adults;
+    const childPrice = (selectedFlight.base_price * 0.75) * children;
+    const totalPrice = adultPrice + childPrice;
+    
+    document.getElementById('modal-total-price').textContent = `NPR ${formatPrice(totalPrice)}`;
 }
 
 /**
@@ -429,6 +471,15 @@ async function confirmBooking() {
         return;
     }
     
+    const adults = parseInt(document.getElementById('adult-count').value) || 1;
+    const children = parseInt(document.getElementById('child-count').value) || 0;
+    const totalPassengers = adults + children;
+
+    if (totalPassengers > selectedFlight.available_seats) {
+        showToast(`Only ${selectedFlight.available_seats} seats available`, 'warning');
+        return;
+    }
+
     try {
         const travelDate = new URLSearchParams(window.location.search).get('date') || new Date().toISOString().split('T')[0];
         const response = await fetch(`${API_BASE_URL}/create_booking.php`, {
@@ -441,8 +492,8 @@ async function confirmBooking() {
                 booking_type: 'flight',
                 item_id: selectedFlight.flight_id,
                 travel_date: travelDate,
-                passengers: 1,
-                passenger_details: []
+                passengers: totalPassengers,
+                passenger_details: { adults, children }
             })
         });
 
