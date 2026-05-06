@@ -8,6 +8,13 @@
     The main container for the dashboard, using a flexbox layout
     to position the sidebar and main content.
 */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 .dashboard-container {
     display: flex;
     min-height: 100vh;
@@ -41,10 +48,11 @@
 
 /* The main title in the sidebar header. */
 .sidebar-header h2 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     margin-bottom: var(--spacing-xs);
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
 }
 
 /* The tagline below the sidebar title. */
@@ -74,7 +82,8 @@
     transition: all 0.3s ease;
     border-radius: 6px;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.875rem;
+    letter-spacing: 0.01em;
 }
 
 /* Hover effect for navigation items. */
@@ -126,10 +135,11 @@
 
 /* The main title in the top bar. */
 .top-bar h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: #1a1a2e;
     margin: 0;
     font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
 /* Container for user-related information in the top bar. */
@@ -160,8 +170,10 @@
     color: var(--nepal-white);
     padding: 0.35rem 0.85rem;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     box-shadow: 0 2px 8px rgba(220, 20, 60, 0.2);
 }
 
@@ -223,7 +235,7 @@
     margin: 0.35rem 0 0 0;
     color: #666;
     font-size: 0.9rem;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /* A container for action buttons. */
@@ -232,6 +244,13 @@
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 1.5rem;
+}
+
+.btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    font-size: 0.875rem;
 }
 
 /* Header for the inventory management card. */
@@ -566,17 +585,19 @@
 .data-table th {
     padding: 1rem 0.875rem;
     text-align: left;
-    font-weight: 700;
+    font-weight: 600;
     color: #1a1a2e;
     border-bottom: 2px solid #e5e7eb;
-    font-size: 1rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .data-table td {
     padding: 1rem 0.875rem;
     border-bottom: 1px solid #e8eaed;
-    color: #555;
-    font-size: 0.95rem;
+    color: #4b5563;
+    font-size: 0.9375rem;
     font-weight: 500;
 }
 
