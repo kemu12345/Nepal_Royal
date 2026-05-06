@@ -9,9 +9,12 @@
     This makes it easy to maintain a consistent color scheme.
 */
 :root {
-    --nepal-red: #DC143C;   /* A strong red, representing the national flag */
-    --nepal-blue: #003893;  /* A deep blue, also from the flag */
-    --nepal-gold: #FFD700;  /* A golden yellow for highlights and accents */
+    --nepal-red: #DC143C;
+    /* A strong red, representing the national flag */
+    --nepal-blue: #003893;
+    /* A deep blue, also from the flag */
+    --nepal-gold: #FFD700;
+    /* A golden yellow for highlights and accents */
 }
 
 /* Sets the primary font for the entire page. */
@@ -25,7 +28,8 @@ body {
 */
 #mainNavbar {
     background: linear-gradient(135deg, rgba(0, 56, 147, 0.95) 0%, rgba(220, 20, 60, 0.95) 100%);
-    backdrop-filter: blur(10px); /* Creates a frosted glass effect */
+    backdrop-filter: blur(10px);
+    /* Creates a frosted glass effect */
     padding: 0.8rem 0;
     transition: all 0.3s ease;
 }
@@ -75,7 +79,7 @@ body {
 .hero-section {
     min-height: 100vh;
     background: linear-gradient(135deg, rgba(0, 56, 147, 0.5) 0%, rgba(220, 20, 60, 0.3) 100%),
-                url('https://images.pexels.com/photos/4454855/pexels-photo-4454855.jpeg') center/cover fixed;
+        url('https://images.pexels.com/photos/4454855/pexels-photo-4454855.jpeg') center/cover fixed;
     position: relative;
     overflow: hidden;
 }
@@ -101,7 +105,7 @@ body {
     for a layered effect.
 */
 .search-section {
-    margin-top: -100px;
+    margin-top: -250px;
     position: relative;
     z-index: 100;
 }
@@ -258,8 +262,17 @@ body {
 
 /* The animation for the newsletter background effect. */
 @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50% { transform: scale(1.1); opacity: 0.3; }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.3;
+    }
 }
 
 /*
@@ -306,8 +319,15 @@ body {
     A custom floating animation.
 */
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .animate-float {
@@ -378,11 +398,11 @@ body {
     .hero-section {
         min-height: 80vh;
     }
-    
+
     .search-section {
         margin-top: -50px;
     }
-    
+
     /* Styles the collapsed navbar menu on smaller screens. */
     .navbar-collapse {
         background: linear-gradient(135deg, rgba(0, 56, 147, 0.98) 0%, rgba(220, 20, 60, 0.98) 100%);
@@ -399,18 +419,18 @@ body {
     .hero-section h1 {
         font-size: 2.5rem !important;
     }
-    
+
     .search-tabs .nav-pills .nav-link {
         padding: 0.5rem 0.75rem;
         font-size: 0.9rem;
     }
-    
+
     /* Stacks the icon and text in the search tabs vertically. */
     .search-tabs .nav-pills .nav-link i {
         display: block;
         margin: 0 auto 0.25rem;
     }
-    
+
     .destination-card .destination-img {
         height: 150px;
     }
