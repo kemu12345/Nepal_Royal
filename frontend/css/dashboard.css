@@ -188,6 +188,39 @@ body {
     margin-bottom: 2rem;
 }
 
+/* Charts Layout */
+.charts-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-container {
+    min-height: 350px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-container h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: #1a1a2e;
+    font-weight: 700;
+}
+
+.chart-container canvas {
+    flex: 1;
+    max-height: 300px;
+}
+
+@media (max-width: 992px) {
+    .charts-row {
+        grid-template-columns: 1fr;
+    }
+}
+
 /*
     Individual cards within the stats grid.
     Each card shows a single statistic with an icon.
@@ -247,6 +280,31 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.025em;
+}
+
+/* Table Search UI */
+.table-search {
+    flex: 1;
+    max-width: 400px;
+    margin: 0 1.5rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #1a1a2e;
+    transition: all 0.2s ease;
+    background: #f8fafc;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #DC143C;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
 }
 
 /* A container for action buttons. */
@@ -590,19 +648,41 @@ body {
 }
 
 .data-table thead {
-    background-color: #f3f4f6;
+    background-color: #f8fafc;
 }
 
 .data-table th {
     padding: 1rem 0.875rem;
     text-align: left;
-    font-weight: 600;
+    font-weight: 700;
     color: #64748b;
     border-bottom: 2px solid #f1f5f9;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
+
+.data-table th.sortable {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+.data-table th.sortable:hover {
+    background-color: #e2e8f0;
+    color: #DC143C;
+}
+
+.data-table th.sortable::after {
+    content: '↕';
+    position: absolute;
+    right: 8px;
+    opacity: 0.3;
+    font-size: 0.8rem;
+}
+
+.data-table th.sort-asc::after { content: '↑'; opacity: 1; }
+.data-table th.sort-desc::after { content: '↓'; opacity: 1; }
 
 .data-table td {
     padding: 1rem 0.875rem;

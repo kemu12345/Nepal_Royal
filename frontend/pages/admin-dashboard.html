@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
@@ -129,6 +130,18 @@
                         </div>
                     </div>
 
+                    <!-- Charts Section -->
+                    <div class="charts-row">
+                        <div class="card chart-container">
+                            <h3>Revenue Overview</h3>
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                        <div class="card chart-container">
+                            <h3>Booking Breakdown</h3>
+                            <canvas id="bookingTypeChart"></canvas>
+                        </div>
+                    </div>
+
                     <!-- Quick Actions -->
                     <div class="card">
                         <h2>Quick Actions</h2>
@@ -178,17 +191,23 @@
                 <!-- USERS SECTION -->
                 <div id="section-users" class="section">
                     <div class="card">
-                        <h2>All Users</h2>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>All Users</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search users..." class="search-input" data-filter-table="usersTableBody">
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="exportTableToCSV('usersTableBody', 'users.csv')">Export CSV</button>
+                        </div>
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>User ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
+                                        <th class="sortable">User ID</th>
+                                        <th class="sortable">Name</th>
+                                        <th class="sortable">Email</th>
                                         <th>Phone</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
+                                        <th class="sortable">Role</th>
+                                        <th class="sortable">Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -207,19 +226,23 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>Flight Listings</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search flights..." class="search-input" data-filter-table="flightsTableBody">
+                            </div>
+                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('flightsTableBody', 'flights.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-flight">Add Flight</button>
                         </div>
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Flight ID</th>
-                                        <th>Airline</th>
-                                        <th>From</th>
-                                        <th>To</th>
+                                        <th class="sortable">Flight ID</th>
+                                        <th class="sortable">Airline</th>
+                                        <th class="sortable">From</th>
+                                        <th class="sortable">To</th>
                                         <th>Departure</th>
-                                        <th>Price</th>
-                                        <th>Available Seats</th>
+                                        <th class="sortable">Price</th>
+                                        <th class="sortable">Available Seats</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -303,19 +326,23 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>Bus Listings</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search buses..." class="search-input" data-filter-table="busesTableBody">
+                            </div>
+                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('busesTableBody', 'buses.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-bus">Add Bus</button>
                         </div>
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Bus ID</th>
-                                        <th>Provider</th>
-                                        <th>From</th>
-                                        <th>To</th>
+                                        <th class="sortable">Bus ID</th>
+                                        <th class="sortable">Provider</th>
+                                        <th class="sortable">From</th>
+                                        <th class="sortable">To</th>
                                         <th>Departure</th>
-                                        <th>Price</th>
-                                        <th>Available Seats</th>
+                                        <th class="sortable">Price</th>
+                                        <th class="sortable">Available Seats</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -399,19 +426,23 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>Hotel Listings</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search hotels..." class="search-input" data-filter-table="hotelsTableBody">
+                            </div>
+                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('hotelsTableBody', 'hotels.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-hotel">Add Hotel</button>
                         </div>
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Hotel ID</th>
-                                        <th>Hotel Name</th>
-                                        <th>City</th>
-                                        <th>Rating</th>
-                                        <th>Price/Night</th>
-                                        <th>Available Rooms</th>
-                                        <th>Status</th>
+                                        <th class="sortable">Hotel ID</th>
+                                        <th class="sortable">Hotel Name</th>
+                                        <th class="sortable">City</th>
+                                        <th class="sortable">Rating</th>
+                                        <th class="sortable">Price/Night</th>
+                                        <th class="sortable">Available Rooms</th>
+                                        <th class="sortable">Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -491,6 +522,10 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>Holiday Packages</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search packages..." class="search-input" data-filter-table="packagesTableBody">
+                            </div>
+                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('packagesTableBody', 'packages.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-package">Add Package</button>
                         </div>
                         <div class="table-responsive">
@@ -574,6 +609,9 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>Tourist Destinations</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search places..." class="search-input" data-filter-table="placesTableBody">
+                            </div>
                             <button class="btn btn-primary" type="button" data-action="add-place">Add Place</button>
                         </div>
                         <div class="table-responsive">
@@ -652,6 +690,9 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>System Locations</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search locations..." class="search-input" data-filter-table="locationsTableBody">
+                            </div>
                             <button class="btn btn-primary" type="button" data-action="add-location">Add Location</button>
                         </div>
                         <div class="table-responsive">
@@ -730,6 +771,9 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>Airlines</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search airlines..." class="search-input" data-filter-table="airlinesTableBody">
+                            </div>
                             <button class="btn btn-primary" type="button" data-action="add-airline">Add Airline</button>
                         </div>
                         <div class="table-responsive">
@@ -784,6 +828,9 @@
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                             <h2>Bus Operators</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search operators..." class="search-input" data-filter-table="operatorsTableBody">
+                            </div>
                             <button class="btn btn-primary" type="button" data-action="add-operator">Add Operator</button>
                         </div>
                         <div class="table-responsive">
@@ -836,18 +883,24 @@
                 <!-- BOOKINGS SECTION -->
                 <div id="section-bookings" class="section">
                     <div class="card">
-                        <h2>All Bookings</h2>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>All Bookings</h2>
+                            <div class="table-search">
+                                <input type="text" placeholder="Search bookings (ID, Name, Type...)" class="search-input" data-filter-table="bookingsTableBody">
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="exportTableToCSV('bookingsTableBody', 'bookings.csv')">Export CSV</button>
+                        </div>
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th>Booking ID</th>
-                                        <th>Customer Name</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Booking Date</th>
-                                        <th>Travel Date</th>
-                                        <th>Status</th>
+                                        <th class="sortable">Booking ID</th>
+                                        <th class="sortable">Customer Name</th>
+                                        <th class="sortable">Type</th>
+                                        <th class="sortable">Amount</th>
+                                        <th class="sortable">Booking Date</th>
+                                        <th class="sortable">Travel Date</th>
+                                        <th class="sortable">Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>

@@ -215,9 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
-            if (confirm('Are you sure you want to logout?')) {
-                logout();
-            }
+            logout();
         });
     });
 });

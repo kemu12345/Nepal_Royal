@@ -240,6 +240,21 @@ img {
 .p-2 { padding: var(--spacing-md); }
 .p-3 { padding: var(--spacing-lg); }
 
+/* Spacing utilities */
+.me-1 { margin-right: 0.5rem; }
+.me-2 { margin-right: 1rem; }
+
+/* Small buttons */
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* Success/Danger Buttons */
+.btn-success { background-color: #28a745; color: white; }
+.btn-danger { background-color: #dc3545; color: white; }
+.btn-warning { background-color: #ffc107; color: #212529; }
+
 /*
     Responsive design adjustments for smaller screens (e.g., tablets).
 */

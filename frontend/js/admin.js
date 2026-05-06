@@ -9,7 +9,8 @@ const adminState = {
         operators: [],
         locations: []
     },
-    editingItem: null
+    editingItem: null,
+    charts: {}
 };
 
 // Initialize the dashboard when the page loads
@@ -40,6 +41,12 @@ function initializeEventListeners() {
     if (sidebarToggle) {
         sidebarToggle.addEventListener('click', toggleSidebar);
     }
+
+    // Table Search filtering
+    setupTableFilters();
+
+    // Table Sorting
+    setupTableSorting();
 
     // Quick action buttons
     const actionButtons = document.querySelectorAll('[data-action]');
@@ -220,7 +227,9 @@ async function loadDashboardData() {
         if (totalBookings) totalBookings.textContent = String(summary.bookings ?? bookings.length ?? 0);
         
         if (totalRevenue) {
-            const revenue = bookings.reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
+            const revenue = bookings
+                .filter(b => b.booking_status === 'confirmed')
+                .reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
             totalRevenue.textContent = `NPR ${revenue.toLocaleString()}`;
         }
 
@@ -238,6 +247,7 @@ async function loadDashboardData() {
         renderOperatorsTable(adminState.support.operators || []);
         renderBookingsTable(bookings);
         renderRecentBookingsTable(recentBookings);
+        renderCharts(bookings);
     } catch (error) {
         console.error('Error loading dashboard data:', error);
         showMessage(error.message || 'Failed to load admin data', 'error');
@@ -309,8 +319,6 @@ async function toggleUserStatus(userId, isCurrentlyActive) {
 }
 
 async function deleteUser(userId, name) {
-    if (!window.confirm(`Permanently delete user "${name}"? This cannot be undone.`)) return;
-
     try {
         await RoyalNepal.apiRequest('manage_users.php', {
             method: 'DELETE',
@@ -1278,9 +1286,7 @@ function showMessage(text, type = 'info') {
  */
 async function updateBookingStatus(bookingId, newStatus) {
     const actionLabel = newStatus === 'confirmed' ? 'approve' : 'cancel';
-    const approved = window.confirm(`Are you sure you want to ${actionLabel} booking #${bookingId}?`);
-    if (!approved) return;
-
+    
     try {
         await RoyalNepal.apiRequest('update_booking_status.php', {
             method: 'PUT',
@@ -1466,6 +1472,195 @@ async function submitNewOperator() {
 }
 
 /**
+ * Render analytical charts using Chart.js
+ */
+function renderCharts(bookings) {
+    if (!window.Chart) return;
+
+    // --- 1. Revenue Chart (Last 7 Days) ---
+    const revenueCtx = document.getElementById('revenueChart')?.getContext('2d');
+    if (revenueCtx) {
+        // Destroy existing chart if it exists
+        if (adminState.charts.revenue) adminState.charts.revenue.destroy();
+
+        // Process data for last 7 days
+        const last7Days = [...Array(7)].map((_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            return d.toISOString().split('T')[0];
+        }).reverse();
+
+        const revenueData = last7Days.map(date => {
+            return bookings
+                .filter(b => b.booking_status === 'confirmed' && b.booking_date.startsWith(date))
+                .reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
+        });
+
+        adminState.charts.revenue = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: last7Days.map(d => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+                datasets: [{
+                    label: 'Revenue (NPR)',
+                    data: revenueData,
+                    borderColor: '#DC143C',
+                    backgroundColor: 'rgba(220, 20, 60, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#DC143C',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [5, 5] } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // --- 2. Booking Type Breakdown (Donut Chart) ---
+    const typeCtx = document.getElementById('bookingTypeChart')?.getContext('2d');
+    if (typeCtx) {
+        if (adminState.charts.type) adminState.charts.type.destroy();
+
+        const types = ['flight', 'bus', 'hotel', 'package'];
+        const typeLabels = ['Flights', 'Buses', 'Hotels', 'Packages'];
+        const typeCounts = types.map(t => bookings.filter(b => b.booking_type === t).length);
+
+        adminState.charts.type = new Chart(typeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: typeLabels,
+                datasets: [{
+                    data: typeCounts,
+                    backgroundColor: ['#003893', '#DC143C', '#28a745', '#FFD700'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20, font: { weight: '600' } } }
+                },
+                cutout: '70%'
+            }
+        });
+    }
+}
+
+/**
+ * Export table data to CSV
+ */
+function exportTableToCSV(tableBodyId, filename) {
+    const tbody = document.getElementById(tableBodyId);
+    if (!tbody) return;
+
+    // Get headers from the table's head
+    const table = tbody.closest('table');
+    const headers = Array.from(table.querySelectorAll('thead th'))
+        .map(th => th.textContent.trim())
+        .filter(text => text !== 'Actions'); // Don't export the Actions column
+
+    // Get rows (only visible ones)
+    const rows = Array.from(tbody.querySelectorAll('tr'))
+        .filter(tr => tr.style.display !== 'none' && tr.cells.length > 1);
+
+    const csvData = rows.map(tr => {
+        return Array.from(tr.cells)
+            .slice(0, headers.length) // Only take cells that have a matching header
+            .map(td => {
+                // Clean data: remove extra spaces, quotes, and commas
+                let text = td.textContent.trim().replace(/"/g, '""');
+                return `"${text}"`;
+            }).join(',');
+    });
+
+    // Add headers to the top
+    csvData.unshift(headers.map(h => `"${h}"`).join(','));
+
+    const csvContent = "data:text/csv;charset=utf-8," + csvData.join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+/**
+ * Setup real-time filtering for tables
+ */
+function setupTableFilters() {
+    const searchInputs = document.querySelectorAll('.search-input[data-filter-table]');
+    searchInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const tableId = e.target.getAttribute('data-filter-table');
+            const tbody = document.getElementById(tableId);
+            
+            if (!tbody) return;
+
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+    });
+}
+
+/**
+ * Setup global table sorting
+ */
+function setupTableSorting() {
+    document.querySelectorAll('.data-table th.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+            const table = th.closest('table');
+            const tbody = table.querySelector('tbody');
+            const index = Array.from(th.parentNode.cells).indexOf(th);
+            const isAsc = th.classList.contains('sort-asc');
+            
+            // Clear other headers
+            th.parentNode.querySelectorAll('th').forEach(header => {
+                header.classList.remove('sort-asc', 'sort-desc');
+            });
+
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            if (rows.length <= 1 && rows[0]?.cells.length === 1) return; // Skip empty tables
+
+            const sortedRows = rows.sort((a, b) => {
+                const aVal = a.cells[index]?.textContent.trim().toLowerCase();
+                const bVal = b.cells[index]?.textContent.trim().toLowerCase();
+
+                // Handle numbers and currency
+                const aNum = parseFloat(aVal.replace(/[^0-9.-]+/g, ""));
+                const bNum = parseFloat(bVal.replace(/[^0-9.-]+/g, ""));
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return isAsc ? bNum - aNum : aNum - bNum;
+                }
+
+                return isAsc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+            });
+
+            th.classList.toggle('sort-asc', !isAsc);
+            th.classList.toggle('sort-desc', isAsc);
+
+            tbody.append(...sortedRows);
+        });
+    });
+}
+
+/**
  * EDIT FUNCTIONS
  */
 
@@ -1509,7 +1704,6 @@ function editOperator(o) {
  */
 
 async function deleteLocation(id) {
-    if (!window.confirm('Are you sure? This may affect items using this location.')) return;
     try {
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'DELETE',
@@ -1521,7 +1715,6 @@ async function deleteLocation(id) {
 }
 
 async function deleteAirline(id) {
-    if (!window.confirm('Are you sure?')) return;
     try {
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'DELETE',
@@ -1533,7 +1726,6 @@ async function deleteAirline(id) {
 }
 
 async function deleteOperator(id) {
-    if (!window.confirm('Are you sure?')) return;
     try {
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'DELETE',
