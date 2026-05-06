@@ -80,6 +80,14 @@ function initializeEventListeners() {
             await submitNewPackage();
         });
     }
+
+    const addPlaceForm = document.getElementById('addPlaceForm');
+    if (addPlaceForm) {
+        addPlaceForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewPlace();
+        });
+    }
 }
 
 /**
@@ -136,7 +144,8 @@ function updatePageTitle(section) {
         'add-flight': 'Add New Flight',
         'add-bus': 'Add New Bus',
         'add-hotel': 'Add New Hotel',
-        'add-package': 'Add New Package'
+        'add-package': 'Add New Package',
+        'add-place': 'Add New Place'
     };
 
     if (pageTitle && titles[section]) {
@@ -626,8 +635,11 @@ function handleQuickAction(action) {
         switchSection('add-package');
         return;
     }
+    if (action === 'add-place') {
+        switchSection('add-place');
+        return;
+    }
     const actions = {
-        'add-place': createPlace
     };
 
     if (actions[action]) {
@@ -668,6 +680,9 @@ function populateSupportDropdowns() {
         
         const hotelLocationSelect = document.getElementById('hotelLocationId');
         if (hotelLocationSelect) hotelLocationSelect.innerHTML = '<option value="">Select Location...</option>' + locs;
+
+        const placeLocationSelect = document.getElementById('placeLocationId');
+        if (placeLocationSelect) placeLocationSelect.innerHTML = '<option value="">Select Location...</option>' + locs;
     }
 }
 
@@ -1135,30 +1150,29 @@ async function deletePackage(pkg) {
     }
 }
 
-async function createPlace() {
+async function submitNewPlace() {
     try {
-        const locationId = promptId('Enter Place Location ID', adminState.support.locations, 'location_id');
-        if (locationId === null) return;
-
-        const placeName = promptRequired('Place name');
-        if (!placeName) return;
-
-        const description = promptRequired('Place description');
-        if (!description) return;
+        const placeName = document.getElementById('placeName').value;
+        const locationId = document.getElementById('placeLocationId').value;
+        const category = document.getElementById('placeCategory').value;
+        const description = document.getElementById('placeDescription').value;
+        const imageUrl = document.getElementById('placeImageUrl').value;
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'POST',
             body: JSON.stringify({
                 item_type: 'place',
                 place_name: placeName,
-                location_id: locationId,
-                category: 'natural',
-                description,
+                location_id: Number(locationId),
+                category: category,
+                description: description,
+                image_url: imageUrl || null,
                 is_active: 1
             })
         });
 
         showMessage('Place created successfully', 'success');
+        document.getElementById('addPlaceForm').reset();
         switchSection('places');
         await loadDashboardData();
     } catch (error) {

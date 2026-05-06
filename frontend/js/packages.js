@@ -312,18 +312,19 @@ function createPackageCard(pkg) {
         'Poon Hill Sunrise Trek':         'https://www.himalayanglacier.com/wp-content/uploads/2020/03/poonhill-ghorepani-768x512.jpg',
         'Lumbini Pilgrimage Tour':        'https://khangchen.com/wp-content/uploads/2026/01/Lumbini-scaled.jpg'
     };
-    const defaultImages = {
-        'trekking':   'https://picsum.photos/id/29/600/300',
-        'adventure':  'https://picsum.photos/id/1043/600/300',
-        'cultural':   'https://picsum.photos/id/164/600/300',
-        'wildlife':   'https://picsum.photos/id/582/600/300',
-        'pilgrimage': 'https://picsum.photos/id/327/600/300',
-        'heritage':   'https://picsum.photos/id/318/600/300',
-        'combined':   'https://picsum.photos/id/15/600/300'
-    };
-    const fallbackImg = 'https://picsum.photos/id/29/600/300';
-    // Priority: curated name-based image → database image_url → type default → fallback
-    const imageUrl = packageNameImages[pkg.package_name] || pkg.image_url || defaultImages[pkg.package_type] || fallbackImg;
+    const defaultImages = [
+        'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1582650893323-999d363717e1?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1588607172081-34448557ee6e?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1582255773177-33156c498363?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1533038678074-ce7518a2d591?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1506459225024-1428097a7e18?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1522163182402-834f871fd851?w=600&h=300&fit=crop'
+    ];
+    const imageIndex = (pkg.package_id || 1) % defaultImages.length;
+    const fallbackImg = defaultImages[imageIndex];
+    // Priority: curated name-based image → database image_url → fallback
+    const imageUrl = packageNameImages[pkg.package_name] || pkg.image_url || fallbackImg;
 
     return `
         <div class="col-md-6 col-lg-4">

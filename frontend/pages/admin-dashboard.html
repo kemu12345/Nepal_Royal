@@ -480,13 +480,15 @@
                                         <th>Package Name</th>
                                         <th>Duration</th>
                                         <th>Base Price</th>
+                                        <th>Destinations</th>
+                                        <th>Max Group</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="packagesTableBody">
                                     <tr>
-                                        <td colspan="6" class="text-center">No packages found</td>
+                                        <td colspan="8" class="text-center">No packages found</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -573,6 +575,54 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+                
+                <!-- ADD PLACE SECTION -->
+                <div id="section-add-place" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Add New Place</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('places')">Back to Places</button>
+                        </div>
+                        <form id="addPlaceForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="placeName">Place Name</label>
+                                <input type="text" id="placeName" class="form-control" placeholder="e.g. Swayambhunath Stupa" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="placeLocationId">Location</label>
+                                    <select id="placeLocationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">Select a Location</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="placeCategory">Category</label>
+                                    <select id="placeCategory" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="cultural">Cultural</option>
+                                        <option value="historical">Historical</option>
+                                        <option value="religious">Religious</option>
+                                        <option value="natural">Natural</option>
+                                        <option value="adventure">Adventure</option>
+                                        <option value="wildlife">Wildlife</option>
+                                        <option value="heritage_site">Heritage Site</option>
+                                        <option value="national_park">National Park</option>
+                                        <option value="viewpoint">Viewpoint</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="placeDescription">Description</label>
+                                <textarea id="placeDescription" class="form-control" rows="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="placeImageUrl">Image URL</label>
+                                <input type="url" id="placeImageUrl" class="form-control" placeholder="https://example.com/place.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <small class="text-muted">Paste a direct link to an image. (Optional)</small>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Place</button>
+                        </form>
                     </div>
                 </div>
 
