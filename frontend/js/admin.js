@@ -8,7 +8,8 @@ const adminState = {
         airlines: [],
         operators: [],
         locations: []
-    }
+    },
+    editingItem: null
 };
 
 // Initialize the dashboard when the page loads
@@ -88,6 +89,30 @@ function initializeEventListeners() {
             await submitNewPlace();
         });
     }
+
+    const addLocationForm = document.getElementById('addLocationForm');
+    if (addLocationForm) {
+        addLocationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewLocation();
+        });
+    }
+
+    const addAirlineForm = document.getElementById('addAirlineForm');
+    if (addAirlineForm) {
+        addAirlineForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewAirline();
+        });
+    }
+
+    const addOperatorForm = document.getElementById('addOperatorForm');
+    if (addOperatorForm) {
+        addOperatorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewOperator();
+        });
+    }
 }
 
 /**
@@ -141,11 +166,17 @@ function updatePageTitle(section) {
         'packages': 'Packages Management',
         'places': 'Places Management',
         'bookings': 'Bookings Management',
+        'locations': 'Locations Management',
+        'airlines': 'Airlines Management',
+        'operators': 'Bus Operators Management',
         'add-flight': 'Add New Flight',
         'add-bus': 'Add New Bus',
         'add-hotel': 'Add New Hotel',
         'add-package': 'Add New Package',
-        'add-place': 'Add New Place'
+        'add-place': 'Add New Place',
+        'add-location': 'Add New Location',
+        'add-airline': 'Add New Airline',
+        'add-operator': 'Add New Operator'
     };
 
     if (pageTitle && titles[section]) {
@@ -195,6 +226,9 @@ async function loadDashboardData() {
         renderHotelsTable(items.hotels || []);
         renderPackagesTable(items.packages || []);
         renderPlacesTable(items.places || []);
+        renderLocationsTable(adminState.support.locations || []);
+        renderAirlinesTable(adminState.support.airlines || []);
+        renderOperatorsTable(adminState.support.operators || []);
         renderBookingsTable(bookings);
         renderRecentBookingsTable(recentBookings);
     } catch (error) {
@@ -619,24 +653,62 @@ function escapeHtml(value) {
  * Handle quick action button clicks
  */
 function handleQuickAction(action) {
+    adminState.editingItem = null;
+
     if (action === 'add-flight') {
+        document.getElementById('addFlightForm').reset();
+        document.getElementById('flightFormTitle').textContent = 'Add New Flight';
+        document.getElementById('flightSubmitBtn').textContent = 'Save Flight';
         switchSection('add-flight');
         return;
     }
     if (action === 'add-bus') {
+        document.getElementById('addBusForm').reset();
+        document.getElementById('busFormTitle').textContent = 'Add New Bus';
+        document.getElementById('busSubmitBtn').textContent = 'Save Bus';
         switchSection('add-bus');
         return;
     }
     if (action === 'add-hotel') {
+        document.getElementById('addHotelForm').reset();
+        document.getElementById('hotelFormTitle').textContent = 'Add New Hotel';
+        document.getElementById('hotelSubmitBtn').textContent = 'Save Hotel';
         switchSection('add-hotel');
         return;
     }
     if (action === 'add-package') {
+        document.getElementById('addPackageForm').reset();
+        document.getElementById('packageFormTitle').textContent = 'Add New Package';
+        document.getElementById('packageSubmitBtn').textContent = 'Save Package';
         switchSection('add-package');
         return;
     }
     if (action === 'add-place') {
+        document.getElementById('addPlaceForm').reset();
+        document.getElementById('placeFormTitle').textContent = 'Add New Place';
+        document.getElementById('placeSubmitBtn').textContent = 'Save Place';
         switchSection('add-place');
+        return;
+    }
+    if (action === 'add-location') {
+        document.getElementById('addLocationForm').reset();
+        document.getElementById('locationFormTitle').textContent = 'Add New Location';
+        document.getElementById('locationSubmitBtn').textContent = 'Save Location';
+        switchSection('add-location');
+        return;
+    }
+    if (action === 'add-airline') {
+        document.getElementById('addAirlineForm').reset();
+        document.getElementById('airlineFormTitle').textContent = 'Add New Airline';
+        document.getElementById('airlineSubmitBtn').textContent = 'Save Airline';
+        switchSection('add-airline');
+        return;
+    }
+    if (action === 'add-operator') {
+        document.getElementById('addOperatorForm').reset();
+        document.getElementById('operatorFormTitle').textContent = 'Add New Operator';
+        document.getElementById('operatorSubmitBtn').textContent = 'Save Operator';
+        switchSection('add-operator');
         return;
     }
     const actions = {
@@ -705,10 +777,13 @@ async function submitNewFlight() {
         const basePrice = document.getElementById('flightPrice').value;
         const operatesOnDays = document.getElementById('flightDays').value;
 
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'flight';
+
         await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'POST',
+            method: isEditing ? 'PUT' : 'POST',
             body: JSON.stringify({
                 item_type: 'flight',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
                 airline_id: Number(airlineId),
                 flight_number: flightNumber,
                 origin_location_id: Number(originId),
@@ -717,7 +792,7 @@ async function submitNewFlight() {
                 arrival_time: arrivalTime,
                 duration_minutes: Number(durationMinutes),
                 total_seats: Number(totalSeats),
-                available_seats: Number(totalSeats),
+                available_seats: isEditing ? undefined : Number(totalSeats),
                 base_price: Number(basePrice),
                 currency: 'NPR',
                 operates_on_days: operatesOnDays,
@@ -725,69 +800,37 @@ async function submitNewFlight() {
             })
         });
 
-        showMessage('Flight created successfully', 'success');
+        showMessage(`Flight ${isEditing ? 'updated' : 'created'} successfully`, 'success');
         document.getElementById('addFlightForm').reset();
+        adminState.editingItem = null;
         switchSection('flights');
         await loadDashboardData();
     } catch (error) {
-        showMessage(error.message || 'Unable to create flight', 'error');
+        showMessage(error.message || 'Unable to save flight', 'error');
     }
 }
 
-async function editFlight(flight) {
-    try {
-        const flightNumber = promptRequired('Flight number', flight.flight_number || '');
-        if (!flightNumber) return;
-
-        const departureTime = promptRequired('Departure time (HH:MM:SS)', flight.departure_time || '09:00:00');
-        if (!departureTime) return;
-
-        const arrivalTime = promptRequired('Arrival time (HH:MM:SS)', flight.arrival_time || '10:00:00');
-        if (!arrivalTime) return;
-
-        const durationMinutes = promptNumber('Duration minutes', flight.duration_minutes || 60);
-        if (durationMinutes === null) return;
-
-        const totalSeats = promptNumber('Total seats', flight.total_seats || flight.available_seats || 20);
-        if (totalSeats === null) return;
-
-        const availableSeats = promptNumber('Available seats', flight.available_seats || totalSeats);
-        if (availableSeats === null) return;
-
-        const basePrice = promptNumber('Base price (NPR)', flight.base_price || 0);
-        if (basePrice === null) return;
-
-        const operatesOnDays = promptRequired('Operating days (comma separated)', flight.operates_on_days || 'Mon,Tue,Wed,Thu,Fri,Sat,Sun');
-        if (!operatesOnDays) return;
-
-        await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'PUT',
-            body: JSON.stringify({
-                item_type: 'flight',
-                item_id: Number(flight.flight_id),
-                airline_id: Number(flight.airline_id),
-                flight_number: flightNumber,
-                origin_location_id: Number(flight.origin_location_id),
-                destination_location_id: Number(flight.destination_location_id),
-                departure_time: departureTime,
-                arrival_time: arrivalTime,
-                duration_minutes: durationMinutes,
-                aircraft_type: flight.aircraft_type || null,
-                total_seats: totalSeats,
-                available_seats: availableSeats,
-                base_price: basePrice,
-                currency: flight.currency || 'NPR',
-                operates_on_days: operatesOnDays,
-                is_active: Number(flight.is_active ?? 1)
-            })
-        });
-
-        showMessage('Flight updated successfully', 'success');
-        await loadDashboardData();
-        switchSection('flights');
-    } catch (error) {
-        showMessage(error.message || 'Unable to update flight', 'error');
-    }
+function editFlight(flight) {
+    adminState.editingItem = { type: 'flight', id: Number(flight.flight_id) };
+    
+    // Switch to section
+    switchSection('add-flight');
+    
+    // Update titles
+    document.getElementById('flightFormTitle').textContent = 'Edit Flight';
+    document.getElementById('flightSubmitBtn').textContent = 'Update Flight';
+    
+    // Populate form
+    document.getElementById('flightAirlineId').value = flight.airline_id;
+    document.getElementById('flightOriginId').value = flight.origin_location_id;
+    document.getElementById('flightDestinationId').value = flight.destination_location_id;
+    document.getElementById('flightNumber').value = flight.flight_number;
+    document.getElementById('flightDeparture').value = flight.departure_time;
+    document.getElementById('flightArrival').value = flight.arrival_time;
+    document.getElementById('flightDuration').value = flight.duration_minutes;
+    document.getElementById('flightSeats').value = flight.total_seats;
+    document.getElementById('flightPrice').value = flight.base_price;
+    document.getElementById('flightDays').value = flight.operates_on_days;
 }
 
 async function deleteFlight(flight) {
@@ -823,27 +866,29 @@ async function submitNewBus() {
         }
 
         const busNumber = document.getElementById('busNumber').value;
+        const busType = document.getElementById('busType').value;
         const departureTime = document.getElementById('busDeparture').value;
         const arrivalTime = document.getElementById('busArrival').value;
-        const durationMinutes = document.getElementById('busDuration').value;
         const totalSeats = document.getElementById('busSeats').value;
         const basePrice = document.getElementById('busPrice').value;
         const operatesOnDays = document.getElementById('busDays').value;
 
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'bus';
+
         await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'POST',
+            method: isEditing ? 'PUT' : 'POST',
             body: JSON.stringify({
                 item_type: 'bus',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
                 operator_id: Number(operatorId),
                 bus_number: busNumber,
+                bus_type: busType,
                 origin_location_id: Number(originId),
                 destination_location_id: Number(destinationId),
                 departure_time: departureTime,
                 arrival_time: arrivalTime,
-                duration_minutes: Number(durationMinutes),
-                bus_type: 'tourist',
                 total_seats: Number(totalSeats),
-                available_seats: Number(totalSeats),
+                available_seats: isEditing ? undefined : Number(totalSeats),
                 base_price: Number(basePrice),
                 currency: 'NPR',
                 operates_on_days: operatesOnDays,
@@ -851,70 +896,37 @@ async function submitNewBus() {
             })
         });
 
-        showMessage('Bus created successfully', 'success');
+        showMessage(`Bus ${isEditing ? 'updated' : 'created'} successfully`, 'success');
         document.getElementById('addBusForm').reset();
+        adminState.editingItem = null;
         switchSection('buses');
         await loadDashboardData();
     } catch (error) {
-        showMessage(error.message || 'Unable to create bus', 'error');
+        showMessage(error.message || 'Unable to save bus', 'error');
     }
 }
 
-async function editBus(bus) {
-    try {
-        const busNumber = promptRequired('Bus number', bus.bus_number || '');
-        if (!busNumber) return;
-
-        const departureTime = promptRequired('Departure time (HH:MM:SS)', bus.departure_time || '07:00:00');
-        if (!departureTime) return;
-
-        const arrivalTime = promptRequired('Arrival time (HH:MM:SS)', bus.arrival_time || '13:00:00');
-        if (!arrivalTime) return;
-
-        const durationMinutes = promptNumber('Duration minutes', bus.duration_minutes || 300);
-        if (durationMinutes === null) return;
-
-        const totalSeats = promptNumber('Total seats', bus.total_seats || bus.available_seats || 40);
-        if (totalSeats === null) return;
-
-        const availableSeats = promptNumber('Available seats', bus.available_seats || totalSeats);
-        if (availableSeats === null) return;
-
-        const basePrice = promptNumber('Base price (NPR)', bus.base_price || 0);
-        if (basePrice === null) return;
-
-        const operatesOnDays = promptRequired('Operating days (comma separated)', bus.operates_on_days || 'Mon,Tue,Wed,Thu,Fri,Sat,Sun');
-        if (!operatesOnDays) return;
-
-        await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'PUT',
-            body: JSON.stringify({
-                item_type: 'bus',
-                item_id: Number(bus.bus_id),
-                operator_id: Number(bus.operator_id),
-                bus_number: busNumber,
-                origin_location_id: Number(bus.origin_location_id),
-                destination_location_id: Number(bus.destination_location_id),
-                departure_time: departureTime,
-                arrival_time: arrivalTime,
-                duration_minutes: durationMinutes,
-                bus_type: bus.bus_type || 'regular',
-                total_seats: totalSeats,
-                available_seats: availableSeats,
-                base_price: basePrice,
-                currency: bus.currency || 'NPR',
-                amenities: bus.amenities || null,
-                operates_on_days: operatesOnDays,
-                is_active: Number(bus.is_active ?? 1)
-            })
-        });
-
-        showMessage('Bus updated successfully', 'success');
-        await loadDashboardData();
-        switchSection('buses');
-    } catch (error) {
-        showMessage(error.message || 'Unable to update bus', 'error');
-    }
+function editBus(bus) {
+    adminState.editingItem = { type: 'bus', id: Number(bus.bus_id) };
+    
+    // Switch to section
+    switchSection('add-bus');
+    
+    // Update titles
+    document.getElementById('busFormTitle').textContent = 'Edit Bus';
+    document.getElementById('busSubmitBtn').textContent = 'Update Bus';
+    
+    // Populate form
+    document.getElementById('busOperatorId').value = bus.operator_id;
+    document.getElementById('busOriginId').value = bus.origin_location_id;
+    document.getElementById('busDestinationId').value = bus.destination_location_id;
+    document.getElementById('busNumber').value = bus.bus_number;
+    document.getElementById('busType').value = bus.bus_type;
+    document.getElementById('busDeparture').value = bus.departure_time;
+    document.getElementById('busArrival').value = bus.arrival_time;
+    document.getElementById('busSeats').value = bus.total_seats;
+    document.getElementById('busPrice').value = bus.base_price;
+    document.getElementById('busDays').value = bus.operates_on_days;
 }
 
 async function deleteBus(bus) {
@@ -940,8 +952,8 @@ async function deleteBus(bus) {
 
 async function submitNewHotel() {
     try {
-        const locationId = document.getElementById('hotelLocationId').value;
         const hotelName = document.getElementById('hotelName').value;
+        const locationId = document.getElementById('hotelLocationId').value;
         const hotelType = document.getElementById('hotelType').value;
         const starRating = document.getElementById('hotelRating').value;
         const address = document.getElementById('hotelAddress').value;
@@ -950,10 +962,13 @@ async function submitNewHotel() {
         const description = document.getElementById('hotelDescription').value;
         const imageUrl = document.getElementById('hotelImageUrl').value;
 
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'hotel';
+
         await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'POST',
+            method: isEditing ? 'PUT' : 'POST',
             body: JSON.stringify({
                 item_type: 'hotel',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
                 hotel_name: hotelName,
                 location_id: Number(locationId),
                 address: address,
@@ -967,57 +982,36 @@ async function submitNewHotel() {
             })
         });
 
-        showMessage('Hotel created successfully', 'success');
+        showMessage(`Hotel ${isEditing ? 'updated' : 'created'} successfully`, 'success');
         document.getElementById('addHotelForm').reset();
+        adminState.editingItem = null;
         switchSection('hotels');
         await loadDashboardData();
     } catch (error) {
-        showMessage(error.message || 'Unable to create hotel', 'error');
+        showMessage(error.message || 'Unable to save hotel', 'error');
     }
 }
 
-async function editHotel(hotel) {
-    try {
-        const hotelName = promptRequired('Hotel name', hotel.hotel_name || '');
-        if (!hotelName) return;
-
-        const address = promptRequired('Hotel address', hotel.address || '');
-        if (!address) return;
-
-        const description = promptRequired('Hotel description', hotel.description || '');
-        if (description === null) return;
-
-        const starRating = promptNumber('Star rating (0-5)', hotel.star_rating || 3);
-        if (starRating === null) return;
-
-        const contactNumber = window.prompt('Contact number', hotel.contact_number || '') ?? '';
-        const email = window.prompt('Email', hotel.email || '') ?? '';
-
-        await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'PUT',
-            body: JSON.stringify({
-                item_type: 'hotel',
-                item_id: Number(hotel.hotel_id),
-                vendor_id: hotel.vendor_id ? Number(hotel.vendor_id) : null,
-                hotel_name: hotelName,
-                location_id: Number(hotel.location_id),
-                address,
-                description,
-                star_rating: starRating,
-                hotel_type: hotel.hotel_type || 'hotel',
-                contact_number: contactNumber,
-                email: email || null,
-                image_url: hotel.image_url || null,
-                is_active: Number(hotel.is_active ?? 1)
-            })
-        });
-
-        showMessage('Hotel updated successfully', 'success');
-        await loadDashboardData();
-        switchSection('hotels');
-    } catch (error) {
-        showMessage(error.message || 'Unable to update hotel', 'error');
-    }
+function editHotel(hotel) {
+    adminState.editingItem = { type: 'hotel', id: Number(hotel.hotel_id) };
+    
+    // Switch to section
+    switchSection('add-hotel');
+    
+    // Update titles
+    document.getElementById('hotelFormTitle').textContent = 'Edit Hotel';
+    document.getElementById('hotelSubmitBtn').textContent = 'Update Hotel';
+    
+    // Populate form
+    document.getElementById('hotelName').value = hotel.hotel_name;
+    document.getElementById('hotelLocationId').value = hotel.location_id;
+    document.getElementById('hotelType').value = hotel.hotel_type;
+    document.getElementById('hotelRating').value = hotel.star_rating;
+    document.getElementById('hotelAddress').value = hotel.address;
+    document.getElementById('hotelContact').value = hotel.contact_number || '';
+    document.getElementById('hotelEmail').value = hotel.email || '';
+    document.getElementById('hotelDescription').value = hotel.description;
+    document.getElementById('hotelImageUrl').value = hotel.image_url || '';
 }
 
 async function deleteHotel(hotel) {
@@ -1051,10 +1045,13 @@ async function submitNewPackage() {
         const description = document.getElementById('packageDescription').value;
         const imageUrl = document.getElementById('packageImageUrl').value;
 
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'package';
+
         await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'POST',
+            method: isEditing ? 'PUT' : 'POST',
             body: JSON.stringify({
                 item_type: 'package',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
                 package_name: packageName,
                 package_type: packageType,
                 description: description,
@@ -1067,66 +1064,34 @@ async function submitNewPackage() {
             })
         });
 
-        showMessage('Package created successfully', 'success');
+        showMessage(`Package ${isEditing ? 'updated' : 'created'} successfully`, 'success');
         document.getElementById('addPackageForm').reset();
+        adminState.editingItem = null;
         switchSection('packages');
         await loadDashboardData();
     } catch (error) {
-        showMessage(error.message || 'Unable to create package', 'error');
+        showMessage(error.message || 'Unable to save package', 'error');
     }
 }
 
-async function editPackage(pkg) {
-    try {
-        const packageName = promptRequired('Package name', pkg.package_name || '');
-        if (!packageName) return;
-
-        const description = promptRequired('Package description', pkg.description || '');
-        if (!description) return;
-
-        const durationDays = promptNumber('Duration days', pkg.duration_days || 1);
-        if (durationDays === null) return;
-
-        const durationNights = promptNumber('Duration nights', pkg.duration_nights || 1);
-        if (durationNights === null) return;
-
-        const basePrice = promptNumber('Base price (NPR)', pkg.base_price || 0);
-        if (basePrice === null) return;
-
-        const packageType = promptRequired('Package type (trekking/cultural/wildlife/adventure/pilgrimage/heritage/combined)', pkg.package_type || 'combined');
-        if (!packageType) return;
-
-        await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'PUT',
-            body: JSON.stringify({
-                item_type: 'package',
-                item_id: Number(pkg.package_id),
-                package_name: packageName,
-                package_type: packageType,
-                description,
-                detailed_itinerary: pkg.detailed_itinerary || null,
-                duration_days: durationDays,
-                duration_nights: durationNights,
-                difficulty_level: pkg.difficulty_level || 'moderate',
-                group_size_min: Number(pkg.group_size_min || 1),
-                group_size_max: Number(pkg.group_size_max || 15),
-                base_price: basePrice,
-                currency: pkg.currency || 'NPR',
-                inclusions: pkg.inclusions || null,
-                exclusions: pkg.exclusions || null,
-                best_season: pkg.best_season || null,
-                image_url: pkg.image_url || null,
-                is_active: Number(pkg.is_active ?? 1),
-                is_featured: Number(pkg.is_featured ?? 0)
-            })
-        });
-
-        showMessage('Package updated successfully', 'success');
-        await loadDashboardData();
-        switchSection('packages');
-    } catch (error) {
-        showMessage(error.message || 'Unable to update package', 'error');
-    }
+function editPackage(pkg) {
+    adminState.editingItem = { type: 'package', id: Number(pkg.package_id) };
+    
+    // Switch to section
+    switchSection('add-package');
+    
+    // Update titles
+    document.getElementById('packageFormTitle').textContent = 'Edit Package';
+    document.getElementById('packageSubmitBtn').textContent = 'Update Package';
+    
+    // Populate form
+    document.getElementById('packageName').value = pkg.package_name;
+    document.getElementById('packageType').value = pkg.package_type;
+    document.getElementById('packageDays').value = pkg.duration_days;
+    document.getElementById('packageNights').value = pkg.duration_nights;
+    document.getElementById('packagePrice').value = pkg.base_price;
+    document.getElementById('packageDescription').value = pkg.description;
+    document.getElementById('packageImageUrl').value = pkg.image_url || '';
 }
 
 async function deletePackage(pkg) {
@@ -1158,10 +1123,13 @@ async function submitNewPlace() {
         const description = document.getElementById('placeDescription').value;
         const imageUrl = document.getElementById('placeImageUrl').value;
 
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'place';
+
         await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'POST',
+            method: isEditing ? 'PUT' : 'POST',
             body: JSON.stringify({
                 item_type: 'place',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
                 place_name: placeName,
                 location_id: Number(locationId),
                 category: category,
@@ -1171,57 +1139,32 @@ async function submitNewPlace() {
             })
         });
 
-        showMessage('Place created successfully', 'success');
+        showMessage(`Place ${isEditing ? 'updated' : 'created'} successfully`, 'success');
         document.getElementById('addPlaceForm').reset();
+        adminState.editingItem = null;
         switchSection('places');
         await loadDashboardData();
     } catch (error) {
-        showMessage(error.message || 'Unable to create place', 'error');
+        showMessage(error.message || 'Unable to save place', 'error');
     }
 }
 
-async function editPlace(place) {
-    try {
-        const placeName = promptRequired('Place name', place.place_name || '');
-        if (!placeName) return;
-
-        const description = promptRequired('Place description', place.description || '');
-        if (!description) return;
-
-        const category = promptRequired('Category (cultural/historical/religious/natural/adventure/wildlife/heritage_site/national_park/viewpoint)', place.category || 'natural');
-        if (!category) return;
-
-        const altitude = window.prompt('Altitude meters', String(place.altitude_meters ?? ''));
-        if (altitude === null) return;
-
-        await RoyalNepal.apiRequest('manage_inventory.php', {
-            method: 'PUT',
-            body: JSON.stringify({
-                item_type: 'place',
-                item_id: Number(place.place_id),
-                place_name: placeName,
-                location_id: Number(place.location_id),
-                category,
-                description,
-                history: place.history || null,
-                best_time_to_visit: place.best_time_to_visit || null,
-                entry_fee: Number(place.entry_fee || 0),
-                currency: place.currency || 'NPR',
-                opening_hours: place.opening_hours || null,
-                unesco_site: Number(place.unesco_site ?? 0),
-                altitude_meters: altitude === '' ? null : Number(altitude),
-                image_url: place.image_url || null,
-                tips_and_guidelines: place.tips_and_guidelines || null,
-                is_active: Number(place.is_active ?? 1)
-            })
-        });
-
-        showMessage('Place updated successfully', 'success');
-        await loadDashboardData();
-        switchSection('places');
-    } catch (error) {
-        showMessage(error.message || 'Unable to update place', 'error');
-    }
+function editPlace(place) {
+    adminState.editingItem = { type: 'place', id: Number(place.place_id) };
+    
+    // Switch to section
+    switchSection('add-place');
+    
+    // Update titles
+    document.getElementById('placeFormTitle').textContent = 'Edit Place';
+    document.getElementById('placeSubmitBtn').textContent = 'Update Place';
+    
+    // Populate form
+    document.getElementById('placeName').value = place.place_name;
+    document.getElementById('placeLocationId').value = place.location_id;
+    document.getElementById('placeCategory').value = place.category;
+    document.getElementById('placeDescription').value = place.description;
+    document.getElementById('placeImageUrl').value = place.image_url || '';
 }
 
 async function deletePlace(place) {
@@ -1345,4 +1288,251 @@ async function updateBookingStatus(bookingId, newStatus) {
     } catch (error) {
         showMessage(error.message || `Failed to ${actionLabel} booking`, 'error');
     }
+}
+
+/**
+ * RENDERING FUNCTIONS FOR SUPPORT TABLES
+ */
+
+function renderLocationsTable(locations) {
+    const tbody = document.getElementById('locationsTableBody');
+    if (!tbody) return;
+    if (!locations.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No locations found</td></tr>';
+        return;
+    }
+    tbody.innerHTML = locations.map(l => `
+        <tr>
+            <td>${l.location_id}</td>
+            <td>${escapeHtml(l.location_name)}</td>
+            <td>${escapeHtml(capitalize(l.location_type))}</td>
+            <td>${escapeHtml(l.province || '-')}</td>
+            <td>${escapeHtml(l.airport_code || '-')}</td>
+            <td>${Number(l.is_popular) === 1 ? '⭐' : '-'}</td>
+            <td>
+                <button class="btn btn-secondary btn-sm" onclick="editLocation(${JSON.stringify(l).replace(/"/g, '&quot;')})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteLocation(${l.location_id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderAirlinesTable(airlines) {
+    const tbody = document.getElementById('airlinesTableBody');
+    if (!tbody) return;
+    if (!airlines.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No airlines found</td></tr>';
+        return;
+    }
+    tbody.innerHTML = airlines.map(a => `
+        <tr>
+            <td>${a.airline_id}</td>
+            <td>${escapeHtml(a.airline_name)}</td>
+            <td>${escapeHtml(a.airline_code)}</td>
+            <td>${escapeHtml(a.contact_number || '-')}</td>
+            <td>${Number(a.is_active) === 1 ? 'Active' : 'Inactive'}</td>
+            <td>
+                <button class="btn btn-secondary btn-sm" onclick="editAirline(${JSON.stringify(a).replace(/"/g, '&quot;')})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteAirline(${a.airline_id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderOperatorsTable(operators) {
+    const tbody = document.getElementById('operatorsTableBody');
+    if (!tbody) return;
+    if (!operators.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No operators found</td></tr>';
+        return;
+    }
+    tbody.innerHTML = operators.map(o => `
+        <tr>
+            <td>${o.operator_id}</td>
+            <td>${escapeHtml(o.operator_name)}</td>
+            <td>${escapeHtml(o.contact_number || '-')}</td>
+            <td>${o.rating || '-'}</td>
+            <td>${Number(o.is_active) === 1 ? 'Active' : 'Inactive'}</td>
+            <td>
+                <button class="btn btn-secondary btn-sm" onclick="editOperator(${JSON.stringify(o).replace(/"/g, '&quot;')})">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteOperator(${o.operator_id})">Delete</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+/**
+ * SUBMISSION FUNCTIONS
+ */
+
+async function submitNewLocation() {
+    try {
+        const name = document.getElementById('locationName').value;
+        const type = document.getElementById('locationType').value;
+        const province = document.getElementById('locationProvince').value;
+        const airport = document.getElementById('locationAirport').value;
+        const popular = document.getElementById('locationPopular').checked ? 1 : 0;
+
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'location';
+
+        await RoyalNepal.apiRequest('manage_inventory.php', {
+            method: isEditing ? 'PUT' : 'POST',
+            body: JSON.stringify({
+                item_type: 'location',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
+                location_name: name,
+                location_type: type,
+                province: province,
+                airport_code: airport || null,
+                is_popular: popular
+            })
+        });
+
+        showMessage(`Location ${isEditing ? 'updated' : 'created'} successfully`, 'success');
+        document.getElementById('addLocationForm').reset();
+        adminState.editingItem = null;
+        switchSection('locations');
+        await loadDashboardData();
+    } catch (error) {
+        showMessage(error.message || 'Unable to save location', 'error');
+    }
+}
+
+async function submitNewAirline() {
+    try {
+        const name = document.getElementById('airlineName').value;
+        const code = document.getElementById('airlineCode').value;
+        const contact = document.getElementById('airlineContact').value;
+
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'airline';
+
+        await RoyalNepal.apiRequest('manage_inventory.php', {
+            method: isEditing ? 'PUT' : 'POST',
+            body: JSON.stringify({
+                item_type: 'airline',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
+                airline_name: name,
+                airline_code: code,
+                contact_number: contact || null,
+                is_active: 1
+            })
+        });
+
+        showMessage(`Airline ${isEditing ? 'updated' : 'created'} successfully`, 'success');
+        document.getElementById('addAirlineForm').reset();
+        adminState.editingItem = null;
+        switchSection('airlines');
+        await loadDashboardData();
+    } catch (error) {
+        showMessage(error.message || 'Unable to save airline', 'error');
+    }
+}
+
+async function submitNewOperator() {
+    try {
+        const name = document.getElementById('operatorName').value;
+        const contact = document.getElementById('operatorContact').value;
+        const rating = document.getElementById('operatorRating').value;
+
+        const isEditing = adminState.editingItem && adminState.editingItem.type === 'operator';
+
+        await RoyalNepal.apiRequest('manage_inventory.php', {
+            method: isEditing ? 'PUT' : 'POST',
+            body: JSON.stringify({
+                item_type: 'operator',
+                item_id: isEditing ? adminState.editingItem.id : undefined,
+                operator_name: name,
+                contact_number: contact || null,
+                rating: Number(rating),
+                is_active: 1
+            })
+        });
+
+        showMessage(`Operator ${isEditing ? 'updated' : 'created'} successfully`, 'success');
+        document.getElementById('addOperatorForm').reset();
+        adminState.editingItem = null;
+        switchSection('operators');
+        await loadDashboardData();
+    } catch (error) {
+        showMessage(error.message || 'Unable to save operator', 'error');
+    }
+}
+
+/**
+ * EDIT FUNCTIONS
+ */
+
+function editLocation(l) {
+    adminState.editingItem = { type: 'location', id: Number(l.location_id) };
+    switchSection('add-location');
+    document.getElementById('locationFormTitle').textContent = 'Edit Location';
+    document.getElementById('locationSubmitBtn').textContent = 'Update Location';
+    
+    document.getElementById('locationName').value = l.location_name;
+    document.getElementById('locationType').value = l.location_type;
+    document.getElementById('locationProvince').value = l.province;
+    document.getElementById('locationAirport').value = l.airport_code || '';
+    document.getElementById('locationPopular').checked = Number(l.is_popular) === 1;
+}
+
+function editAirline(a) {
+    adminState.editingItem = { type: 'airline', id: Number(a.airline_id) };
+    switchSection('add-airline');
+    document.getElementById('airlineFormTitle').textContent = 'Edit Airline';
+    document.getElementById('airlineSubmitBtn').textContent = 'Update Airline';
+    
+    document.getElementById('airlineName').value = a.airline_name;
+    document.getElementById('airlineCode').value = a.airline_code;
+    document.getElementById('airlineContact').value = a.contact_number || '';
+}
+
+function editOperator(o) {
+    adminState.editingItem = { type: 'operator', id: Number(o.operator_id) };
+    switchSection('add-operator');
+    document.getElementById('operatorFormTitle').textContent = 'Edit Operator';
+    document.getElementById('operatorSubmitBtn').textContent = 'Update Operator';
+    
+    document.getElementById('operatorName').value = o.operator_name;
+    document.getElementById('operatorContact').value = o.contact_number || '';
+    document.getElementById('operatorRating').value = o.rating || 4.0;
+}
+
+/**
+ * DELETE FUNCTIONS
+ */
+
+async function deleteLocation(id) {
+    if (!window.confirm('Are you sure? This may affect items using this location.')) return;
+    try {
+        await RoyalNepal.apiRequest('manage_inventory.php', {
+            method: 'DELETE',
+            body: JSON.stringify({ item_type: 'location', item_id: id })
+        });
+        showMessage('Location deleted', 'success');
+        await loadDashboardData();
+    } catch (error) { showMessage(error.message, 'error'); }
+}
+
+async function deleteAirline(id) {
+    if (!window.confirm('Are you sure?')) return;
+    try {
+        await RoyalNepal.apiRequest('manage_inventory.php', {
+            method: 'DELETE',
+            body: JSON.stringify({ item_type: 'airline', item_id: id })
+        });
+        showMessage('Airline deleted', 'success');
+        await loadDashboardData();
+    } catch (error) { showMessage(error.message, 'error'); }
+}
+
+async function deleteOperator(id) {
+    if (!window.confirm('Are you sure?')) return;
+    try {
+        await RoyalNepal.apiRequest('manage_inventory.php', {
+            method: 'DELETE',
+            body: JSON.stringify({ item_type: 'operator', item_id: id })
+        });
+        showMessage('Operator deleted', 'success');
+        await loadDashboardData();
+    } catch (error) { showMessage(error.message, 'error'); }
 }

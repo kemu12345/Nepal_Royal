@@ -171,7 +171,6 @@ function getFlights($db) {
               LEFT JOIN airlines a ON df.airline_id = a.airline_id
               LEFT JOIN locations ol ON df.origin_location_id = ol.location_id
               LEFT JOIN locations dl ON df.destination_location_id = dl.location_id
-              WHERE df.is_active = 1
               ORDER BY df.flight_id DESC";
 
     $stmt = $db->prepare($query);
@@ -194,7 +193,6 @@ function getBuses($db) {
               LEFT JOIN bus_operators bo ON b.operator_id = bo.operator_id
               LEFT JOIN locations ol ON b.origin_location_id = ol.location_id
               LEFT JOIN locations dl ON b.destination_location_id = dl.location_id
-              WHERE b.is_active = 1
               ORDER BY b.bus_id DESC";
 
     $stmt = $db->prepare($query);
@@ -216,7 +214,6 @@ function getHotels($db) {
               FROM hotels h
               LEFT JOIN locations l ON h.location_id = l.location_id
               LEFT JOIN hotel_rooms hr ON h.hotel_id = hr.hotel_id AND hr.is_available = 1
-              WHERE h.is_active = 1
               GROUP BY h.hotel_id
               ORDER BY h.hotel_id DESC";
 
@@ -237,7 +234,6 @@ function getPackages($db) {
               FROM tour_packages tp
               LEFT JOIN package_locations pl ON tp.package_id = pl.package_id
               LEFT JOIN locations l ON pl.location_id = l.location_id
-              WHERE tp.is_active = 1
               GROUP BY tp.package_id
               ORDER BY tp.package_id DESC";
     $stmt = $db->prepare($query);
@@ -257,7 +253,6 @@ function getPlaces($db) {
                      l.location_name, l.province, l.latitude, l.longitude
               FROM places p
               LEFT JOIN locations l ON p.location_id = l.location_id
-              WHERE p.is_active = 1
               ORDER BY p.place_id DESC";
 
     $stmt = $db->prepare($query);
@@ -271,7 +266,7 @@ function getPlaces($db) {
  * @return array An array of airline records.
  */
 function getAirlines($db) {
-    $query = "SELECT airline_id, airline_name, airline_code FROM airlines WHERE is_active = 1 ORDER BY airline_name";
+    $query = "SELECT airline_id, airline_name, airline_code, contact_number, is_active FROM airlines ORDER BY airline_name";
     $stmt = $db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -283,7 +278,7 @@ function getAirlines($db) {
  * @return array An array of operator records.
  */
 function getOperators($db) {
-    $query = "SELECT operator_id, operator_name FROM bus_operators WHERE is_active = 1 ORDER BY operator_name";
+    $query = "SELECT operator_id, operator_name, contact_number, rating, is_active FROM bus_operators ORDER BY operator_name";
     $stmt = $db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -295,7 +290,7 @@ function getOperators($db) {
  * @return array An array of location records.
  */
 function getLocations($db) {
-    $query = "SELECT location_id, location_name, location_type, province FROM locations ORDER BY location_name ASC";
+    $query = "SELECT location_id, location_name, location_type, province, airport_code, is_popular FROM locations ORDER BY location_name ASC";
     $stmt = $db->prepare($query);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);

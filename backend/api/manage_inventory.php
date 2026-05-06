@@ -270,6 +270,27 @@ function handleCreate($db, $data) {
             ]);
             break;
 
+        case 'location':
+            requireFields($data, ['location_name', 'location_type', 'province']);
+            $query = "INSERT INTO locations (location_name, location_type, province, airport_code, is_popular) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$data->location_name, $data->location_type, $data->province, $data->airport_code ?? null, $data->is_popular ?? 0]);
+            break;
+
+        case 'airline':
+            requireFields($data, ['airline_name', 'airline_code']);
+            $query = "INSERT INTO airlines (airline_name, airline_code, contact_number, is_active) VALUES (?, ?, ?, ?)";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$data->airline_name, $data->airline_code, $data->contact_number ?? null, $data->is_active ?? 1]);
+            break;
+
+        case 'operator':
+            requireFields($data, ['operator_name']);
+            $query = "INSERT INTO bus_operators (operator_name, contact_number, rating, is_active) VALUES (?, ?, ?, ?)";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$data->operator_name, $data->contact_number ?? null, $data->rating ?? 4.0, $data->is_active ?? 1]);
+            break;
+
         default:
             // If the item type is not recognized, throw an error.
             throw new Exception("Invalid item type");
@@ -458,6 +479,24 @@ function handleUpdate($db, $data) {
             ]);
             break;
 
+        case 'location':
+            $query = "UPDATE locations SET location_name = ?, location_type = ?, province = ?, airport_code = ?, is_popular = ? WHERE location_id = ?";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$data->location_name, $data->location_type, $data->province, $data->airport_code ?? null, $data->is_popular ?? 0, $item_id]);
+            break;
+
+        case 'airline':
+            $query = "UPDATE airlines SET airline_name = ?, airline_code = ?, contact_number = ?, is_active = ? WHERE airline_id = ?";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$data->airline_name, $data->airline_code, $data->contact_number ?? null, $data->is_active ?? 1, $item_id]);
+            break;
+
+        case 'operator':
+            $query = "UPDATE bus_operators SET operator_name = ?, contact_number = ?, rating = ?, is_active = ? WHERE operator_id = ?";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$data->operator_name, $data->contact_number ?? null, $data->rating ?? 4.0, $data->is_active ?? 1, $item_id]);
+            break;
+
         default:
             // If the item type is not recognized, throw an error.
             throw new Exception("Invalid item type");
@@ -508,6 +547,18 @@ function handleDelete($db, $data) {
 
         case 'place':
             $query = "UPDATE places SET is_active = 0 WHERE place_id = ?";
+            break;
+
+        case 'location':
+            $query = "DELETE FROM locations WHERE location_id = ?"; // Locations don't have is_active
+            break;
+
+        case 'airline':
+            $query = "UPDATE airlines SET is_active = 0 WHERE airline_id = ?";
+            break;
+
+        case 'operator':
+            $query = "UPDATE bus_operators SET is_active = 0 WHERE operator_id = ?";
             break;
 
         default:

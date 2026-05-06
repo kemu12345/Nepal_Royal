@@ -45,6 +45,18 @@
                     <span class="icon">🏔️</span>
                     <span>Places</span>
                 </a>
+                <a href="#" class="nav-item" data-section="locations">
+                    <span class="icon">📍</span>
+                    <span>Locations</span>
+                </a>
+                <a href="#" class="nav-item" data-section="airlines">
+                    <span class="icon">🏢</span>
+                    <span>Airlines</span>
+                </a>
+                <a href="#" class="nav-item" data-section="operators">
+                    <span class="icon">🚌</span>
+                    <span>Bus Operators</span>
+                </a>
                 <a href="#" class="nav-item" data-section="bookings">
                     <span class="icon">📋</span>
                     <span>Bookings</span>
@@ -216,7 +228,7 @@
                 <div id="section-add-flight" class="section">
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2>Add New Flight</h2>
+                            <h2 id="flightFormTitle">Add New Flight</h2>
                             <button class="btn btn-secondary" type="button" onclick="switchSection('flights')">Back to Flights</button>
                         </div>
                         <form id="addFlightForm">
@@ -272,7 +284,7 @@
                                 <label for="flightDays">Operating Days</label>
                                 <input type="text" id="flightDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
                             </div>
-                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Flight</button>
+                            <button type="submit" id="flightSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Flight</button>
                         </form>
                     </div>
                 </div>
@@ -312,7 +324,7 @@
                 <div id="section-add-bus" class="section">
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2>Add New Bus</h2>
+                            <h2 id="busFormTitle">Add New Bus</h2>
                             <button class="btn btn-secondary" type="button" onclick="switchSection('buses')">Back to Buses</button>
                         </div>
                         <form id="addBusForm">
@@ -368,7 +380,7 @@
                                 <label for="busDays">Operating Days</label>
                                 <input type="text" id="busDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
                             </div>
-                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Bus</button>
+                            <button type="submit" id="busSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Bus</button>
                         </form>
                     </div>
                 </div>
@@ -408,7 +420,7 @@
                 <div id="section-add-hotel" class="section">
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2>Add New Hotel</h2>
+                            <h2 id="hotelFormTitle">Add New Hotel</h2>
                             <button class="btn btn-secondary" type="button" onclick="switchSection('hotels')">Back to Hotels</button>
                         </div>
                         <form id="addHotelForm">
@@ -460,7 +472,7 @@
                                 <input type="url" id="hotelImageUrl" class="form-control" placeholder="https://example.com/image.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
                             </div>
-                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Hotel</button>
+                            <button type="submit" id="hotelSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Hotel</button>
                         </form>
                     </div>
                 </div>
@@ -500,7 +512,7 @@
                 <div id="section-add-package" class="section">
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2>Add New Package</h2>
+                            <h2 id="packageFormTitle">Add New Package</h2>
                             <button class="btn btn-secondary" type="button" onclick="switchSection('packages')">Back to Packages</button>
                         </div>
                         <form id="addPackageForm">
@@ -543,7 +555,7 @@
                                 <input type="url" id="packageImageUrl" class="form-control" placeholder="https://example.com/package.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
                             </div>
-                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Package</button>
+                            <button type="submit" id="packageSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Package</button>
                         </form>
                     </div>
                 </div>
@@ -582,7 +594,7 @@
                 <div id="section-add-place" class="section">
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2>Add New Place</h2>
+                            <h2 id="placeFormTitle">Add New Place</h2>
                             <button class="btn btn-secondary" type="button" onclick="switchSection('places')">Back to Places</button>
                         </div>
                         <form id="addPlaceForm">
@@ -621,7 +633,193 @@
                                 <input type="url" id="placeImageUrl" class="form-control" placeholder="https://example.com/place.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
                             </div>
-                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Place</button>
+                            <button type="submit" id="placeSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Place</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- LOCATIONS SECTION -->
+                <div id="section-locations" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>System Locations</h2>
+                            <button class="btn btn-primary" type="button" data-action="add-location">Add Location</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Province</th>
+                                        <th>Airport</th>
+                                        <th>Popular</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="locationsTableBody">
+                                    <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADD/EDIT LOCATION SECTION -->
+                <div id="section-add-location" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 id="locationFormTitle">Add New Location</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('locations')">Back to Locations</button>
+                        </div>
+                        <form id="addLocationForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="locationName">Location Name</label>
+                                <input type="text" id="locationName" class="form-control" placeholder="e.g. Kathmandu" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="locationType">Type</label>
+                                    <select id="locationType" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="city">City</option>
+                                        <option value="trekking_area">Trekking Area</option>
+                                        <option value="district">District</option>
+                                        <option value="national_park">National Park</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="locationProvince">Province</label>
+                                    <select id="locationProvince" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="Koshi Province">Koshi Province</option>
+                                        <option value="Madhesh Province">Madhesh Province</option>
+                                        <option value="Bagmati Province">Bagmati Province</option>
+                                        <option value="Gandaki Province">Gandaki Province</option>
+                                        <option value="Lumbini Province">Lumbini Province</option>
+                                        <option value="Karnali Province">Karnali Province</option>
+                                        <option value="Sudurpashchim Province">Sudurpashchim Province</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="locationAirport">Airport Code (Optional)</label>
+                                    <input type="text" id="locationAirport" class="form-control" placeholder="e.g. KTM" maxlength="3" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1; display: flex; align-items: center; gap: 0.5rem; padding-top: 1.5rem;">
+                                    <input type="checkbox" id="locationPopular" style="width: 20px; height: 20px;">
+                                    <label for="locationPopular">Mark as Popular</label>
+                                </div>
+                            </div>
+                            <button type="submit" id="locationSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Location</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- AIRLINES SECTION -->
+                <div id="section-airlines" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Airlines</h2>
+                            <button class="btn btn-primary" type="button" data-action="add-airline">Add Airline</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Airline Name</th>
+                                        <th>Code</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="airlinesTableBody">
+                                    <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADD/EDIT AIRLINE SECTION -->
+                <div id="section-add-airline" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 id="airlineFormTitle">Add New Airline</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('airlines')">Back to Airlines</button>
+                        </div>
+                        <form id="addAirlineForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="airlineName">Airline Name</label>
+                                <input type="text" id="airlineName" class="form-control" placeholder="e.g. Buddha Air" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="airlineCode">Airline Code</label>
+                                    <input type="text" id="airlineCode" class="form-control" placeholder="e.g. U4" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="airlineContact">Contact Number</label>
+                                    <input type="text" id="airlineContact" class="form-control" placeholder="+977-..." style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <button type="submit" id="airlineSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Airline</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- OPERATORS SECTION -->
+                <div id="section-operators" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Bus Operators</h2>
+                            <button class="btn btn-primary" type="button" data-action="add-operator">Add Operator</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Operator Name</th>
+                                        <th>Contact</th>
+                                        <th>Rating</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="operatorsTableBody">
+                                    <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ADD/EDIT OPERATOR SECTION -->
+                <div id="section-add-operator" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2 id="operatorFormTitle">Add New Operator</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('operators')">Back to Operators</button>
+                        </div>
+                        <form id="addOperatorForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="operatorName">Operator Name</label>
+                                <input type="text" id="operatorName" class="form-control" placeholder="e.g. Green Line Tours" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="operatorContact">Contact Number</label>
+                                    <input type="text" id="operatorContact" class="form-control" placeholder="+977-..." style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="operatorRating">Rating (1-5)</label>
+                                    <input type="number" id="operatorRating" class="form-control" value="4.0" step="0.1" min="1" max="5" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <button type="submit" id="operatorSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Operator</button>
                         </form>
                     </div>
                 </div>
