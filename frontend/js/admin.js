@@ -212,11 +212,18 @@ async function loadDashboardData() {
         // Update the UI with stats
         const totalUsers = document.getElementById('totalUsers');
         const totalBookings = document.getElementById('totalBookings');
+        const totalRevenue = document.getElementById('totalRevenue');
         const totalFlights = document.getElementById('totalFlights');
         const totalHotels = document.getElementById('totalHotels');
 
         if (totalUsers) totalUsers.textContent = String(summary.users ?? users.length ?? 0);
         if (totalBookings) totalBookings.textContent = String(summary.bookings ?? bookings.length ?? 0);
+        
+        if (totalRevenue) {
+            const revenue = bookings.reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
+            totalRevenue.textContent = `NPR ${revenue.toLocaleString()}`;
+        }
+
         if (totalFlights) totalFlights.textContent = String(summary.flights ?? items.flights?.length ?? 0);
         if (totalHotels) totalHotels.textContent = String(summary.hotels ?? items.hotels?.length ?? 0);
 

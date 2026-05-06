@@ -183,8 +183,8 @@ body {
 */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
@@ -195,12 +195,12 @@ body {
 .stat-card {
     background-color: var(--bg-white);
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 1.25rem;
     display: flex;
     align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
-    border: 1px solid #e8eaed;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #edf0f2;
 }
 
 /* Hover effect for stat cards. */
@@ -212,30 +212,41 @@ body {
 
 /* The icon within a stat card. */
 .stat-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 12px;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
-    margin-right: 1.5rem;
+    font-size: 1.5rem;
+    margin-right: 1.25rem;
     flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+/* Gradients for icons */
+.stat-card:nth-child(1) .stat-icon { background: linear-gradient(135deg, #DC143C 0%, #ff4d6d 100%); }
+.stat-card:nth-child(2) .stat-icon { background: linear-gradient(135deg, #003893 0%, #0056e0 100%); }
+.stat-card:nth-child(3) .stat-icon { background: linear-gradient(135deg, #155724 0%, #28a745 100%); }
+.stat-card:nth-child(4) .stat-icon { background: linear-gradient(135deg, #856404 0%, #FFD700 100%); }
+.stat-card:nth-child(5) .stat-icon { background: linear-gradient(135deg, #28a745 0%, #34ce57 100%); }
 
 /* The container for the text information in a stat card. */
 .stat-info h3 {
-    font-size: 2.2rem;
+    font-size: 1.5rem;
     margin: 0;
     color: #1a1a2e;
     font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
 .stat-info p {
-    margin: 0.35rem 0 0 0;
-    color: #666;
-    font-size: 0.9rem;
+    margin: 0;
+    color: #64748b;
+    font-size: 0.8rem;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
 }
 
 /* A container for action buttons. */
@@ -586,9 +597,9 @@ body {
     padding: 1rem 0.875rem;
     text-align: left;
     font-weight: 600;
-    color: #1a1a2e;
-    border-bottom: 2px solid #e5e7eb;
-    font-size: 0.875rem;
+    color: #64748b;
+    border-bottom: 2px solid #f1f5f9;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
