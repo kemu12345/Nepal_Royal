@@ -117,7 +117,7 @@ body {
     for a layered effect.
 */
 .search-section {
-    margin-top: -215px;
+    margin-top: -210px;
     position: relative;
     z-index: 100;
 }
