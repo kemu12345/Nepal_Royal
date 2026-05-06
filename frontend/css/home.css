@@ -53,12 +53,14 @@ body {
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
-    color: rgba(255, 255, 255, 0.8) !important; /* Dark light white */
+    color: rgba(255, 255, 255, 0.8) !important;
+    /* Dark light white */
 }
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link.active {
-    color: var(--nepal-red) !important; /* Red on hover */
+    color: var(--nepal-red) !important;
+    /* Red on hover */
 }
 
 /*
@@ -115,7 +117,7 @@ body {
     for a layered effect.
 */
 .search-section {
-    margin-top: -250px;
+    margin-top: -215px;
     position: relative;
     z-index: 100;
 }

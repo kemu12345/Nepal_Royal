@@ -5,6 +5,23 @@ body {
     padding-top: 80px;
 }
 
+/* Fix navbar specifically for the buses page */
+#mainNavbar {
+    background: linear-gradient(135deg, rgba(0, 56, 147, 1) 0%, rgba(220, 20, 60, 1) 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    height: 80px;
+}
+
+#mainNavbar .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 500;
+}
+
+#mainNavbar .nav-link:hover,
+#mainNavbar .nav-link.active {
+    color: #DC143C !important;
+}
+
 .page-header {
     background: linear-gradient(135deg, #003893 0%, #0052cc 100%);
     color: white;
