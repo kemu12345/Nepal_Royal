@@ -9,17 +9,29 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
     <style>
         :root {
+            --royal-blue: #003893;
             --nepal-red: #DC143C;
-            --nepal-blue: #003893;
-            --nepal-gold: #FFD700;
-            --sidebar-width: 280px;
+            --nepal-white: #ffffff;
+            --bg-light: #f8f9fb;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --sidebar-bg: linear-gradient(180deg, #003893 0%, #003893 50%, #DC143C 100%);
+            --sidebar-width: 260px;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; }
+        body { 
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
         
         /* Sidebar */
         .sidebar {
@@ -28,259 +40,334 @@
             top: 0;
             bottom: 0;
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--nepal-blue) 0%, #001a4d 100%);
+            background: var(--sidebar-bg);
             color: white;
-            padding: 1.5rem;
+            padding: 2.5rem 1.5rem;
             overflow-y: auto;
             z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         .sidebar-brand {
-            text-align: center;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 1.5rem;
+            padding-bottom: 2.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .sidebar-brand h2 { font-weight: 800; font-size: 1.5rem; }
-        .sidebar-brand p { font-size: 0.8rem; opacity: 0.7; }
+        .sidebar-brand h2 { 
+            font-weight: 800; 
+            font-size: 1.4rem; 
+            letter-spacing: -0.03em;
+            color: white;
+        }
+        .sidebar-brand p { 
+            font-size: 0.7rem; 
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #fff5f5;
+            margin-top: 0.25rem;
+            opacity: 0.9;
+        }
         
         .nav-menu { list-style: none; padding: 0; }
-        .nav-menu li { margin-bottom: 0.5rem; }
+        .nav-menu li { margin-bottom: 0.4rem; }
         .nav-menu a {
             display: flex;
             align-items: center;
-            padding: 0.8rem 1rem;
-            color: rgba(255,255,255,0.8);
+            padding: 0.85rem 1rem;
+            color: rgba(255,255,255,0.6);
             text-decoration: none;
             border-radius: 10px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.01em;
         }
         .nav-menu a:hover, .nav-menu a.active {
             background: rgba(255,255,255,0.1);
-            color: var(--nepal-gold);
+            color: white;
         }
-        .nav-menu a i { font-size: 1.2rem; margin-right: 0.8rem; }
-        
+        .nav-menu a.active {
+            background: var(--nepal-red);
+            font-weight: 600;
+        }
+        .nav-menu a i { font-size: 1.25rem; margin-right: 0.875rem; opacity: 0.8; }
+
         .user-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 1rem;
             margin-top: auto;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
         }
         .user-avatar {
-            width: 60px;
-            height: 60px;
-            background: var(--nepal-gold);
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            background: var(--royal-blue);
+            color: white;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 0.5rem;
-            font-size: 1.5rem;
-            color: var(--nepal-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .user-info-text { overflow: hidden; }
+        .user-info-text h6 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: -0.01em;
+        }
+        .user-info-text p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);
-            padding: 2rem;
+            padding: 3.5rem;
             min-height: 100vh;
         }
         
         .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            margin-bottom: 3.5rem;
         }
-        .top-bar h1 { font-weight: 700; color: #333; }
+        .top-bar h1 { 
+            font-weight: 800; 
+            font-size: 2.2rem; 
+            letter-spacing: -0.04em;
+            color: var(--sidebar-bg);
+        }
+        .top-bar p {
+            font-weight: 500;
+            color: var(--text-muted);
+        }
         
-        /* Stats Cards */
-        .stat-card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        /* Premium Cards */
+        .dashboard-card, .stat-card {
+            background: var(--nepal-white);
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+            margin-bottom: 2rem;
             transition: all 0.3s ease;
         }
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
         }
+        
         .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
         }
-        .stat-icon.flights { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
-        .stat-icon.hotels { background: linear-gradient(135deg, #26de81, #20bf6b); }
-        .stat-icon.packages { background: linear-gradient(135deg, #a55eea, #8854d0); }
-        .stat-icon.wishlist { background: linear-gradient(135deg, #f7b731, #f39c12); }
+        .stat-icon.flights { background: #fee2e2; color: #ef4444; }
+        .stat-icon.hotels { background: #dcfce7; color: #22c55e; }
+        .stat-icon.packages { background: #f3e8ff; color: #a855f7; }
+        .stat-icon.wishlist { background: #fef9c3; color: #eab308; }
         
-        .stat-value { font-size: 2rem; font-weight: 700; color: #333; }
-        .stat-label { color: #6c757d; font-size: 0.9rem; }
-        
-        /* Cards */
-        .dashboard-card {
-            background: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-        }
+        .stat-value { font-size: 2.1rem; font-weight: 800; color: #1a1a1a; }
+        .stat-label { color: #555; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+
         .dashboard-card h3 {
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 1rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
+            gap: 0.6rem;
+            font-size: 1.2rem;
+            letter-spacing: -0.02em;
         }
-        .dashboard-card h3 i { margin-right: 0.5rem; color: var(--nepal-red); }
-        
+        .dashboard-card h3 i { color: var(--nepal-red); }
+
         /* Quick Actions */
         .quick-action {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
+            background: var(--nepal-white);
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
             padding: 1.5rem;
             text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
-            color: #333;
-            display: block;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s ease;
         }
         .quick-action:hover {
-            border-color: var(--nepal-red);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(220, 20, 60, 0.15);
+            border-color: var(--royal-blue);
+            background: #f8fbff;
+            transform: translateY(-3px);
         }
-        .quick-action i {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-        .quick-action.flights i { color: #ff6b6b; }
-        .quick-action.buses i { color: #45aaf2; }
-        .quick-action.hotels i { color: #26de81; }
-        .quick-action.packages i { color: #a55eea; }
-        
-        /* Recent Bookings Table */
+        .quick-action i { font-size: 2rem; color: var(--royal-blue); }
+        .quick-action strong { font-size: 0.9rem; font-weight: 700; }
+
+        /* Tables */
+        .table-custom { width: 100%; border-collapse: collapse; }
         .table-custom th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-            border: none;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            border-bottom: 2px solid #f1f5f9;
         }
-        .table-custom td { vertical-align: middle; border-color: #eee; }
+        .table-custom td {
+            padding: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
         .status-badge {
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
         }
-        .status-confirmed { background: #d4edda; color: #155724; }
-        .status-pending { background: #fff3cd; color: #856404; }
-        .status-cancelled { background: #f8d7da; color: #721c24; }
+        .status-confirmed { background: #dcfce7; color: #166534; }
+        .status-pending { background: #fef9c3; color: #854d0e; }
+        .status-cancelled { background: #fee2e2; color: #991b1b; }
         
         /* Destinations */
         .destination-card {
-            background: linear-gradient(135deg, rgba(220,20,60,0.9), rgba(0,56,147,0.9));
-            border-radius: 15px;
-            padding: 1rem;
-            color: white;
+            background: var(--card-bg);
+            border: 1px solid #edf2f7;
+            border-radius: 16px;
+            padding: 1.5rem;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.1s ease;
         }
         .destination-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            border-color: var(--royal-blue);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
-        .destination-card h5 { font-weight: 600; margin-bottom: 0.3rem; }
-        .destination-card p { font-size: 0.8rem; opacity: 0.8; margin: 0; }
+        .destination-card h5 { font-weight: 700; font-size: 1rem; color: var(--text-main); margin-top: 0.75rem; }
+        .destination-card p { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
         .destination-card .wishlist-toggle {
-            margin-top: 0.75rem;
-            border: 1px solid rgba(255,255,255,0.7);
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            padding: 0.4rem 1rem;
+            margin-top: 1.25rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
             cursor: pointer;
             width: 100%;
+            transition: all 0.2s ease;
+        }
+        .destination-card .wishlist-toggle:hover {
+            background: #f8fafc;
+            border-color: var(--royal-blue);
         }
         .destination-card .wishlist-toggle.active {
-            background: #fff;
-            color: var(--nepal-red);
-            border-color: #fff;
+            background: var(--nepal-red);
+            color: #fff;
+            border-color: var(--nepal-red);
         }
 
         .wishlist-item {
-            border: 1px solid #eceff3;
+            background: var(--card-bg);
+            border: 1px solid #edf2f7;
             border-radius: 12px;
-            padding: 0.75rem;
+            padding: 1.25rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 0.75rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s ease;
         }
-        .wishlist-item-title { font-weight: 600; margin: 0; color: #1f2937; }
-        .wishlist-item-subtitle { margin: 0; color: #6b7280; font-size: 0.85rem; }
-        
-        /* Responsive */
-        @media (max-width: 991.98px) {
-            .sidebar {
-                width: 70px;
-                padding: 1rem 0.5rem;
-            }
-            .sidebar-brand h2, .sidebar-brand p, .nav-menu span, .user-card { display: none; }
-            .nav-menu a { justify-content: center; padding: 1rem; }
-            .nav-menu a i { margin-right: 0; font-size: 1.4rem; }
-            .main-content { margin-left: 70px; }
+        .wishlist-item:hover { border-color: var(--royal-blue); }
+        .wishlist-item-title { font-weight: 700; color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.15rem; }
+        .wishlist-item-subtitle { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; }
+
+        /* Review System Styles */
+        .review-form {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #f1f5f9;
         }
-        
-        @media (max-width: 767.98px) {
-            .sidebar { display: none; }
-            .main-content { 
-                margin-left: 0; 
-                padding: 1.25rem; 
-                padding-bottom: 90px; 
-            }
-            .top-bar h1 { font-size: 1.5rem; }
-            .dashboard-card { padding: 1rem; margin-bottom: 1rem; }
-            .stat-card { padding: 1rem; }
-            .quick-action { padding: 1rem 0.5rem; }
-            .quick-action i { font-size: 2rem; }
-            .mobile-nav { display: flex; justify-content: space-around; }
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 1.25rem;
+            font-size: 1.5rem;
+            color: #fbbf24;
+            cursor: pointer;
         }
-        
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        .review-item {
+            padding: 1.25rem;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
             background: white;
-            padding: 0.5rem 0;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-            z-index: 1000;
+            min-width: 300px;
+            max-width: 300px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
         }
-        .mobile-nav a {
-            text-align: center;
-            color: #6c757d;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
+        .review-item:hover { transform: translateY(-3px); border-color: var(--royal-blue); }
+        
+        #reviewsList {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0.5rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
-        .mobile-nav a.active { color: var(--nepal-red); }
-        .mobile-nav a i { font-size: 1.3rem; display: block; margin-bottom: 0.2rem; }
-        .mobile-nav a span { font-size: 0.7rem; }
+        #reviewsList::-webkit-scrollbar { height: 6px; }
+        #reviewsList::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 991px) {
+            .sidebar { width: 80px; padding: 2rem 0.5rem; }
+            .sidebar-brand, .nav-menu span, .user-card { display: none; }
+            .nav-menu a { justify-content: center; }
+            .main-content { margin-left: 80px; padding: 2rem; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 1.5rem; padding-bottom: 100px; }
+        }
     </style>
 </head>
 <body>
@@ -302,12 +389,12 @@
             <li><a href="#" onclick="logout()"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a></li>
         </ul>
         
-        <div class="user-card mt-auto">
-            <div class="user-avatar">
-                <i class="bi bi-person-fill"></i>
+        <div class="user-card">
+            <div class="user-avatar" id="userInitial">U</div>
+            <div class="user-info-text">
+                <h6 id="userFullName">User Name</h6>
+                <p id="userEmail">user@email.com</p>
             </div>
-            <h6 class="mb-0" id="userFullName">User</h6>
-            <small class="opacity-75" id="userEmail">user@email.com</small>
         </div>
     </aside>
 
@@ -425,23 +512,34 @@
             </div>
         </div>
 
-        <div class="dashboard-card" id="profileSection">
-            <h3><i class="bi bi-person-circle"></i>My Profile</h3>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="p-3 rounded" style="background: rgba(13, 110, 253, 0.06);">
-                        <div class="small text-muted">Full Name</div>
-                        <div class="fw-semibold" id="profileName">-</div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="p-3 rounded" style="background: rgba(13, 110, 253, 0.06);">
-                        <div class="small text-muted">Email</div>
-                        <div class="fw-semibold" id="profileEmail">-</div>
+        <!-- Reviews Section -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="dashboard-card">
+                    <h3><i class="bi bi-star-fill"></i>Share Your Experience</h3>
+                    <div class="review-form">
+                        <div class="star-rating" id="reviewStars">
+                            <i class="bi bi-star" data-value="1"></i>
+                            <i class="bi bi-star" data-value="2"></i>
+                            <i class="bi bi-star" data-value="3"></i>
+                            <i class="bi bi-star" data-value="4"></i>
+                            <i class="bi bi-star" data-value="5"></i>
+                        </div>
+                        <textarea class="form-control mb-3" id="reviewText" rows="3" placeholder="Tell others about your trip with Royal Nepal..."></textarea>
+                        <button class="btn btn-danger w-100 fw-bold py-2" style="border-radius: 12px;" onclick="submitReview()">Post Review</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="dashboard-card">
+            <h3><i class="bi bi-chat-left-quote-fill"></i>Community Feedback</h3>
+            <div id="reviewsList">
+                <p class="text-muted text-center py-4">No reviews yet. Be the first to share!</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card" id="profileSection">
 
         <div class="dashboard-card">
             <h3><i class="bi bi-compass"></i>Discover Nepal 🇳🇵</h3>
@@ -719,9 +817,9 @@
             
             // Update user info
             if (user.first_name) {
-                document.getElementById('userFullName').textContent = `${user.first_name} ${user.last_name || ''}`;
-                document.getElementById('userEmail').textContent = user.email || '';
-                document.querySelector('.user-avatar').innerHTML = user.first_name.charAt(0).toUpperCase();
+                if (document.getElementById('userFullName')) document.getElementById('userFullName').textContent = `${user.first_name} ${user.last_name || ''}`;
+                if (document.getElementById('userEmail')) document.getElementById('userEmail').textContent = user.email || '';
+                if (document.getElementById('userInitial')) document.getElementById('userInitial').textContent = user.first_name.charAt(0).toUpperCase();
             }
 
             const profileName = document.getElementById('profileName');
@@ -748,6 +846,87 @@
             localStorage.removeItem('user');
             window.location.href = 'home.html';
         }
+
+        // --- Review System Logic ---
+        let selectedRating = 0;
+        const REVIEWS_KEY = 'royalNepalReviews';
+
+        document.querySelectorAll('#reviewStars i').forEach(star => {
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.dataset.value);
+                updateStars();
+            });
+            star.addEventListener('mouseover', () => {
+                highlightStars(parseInt(star.dataset.value));
+            });
+            star.addEventListener('mouseout', () => {
+                updateStars();
+            });
+        });
+
+        function highlightStars(count) {
+            document.querySelectorAll('#reviewStars i').forEach((star, i) => {
+                star.className = i < count ? 'bi bi-star-fill' : 'bi bi-star';
+            });
+        }
+
+        function updateStars() {
+            highlightStars(selectedRating);
+        }
+
+        function submitReview() {
+            const text = document.getElementById('reviewText').value.trim();
+            const user = JSON.parse(localStorage.getItem('user') || '{"first_name": "Guest"}');
+            
+            if (selectedRating === 0 || !text) {
+                alert('Please provide a rating and a comment.');
+                return;
+            }
+
+            const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+            const newReview = {
+                name: user.first_name,
+                rating: selectedRating,
+                comment: text,
+                date: new Date().toLocaleDateString()
+            };
+
+            reviews.unshift(newReview);
+            localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews));
+
+            // Reset form
+            document.getElementById('reviewText').value = '';
+            selectedRating = 0;
+            updateStars();
+            renderReviews();
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewsList');
+            const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+            
+            if (!reviews.length) {
+                container.innerHTML = '<p class="text-muted text-center py-4">No reviews yet. Be the first to share!</p>';
+                return;
+            }
+
+            container.innerHTML = reviews.map(r => `
+                <div class="review-item">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <strong class="text-primary">${r.name}</strong>
+                        <small class="text-muted">${r.date}</small>
+                    </div>
+                    <div class="text-warning small mb-2">
+                        ${'<i class="bi bi-star-fill"></i>'.repeat(r.rating)}
+                        ${'<i class="bi bi-star"></i>'.repeat(5 - r.rating)}
+                    </div>
+                    <p class="mb-0 text-secondary" style="font-size: 0.9rem; line-height: 1.4;">"${r.comment}"</p>
+                </div>
+            `).join('');
+        }
+
+        // Initialize reviews on load
+        document.addEventListener('DOMContentLoaded', renderReviews);
     </script>
 </body>
 </html>
