@@ -64,6 +64,22 @@ function initializeEventListeners() {
             await submitNewBus();
         });
     }
+
+    const addHotelForm = document.getElementById('addHotelForm');
+    if (addHotelForm) {
+        addHotelForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewHotel();
+        });
+    }
+
+    const addPackageForm = document.getElementById('addPackageForm');
+    if (addPackageForm) {
+        addPackageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitNewPackage();
+        });
+    }
 }
 
 /**
@@ -118,7 +134,9 @@ function updatePageTitle(section) {
         'places': 'Places Management',
         'bookings': 'Bookings Management',
         'add-flight': 'Add New Flight',
-        'add-bus': 'Add New Bus'
+        'add-bus': 'Add New Bus',
+        'add-hotel': 'Add New Hotel',
+        'add-package': 'Add New Package'
     };
 
     if (pageTitle && titles[section]) {
@@ -600,9 +618,15 @@ function handleQuickAction(action) {
         switchSection('add-bus');
         return;
     }
+    if (action === 'add-hotel') {
+        switchSection('add-hotel');
+        return;
+    }
+    if (action === 'add-package') {
+        switchSection('add-package');
+        return;
+    }
     const actions = {
-        'add-hotel': createHotel,
-        'add-package': createPackage,
         'add-place': createPlace
     };
 
@@ -641,6 +665,9 @@ function populateSupportDropdowns() {
         
         if (busOriginSelect) busOriginSelect.innerHTML = '<option value="">Select Origin...</option>' + locs;
         if (busDestSelect) busDestSelect.innerHTML = '<option value="">Select Destination...</option>' + locs;
+        
+        const hotelLocationSelect = document.getElementById('hotelLocationId');
+        if (hotelLocationSelect) hotelLocationSelect.innerHTML = '<option value="">Select Location...</option>' + locs;
     }
 }
 
@@ -896,35 +923,37 @@ async function deleteBus(bus) {
     }
 }
 
-async function createHotel() {
+async function submitNewHotel() {
     try {
-        const locationId = promptId('Enter Hotel Location ID', adminState.support.locations, 'location_id');
-        if (locationId === null) return;
-
-        const hotelName = promptRequired('Hotel name');
-        if (!hotelName) return;
-
-        const address = promptRequired('Hotel address');
-        if (!address) return;
-
-        const starRating = promptNumber('Star rating (0-5)', 3);
-        if (starRating === null) return;
+        const locationId = document.getElementById('hotelLocationId').value;
+        const hotelName = document.getElementById('hotelName').value;
+        const hotelType = document.getElementById('hotelType').value;
+        const starRating = document.getElementById('hotelRating').value;
+        const address = document.getElementById('hotelAddress').value;
+        const contactNumber = document.getElementById('hotelContact').value;
+        const email = document.getElementById('hotelEmail').value;
+        const description = document.getElementById('hotelDescription').value;
+        const imageUrl = document.getElementById('hotelImageUrl').value;
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'POST',
             body: JSON.stringify({
                 item_type: 'hotel',
                 hotel_name: hotelName,
-                location_id: locationId,
-                address,
-                description: '',
-                star_rating: starRating,
-                hotel_type: 'hotel',
+                location_id: Number(locationId),
+                address: address,
+                description: description,
+                star_rating: Number(starRating),
+                hotel_type: hotelType,
+                contact_number: contactNumber || null,
+                email: email || null,
+                image_url: imageUrl || null,
                 is_active: 1
             })
         });
 
         showMessage('Hotel created successfully', 'success');
+        document.getElementById('addHotelForm').reset();
         switchSection('hotels');
         await loadDashboardData();
     } catch (error) {
@@ -997,39 +1026,34 @@ async function deleteHotel(hotel) {
     }
 }
 
-async function createPackage() {
+async function submitNewPackage() {
     try {
-        const packageName = promptRequired('Package name');
-        if (!packageName) return;
-
-        const description = promptRequired('Package short description');
-        if (!description) return;
-
-        const durationDays = promptNumber('Duration days', 3);
-        if (durationDays === null) return;
-
-        const durationNights = promptNumber('Duration nights', 2);
-        if (durationNights === null) return;
-
-        const basePrice = promptNumber('Base price (NPR)', 20000);
-        if (basePrice === null) return;
+        const packageName = document.getElementById('packageName').value;
+        const packageType = document.getElementById('packageType').value;
+        const durationDays = document.getElementById('packageDays').value;
+        const durationNights = document.getElementById('packageNights').value;
+        const basePrice = document.getElementById('packagePrice').value;
+        const description = document.getElementById('packageDescription').value;
+        const imageUrl = document.getElementById('packageImageUrl').value;
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
             method: 'POST',
             body: JSON.stringify({
                 item_type: 'package',
                 package_name: packageName,
-                package_type: 'combined',
-                description,
-                duration_days: durationDays,
-                duration_nights: durationNights,
-                base_price: basePrice,
+                package_type: packageType,
+                description: description,
+                duration_days: Number(durationDays),
+                duration_nights: Number(durationNights),
+                base_price: Number(basePrice),
                 currency: 'NPR',
+                image_url: imageUrl || null,
                 is_active: 1
             })
         });
 
         showMessage('Package created successfully', 'success');
+        document.getElementById('addPackageForm').reset();
         switchSection('packages');
         await loadDashboardData();
     } catch (error) {

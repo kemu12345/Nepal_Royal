@@ -404,12 +404,73 @@
                     </div>
                 </div>
 
+                <!-- ADD HOTEL SECTION -->
+                <div id="section-add-hotel" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Add New Hotel</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('hotels')">Back to Hotels</button>
+                        </div>
+                        <form id="addHotelForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="hotelName">Hotel Name</label>
+                                <input type="text" id="hotelName" class="form-control" placeholder="e.g. Everest View Hotel" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelLocationId">Location</label>
+                                    <select id="hotelLocationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="">Select Location...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelType">Hotel Type</label>
+                                    <select id="hotelType" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="hotel">Hotel</option>
+                                        <option value="resort">Resort</option>
+                                        <option value="guesthouse">Guesthouse</option>
+                                        <option value="hostel">Hostel</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelRating">Star Rating (0-5)</label>
+                                    <input type="number" id="hotelRating" class="form-control" min="0" max="5" value="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="hotelAddress">Address</label>
+                                <input type="text" id="hotelAddress" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelContact">Contact Number</label>
+                                    <input type="text" id="hotelContact" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelEmail">Email Address</label>
+                                    <input type="email" id="hotelEmail" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="hotelDescription">Description</label>
+                                <textarea id="hotelDescription" class="form-control" rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="hotelImageUrl">Image URL</label>
+                                <input type="url" id="hotelImageUrl" class="form-control" placeholder="https://example.com/image.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <small class="text-muted">Paste a direct link to an image. (Optional)</small>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Hotel</button>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- PACKAGES SECTION -->
                 <div id="section-packages" class="section">
                     <div class="card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                            <h2>Travel Packages</h2>
-                            <button class="btn btn-primary" type="button" data-action="add-package">Create Package</button>
+                            <h2>Holiday Packages</h2>
+                            <button class="btn btn-primary" type="button" data-action="add-package">Add Package</button>
                         </div>
                         <div class="table-responsive">
                             <table class="data-table">
@@ -418,20 +479,70 @@
                                         <th>Package ID</th>
                                         <th>Package Name</th>
                                         <th>Duration</th>
-                                        <th>Price per Person</th>
-                                        <th>Destinations</th>
-                                        <th>Available Slots</th>
+                                        <th>Base Price</th>
                                         <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="packagesTableBody">
                                     <tr>
-                                        <td colspan="8" class="text-center">No packages found</td>
+                                        <td colspan="6" class="text-center">No packages found</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                <!-- ADD PACKAGE SECTION -->
+                <div id="section-add-package" class="section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h2>Add New Package</h2>
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('packages')">Back to Packages</button>
+                        </div>
+                        <form id="addPackageForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="packageName">Package Name</label>
+                                <input type="text" id="packageName" class="form-control" placeholder="e.g. Everest Base Camp Trek" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="packageType">Package Type</label>
+                                    <select id="packageType" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                        <option value="trekking">Trekking</option>
+                                        <option value="tour">Tour</option>
+                                        <option value="wildlife">Wildlife</option>
+                                        <option value="cultural">Cultural</option>
+                                        <option value="combined">Combined</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="packagePrice">Base Price (NPR)</label>
+                                    <input type="number" id="packagePrice" class="form-control" value="20000" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="packageDays">Duration (Days)</label>
+                                    <input type="number" id="packageDays" class="form-control" value="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="packageNights">Duration (Nights)</label>
+                                    <input type="number" id="packageNights" class="form-control" value="2" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="packageDescription">Description</label>
+                                <textarea id="packageDescription" class="form-control" rows="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="packageImageUrl">Image URL</label>
+                                <input type="url" id="packageImageUrl" class="form-control" placeholder="https://example.com/package.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <small class="text-muted">Paste a direct link to an image. (Optional)</small>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Package</button>
+                        </form>
                     </div>
                 </div>
 

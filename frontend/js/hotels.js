@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
         displaySearchSummary(city, checkin, checkout);
         searchHotels(city, checkin, checkout);
     } else {
-        // Otherwise, load a default set of demo hotels for display.
-        loadDemoHotels();
+        // Otherwise, load all available hotels without filtering by location or dates.
+        searchHotels('', '', '');
     }
 
     // Set up event listeners for the filter and sort controls.
@@ -345,20 +345,31 @@ function displayHotels(hotels) {
  * @returns {string} The HTML string for the hotel card.
  */
 function createHotelCard(hotel) {
-    const stars = '⭐'.repeat(Math.floor(hotel.star_rating));
-    const typeClass = `badge-${hotel.hotel_type}`;
-    const roomsClass = hotel.available_rooms > 5 ? 'text-success' : hotel.available_rooms > 0 ? 'text-warning' : 'text-danger';
-    const amenities = hotel.amenities ? hotel.amenities.split(',').slice(0, 4) : [];
+    const stars = '⭐'.repeat(Math.floor(hotel.star_rating || 3));
+    const typeClass = `badge-${hotel.hotel_type || 'hotel'}`;
+    const availableRooms = hotel.available_rooms !== undefined && hotel.available_rooms !== null ? parseInt(hotel.available_rooms) : 10;
+    const roomsClass = availableRooms > 5 ? 'text-success' : availableRooms > 0 ? 'text-warning' : 'text-danger';
+    const amenitiesStr = hotel.amenities || 'WiFi,Room Service';
+    const amenities = amenitiesStr.split(',').slice(0, 4);
+    
+    const roomType = hotel.room_type || 'Standard Room';
+    const maxGuests = hotel.max_guests || 2;
+    const basePrice = hotel.base_price_per_night || 5000;
+    const currency = hotel.currency || 'NPR';
+    const roomId = hotel.room_id || 1;
 
-    const hotelTypeImages = {
-        'hotel':      'https://picsum.photos/id/164/600/300',
-        'resort':     'https://picsum.photos/id/145/600/300',
-        'teahouse':   'https://picsum.photos/id/16/600/300',
-        'guesthouse': 'https://picsum.photos/id/1080/600/300',
-        'lodge':      'https://picsum.photos/id/137/600/300'
-    };
-    const fallbackImg = 'https://picsum.photos/id/164/600/300';
-    const imageUrl = hotel.image_url || hotelTypeImages[hotel.hotel_type] || fallbackImg;
+    const defaultImages = [
+        'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1542314831-c6a4d14d837e?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1517840901100-8179e982acb7?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?w=600&h=300&fit=crop'
+    ];
+    const imageIndex = (hotel.hotel_id || 1) % defaultImages.length;
+    const fallbackImg = defaultImages[imageIndex];
+    const imageUrl = hotel.image_url || fallbackImg;
 
     return `
         <div class="col-12">
@@ -383,10 +394,10 @@ function createHotelCard(hotel) {
                             
                             <div class="room-info mb-3">
                                 <span class="badge bg-light text-dark me-2">
-                                    <i class="bi bi-door-open me-1"></i>${hotel.room_type}
+                                    <i class="bi bi-door-open me-1"></i>${roomType}
                                 </span>
                                 <span class="badge bg-light text-dark">
-                                    <i class="bi bi-people me-1"></i>Max ${hotel.max_guests} Guests
+                                    <i class="bi bi-people me-1"></i>Max ${maxGuests} Guests
                                 </span>
                             </div>
                             
@@ -399,16 +410,16 @@ function createHotelCard(hotel) {
                         <div class="text-center mb-3">
                             <span class="text-muted small">per night</span>
                             <div class="price-tag">
-                                <span class="price-currency">${hotel.currency}</span>
-                                <span class="price-amount">${formatPrice(hotel.base_price_per_night)}</span>
+                                <span class="price-currency">${currency}</span>
+                                <span class="price-amount">${formatPrice(basePrice)}</span>
                             </div>
                         </div>
                         <div class="${roomsClass} small mb-2">
                             <i class="bi bi-door-closed me-1"></i>
-                            ${hotel.available_rooms > 0 ? `${hotel.available_rooms} rooms left` : 'No rooms'}
+                            ${availableRooms > 0 ? `${availableRooms} rooms left` : 'No rooms'}
                         </div>
-                        <button class="btn btn-book w-100" onclick="openBookingModal(${hotel.room_id})" ${hotel.available_rooms === 0 ? 'disabled' : ''}>
-                            ${hotel.available_rooms === 0 ? 'Sold Out' : '<i class="bi bi-calendar-check me-1"></i>Book Now'}
+                        <button class="btn btn-book w-100" onclick="openBookingModal(${roomId})" ${availableRooms === 0 ? 'disabled' : ''}>
+                            ${availableRooms === 0 ? 'Sold Out' : '<i class="bi bi-calendar-check me-1"></i>Book Now'}
                         </button>
                     </div>
                 </div>
