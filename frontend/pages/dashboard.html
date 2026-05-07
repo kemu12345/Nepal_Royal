@@ -483,6 +483,90 @@
                 font-size: 2rem;
             }
         }
+        /* Profile Section Enhancements */
+        .profile-layout {
+            display: flex;
+            gap: 3rem;
+            align-items: flex-start;
+        }
+        .profile-sidebar-card {
+            flex: 0 0 280px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            text-align: center;
+        }
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent) 0%, #b91c1c 100%);
+            color: white;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(220, 20, 60, 0.3);
+        }
+        .profile-sidebar-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .profile-badge {
+            margin-top: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .profile-details-main {
+            flex: 1;
+        }
+        .detail-group {
+            background: white;
+            border: 1px solid #f1f5f9;
+            padding: 1.25rem;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+        .detail-group:hover {
+            border-color: var(--accent-soft);
+            background: #fdf2f2;
+        }
+        .detail-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+        .detail-group p {
+            margin: 0;
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 1.05rem;
+        }
+        @media (max-width: 991px) {
+            .profile-layout {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .profile-sidebar-card {
+                flex: 1;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -665,66 +749,66 @@
         </div>
 
         <div class="dashboard-card" id="profileSection">
-
-            <div class="dashboard-card">
-                <h3><i class="bi bi-compass"></i>Discover Nepal 🇳🇵</h3>
-                <div class="row g-3">
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="destination-card">
-                            <h5>🏔️</h5>
-                            <h5>Everest</h5>
-                            <p>Adventure</p>
-                            <button class="wishlist-toggle" data-place="Everest" data-category="Adventure"
-                                type="button">Save</button>
+            <h3 class="mb-4"><i class="bi bi-person-badge-fill"></i> Account Profile</h3>
+            <div class="profile-layout">
+                <div class="profile-sidebar-card">
+                    <div class="profile-avatar-large" id="profileAvatarLarge">U</div>
+                    <h4 id="profileNameDetail">User Name</h4>
+                    <p class="text-muted">Verified Member</p>
+                    <div class="profile-badge">
+                        <i class="bi bi-shield-check"></i> Primary Account
+                    </div>
+                </div>
+                <div class="profile-details-main">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="detail-group">
+                                <label>First Name</label>
+                                <p id="detailFirstName">-</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-group">
+                                <label>Last Name</label>
+                                <p id="detailLastName">-</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-group">
+                                <label>Email Address</label>
+                                <p id="detailEmail">-</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-group">
+                                <label>Phone Number</label>
+                                <p id="detailPhone">-</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-group">
+                                <label>Account Status</label>
+                                <p class="text-success"><i class="bi bi-check-circle-fill"></i> Active</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-group">
+                                <label>Member Since</label>
+                                <p>May 2026</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="destination-card">
-                            <h5>🛕</h5>
-                            <h5>Kathmandu</h5>
-                            <p>Culture</p>
-                            <button class="wishlist-toggle" data-place="Kathmandu" data-category="Culture"
-                                type="button">Save</button>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="destination-card">
-                            <h5>🏞️</h5>
-                            <h5>Pokhara</h5>
-                            <p>Lakes</p>
-                            <button class="wishlist-toggle" data-place="Pokhara" data-category="Lakes"
-                                type="button">Save</button>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="destination-card">
-                            <h5>🐘</h5>
-                            <h5>Chitwan</h5>
-                            <p>Wildlife</p>
-                            <button class="wishlist-toggle" data-place="Chitwan" data-category="Wildlife"
-                                type="button">Save</button>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="destination-card">
-                            <h5>🙏</h5>
-                            <h5>Lumbini</h5>
-                            <p>Spiritual</p>
-                            <button class="wishlist-toggle" data-place="Lumbini" data-category="Spiritual"
-                                type="button">Save</button>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-2">
-                        <div class="destination-card">
-                            <h5>🌄</h5>
-                            <h5>Nagarkot</h5>
-                            <p>Sunrise</p>
-                            <button class="wishlist-toggle" data-place="Nagarkot" data-category="Sunrise"
-                                type="button">Save</button>
-                        </div>
+                    <div class="mt-5 d-flex gap-3">
+                        <button class="btn btn-primary px-4 py-2" style="border-radius: 12px;">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                        </button>
+                        <button class="btn btn-outline-danger px-4 py-2" style="border-radius: 12px;" onclick="logout()">
+                            <i class="bi bi-box-arrow-left me-2"></i>Logout
+                        </button>
                     </div>
                 </div>
             </div>
+        </div>
     </main>
 
     <!-- Mobile Navigation -->
@@ -951,19 +1035,21 @@
 
             // Update user info
             if (user.first_name) {
-                if (document.getElementById('userFullName')) document.getElementById('userFullName').textContent = `${user.first_name} ${user.last_name || ''}`;
+                const initial = user.first_name.charAt(0).toUpperCase();
+                const fullName = `${user.first_name} ${user.last_name || ''}`;
+                
+                // Left Sidebar Update
+                if (document.getElementById('userFullName')) document.getElementById('userFullName').textContent = fullName;
                 if (document.getElementById('userEmail')) document.getElementById('userEmail').textContent = user.email || '';
-                if (document.getElementById('userInitial')) document.getElementById('userInitial').textContent = user.first_name.charAt(0).toUpperCase();
-            }
+                if (document.getElementById('userInitial')) document.getElementById('userInitial').textContent = initial;
 
-            const profileName = document.getElementById('profileName');
-            const profileEmail = document.getElementById('profileEmail');
-            if (profileName) {
-                const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-                profileName.textContent = fullName || 'Not provided';
-            }
-            if (profileEmail) {
-                profileEmail.textContent = user.email || 'Not provided';
+                // Profile Section Update
+                if (document.getElementById('profileAvatarLarge')) document.getElementById('profileAvatarLarge').textContent = initial;
+                if (document.getElementById('profileNameDetail')) document.getElementById('profileNameDetail').textContent = fullName;
+                if (document.getElementById('detailFirstName')) document.getElementById('detailFirstName').textContent = user.first_name;
+                if (document.getElementById('detailLastName')) document.getElementById('detailLastName').textContent = user.last_name || '-';
+                if (document.getElementById('detailEmail')) document.getElementById('detailEmail').textContent = user.email || '-';
+                if (document.getElementById('detailPhone')) document.getElementById('detailPhone').textContent = user.phone || 'Not provided';
             }
 
             bindDashboardNavLinks();
