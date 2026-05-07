@@ -24,7 +24,7 @@ body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
     color: rgba(255,255,255,0.9) !important;
     font-weight: 500;
     padding: 0.5rem 1rem !important;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 .navbar-custom .nav-link:hover {
     color: var(--nepal-gold) !important;
@@ -82,7 +82,7 @@ body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 5px 30px rgba(0,0,0,0.08);
-    transition: all 0.4s ease;
+    transition: all 0.1s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -187,7 +187,7 @@ body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
     width: 100%;
     margin-top: auto;
     margin-top: 1rem;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 .btn-book:hover {
     transform: translateY(-2px);

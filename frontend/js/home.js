@@ -406,3 +406,51 @@ function initAnimations() {
         observer.observe(el);
     });
 }
+function renderHomeReviews() {
+    const container = document.getElementById('dynamicTestimonials');
+    if (!container) return;
+    
+    const reviews = JSON.parse(localStorage.getItem('royalNepalReviews') || '[]');
+    
+    const userReviews = reviews.slice(0, 6).map(r => `
+        <div class="testimonial-card card border-0 p-2">
+            <div class="card-body p-4">
+                <div class="mb-3 text-warning">
+                    ${'<i class="bi bi-star-fill"></i>'.repeat(r.rating)}
+                    ${'<i class="bi bi-star"></i>'.repeat(5 - r.rating)}
+                </div>
+                <p class="text-muted" style="height: 80px; overflow-y: auto;">"${r.comment}"</p>
+                <div class="d-flex align-items-center mt-4">
+                    <div class="bg-danger rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 45px; height: 45px; flex-shrink: 0;">${r.name ? r.name.charAt(0) : 'G'}</div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 fw-bold">${r.name || 'Guest'}</h6>
+                        <small class="text-muted">Verified Traveler</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    const staticReviews = `
+        <div class="testimonial-card card border-0 p-2">
+            <div class="card-body p-4">
+                <div class="mb-3 text-warning">
+                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                </div>
+                <p class="text-muted" style="height: 80px; overflow-y: auto;">"Amazing experience booking through Royal Nepal! The Everest trek package was perfectly organized."</p>
+                <div class="d-flex align-items-center mt-4">
+                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 45px; height: 45px; flex-shrink: 0;">JD</div>
+                    <div class="ms-3">
+                        <h6 class="mb-0 fw-bold">John Rock</h6>
+                        <small class="text-muted">Global Traveler</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = userReviews + staticReviews;
+}
+
+// Ensure reviews are rendered on load
+document.addEventListener('DOMContentLoaded', renderHomeReviews);

@@ -6,7 +6,7 @@
     --text-muted: #636E72;
     --glass-bg: rgba(0, 0, 0, 0.4);
     --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -307,4 +307,74 @@ body {
     .auth-header h2 {
         font-size: 1.75rem;
     }
+}
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Minimal Modal CSS */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content-custom {
+    background: white;
+    padding: 2rem;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+}
+
+.modal-header-custom h3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.modal-body-custom p {
+    color: var(--text-muted);
+}
+.register-page .auth-card { 
+    max-width: 600px; 
+}
+
+.row-custom { 
+    display: flex; 
+    gap: 1rem; 
+}
+
+.col-custom { 
+    flex: 1; 
+}
+
+@media (max-width: 600px) { 
+    .row-custom { 
+        flex-direction: column; 
+        gap: 0; 
+    } 
 }

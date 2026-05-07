@@ -1,845 +1,551 @@
-/*
-    This file contains the styles for the user and admin dashboards.
-    It defines the layout for the sidebar, main content area, and various
-    dashboard components like stat cards and tables.
-*/
+:root {
+    --primary: #003893;
+    --accent: #dc143c;
+    --sidebar-gradient: linear-gradient(180deg, #003893 0%, #003893 50%, #dc143c 100%);
+    --accent-soft: rgba(220, 20, 60, 0.1);
+    --bg-body: #f1f5f9;
+    --surface: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --sidebar-width: 280px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --shadow-subtle: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-premium: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
 
-/*
-    The main container for the dashboard, using a flexbox layout
-    to position the sidebar and main content.
-*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
 }
 
-.dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f8f9fb;
-}
-
-/*
-    The sidebar provides navigation for the dashboard.
-    It's fixed on the left side with a gradient background.
-*/
+/* Sidebar */
 .sidebar {
-    width: 260px;
-    background: linear-gradient(180deg, #003893 0%, #003893 50%, #DC143C 100%);
-    color: var(--nepal-white);
     position: fixed;
-    height: 100vh;
-    overflow-y: auto;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-gradient);
+    color: white;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
     z-index: 1000;
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
 }
 
-/*
-    The header section of the sidebar, containing the dashboard title.
-*/
-.sidebar-header {
-    padding: var(--spacing-xl) var(--spacing-lg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    text-align: center;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+.sidebar-brand {
+    margin-bottom: 3rem;
 }
 
-/* The main title in the sidebar header. */
-.sidebar-header h2 {
+.sidebar-brand h2 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
     font-size: 1.5rem;
-    margin-bottom: var(--spacing-xs);
-    font-weight: 700;
     letter-spacing: -0.02em;
-    text-transform: uppercase;
-}
-
-/* The tagline below the sidebar title. */
-.sidebar-header .tagline {
-    font-size: 0.95rem;
-    opacity: 0.85;
-    font-style: normal;
-    font-weight: 600;
-}
-
-/* The navigation menu within the sidebar. */
-.sidebar-nav {
-    padding: var(--spacing-lg) 0;
-}
-
-/*
-    Styling for individual navigation items in the sidebar.
-    Includes padding, color, and a transition for hover effects.
-*/
-.nav-item {
+    color: white;
     display: flex;
     align-items: center;
-    padding: 0.75rem 1rem;
-    margin: 0.25rem 0.5rem;
-    color: var(--nepal-white);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.875rem;
-    letter-spacing: 0.01em;
 }
 
-/* Hover effect for navigation items. */
-.nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateX(4px);
-    text-decoration: none;
+.sidebar-brand p {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 700;
+    margin-top: 0.25rem;
 }
 
-/* Styling for the currently active navigation item. */
-.nav-item.active {
-    background-color: rgba(255, 255, 255, 0.25);
-    font-weight: 600;
-}
-
-/* Icons used in the navigation items. */
-.nav-item .icon {
-    font-size: 1.2rem;
-    margin-right: var(--spacing-md);
-    width: 24px;
-    text-align: center;
-}
-
-/*
-    The main content area that takes up the rest of the page.
-*/
-.main-content {
-    margin-left: 260px;
-    /* Same as sidebar width */
-    flex: 1;
+.nav-menu {
+    list-style: none;
     padding: 0;
 }
 
-/*
-    The top bar of the main content area, which is sticky.
-    It usually contains the page title and user information.
-*/
-.top-bar {
-    background-color: var(--bg-white);
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-bottom: 1px solid #e8eaed;
+.nav-menu li {
+    margin-bottom: 0.5rem;
 }
 
-/* The main title in the top bar. */
-.top-bar h1 {
-    font-size: 1.5rem;
-    color: #1a1a2e;
-    margin: 0;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-}
-
-/* Container for user-related information in the top bar. */
-.user-info {
+.nav-menu a {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    font-weight: 600;
-    color: #1a1a2e;
+    padding: 0.9rem 1.2rem;
+    color: #94a3b8;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all 0.1s ease;
+    font-weight: 500;
     font-size: 0.95rem;
 }
 
-/*
-    Section visibility for single-page dashboard
-    Sections are hidden by default and shown when active
-*/
-.section {
-    display: none;
+.nav-menu a:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.section.active {
-    display: block;
+.nav-menu a.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* A badge, often used to display user roles or status. */
-.badge {
-    background-color: #DC143C;
-    color: var(--nepal-white);
-    padding: 0.35rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    box-shadow: 0 2px 8px rgba(220, 20, 60, 0.2);
+.nav-menu a i {
+    font-size: 1.25rem;
+    margin-right: 1rem;
 }
 
-/*
-    A grid for displaying statistics, such as user counts or bookings.
-    It's responsive and adjusts the number of columns based on screen size.
-*/
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-/* Charts Layout */
-.charts-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.chart-container {
-    min-height: 350px;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-}
-
-.chart-container h3 {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    color: #1a1a2e;
-    font-weight: 700;
-}
-
-.chart-container canvas {
-    flex: 1;
-    max-height: 300px;
-}
-
-@media (max-width: 992px) {
-    .charts-row {
-        grid-template-columns: 1fr;
-    }
-}
-
-/*
-    Individual cards within the stats grid.
-    Each card shows a single statistic with an icon.
-*/
-.stat-card {
-    background-color: var(--bg-white);
-    border-radius: 12px;
+.user-card {
+    margin-top: auto;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-lg);
     padding: 1.25rem;
     display: flex;
     align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid #edf0f2;
+    gap: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
-/* Hover effect for stat cards. */
-.stat-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-    border-color: #d0d0d0;
-}
-
-/* The icon within a stat card. */
-.stat-icon {
-    width: 54px;
-    height: 54px;
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, var(--accent) 0%, #b91c1c 100%);
+    color: white;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    margin-right: 1.25rem;
-    flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-weight: 800;
+    font-size: 1.2rem;
 }
 
-/* Gradients for icons */
-.stat-card:nth-child(1) .stat-icon {
-    background: linear-gradient(135deg, #DC143C 0%, #ff4d6d 100%);
-}
-
-.stat-card:nth-child(2) .stat-icon {
-    background: linear-gradient(135deg, #003893 0%, #0056e0 100%);
-}
-
-.stat-card:nth-child(3) .stat-icon {
-    background: linear-gradient(135deg, #155724 0%, #28a745 100%);
-}
-
-.stat-card:nth-child(4) .stat-icon {
-    background: linear-gradient(135deg, #856404 0%, #FFD700 100%);
-}
-
-.stat-card:nth-child(5) .stat-icon {
-    background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
-}
-
-/* The container for the text information in a stat card. */
-.stat-info h3 {
-    font-size: 1.5rem;
+.user-info-text h6 {
     margin: 0;
-    color: #1a1a2e;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    font-size: 0.95rem;
+    color: white;
 }
 
-.stat-info p {
+.user-info-text p {
     margin: 0;
-    color: #64748b;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.025em;
+    font-size: 0.75rem;
+    color: #94a3b8;
 }
 
-/* Table Search UI */
-.table-search {
-    flex: 1;
-    max-width: 400px;
-    margin: 0 1.5rem;
+/* Main Content */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 3rem 4rem;
+    min-height: 100vh;
 }
 
-.search-input {
-    width: 100%;
-    padding: 0.65rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #1a1a2e;
-    transition: all 0.2s ease;
-    background: #f8fafc;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: #DC143C;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
-}
-
-/* A container for action buttons. */
-.action-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-}
-
-.btn {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.01em;
-    font-size: 0.875rem;
-}
-
-/* Header for the inventory management card. */
-.inventory-card-header {
+.top-bar {
+    margin-bottom: 3rem;
     display: flex;
     justify-content: space-between;
-    gap: 2rem;
-    align-items: flex-start;
-    margin-bottom: 1.25rem;
-}
-
-.inventory-card-header h2,
-.panel-header h3 {
-    margin-bottom: 0.5rem;
-    color: #1a1a2e;
-    font-size: 1.8rem;
-    font-weight: 700;
-}
-
-.inventory-card-header p,
-.panel-header p {
-    margin: 0;
-    color: #666;
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-/* Toolbar for inventory actions, like filtering. */
-.inventory-toolbar {
-    display: flex;
-    align-items: end;
-    gap: 1rem;
-    flex-wrap: wrap;
-}
-
-.inventory-toolbar label {
-    display: block;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin-bottom: 0.5rem;
-}
-
-/* Select dropdown for inventory filtering. */
-.inventory-select {
-    min-width: 180px;
-    padding: 0.75rem 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    background: var(--bg-white);
-    color: #1a1a2e;
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-}
-
-.inventory-select:focus {
-    outline: none;
-    border-color: #DC143C;
-    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
-}
-
-/* Panels for the inventory form and table. */
-.inventory-form-panel,
-.inventory-table-panel {
-    background: #fafbfc;
-    border: 1px solid #e8eaed;
-    border-radius: 12px;
-    padding: 1.5rem;
-}
-
-/* The form for adding or editing inventory items. */
-.inventory-form {
-    margin-top: 1rem;
-}
-
-/* A grid container for form fields. */
-.inventory-fields {
-    display: grid;
-    gap: 1.25rem;
-}
-
-/* Grid layouts for arranging form fields. */
-.field-grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem;
-}
-
-.field-grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem;
-}
-
-/* A group containing a label and an input field. */
-.field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.field-group label {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #1a1a2e;
-}
-
-/* General styling for form inputs, selects, and textareas. */
-.field-group input,
-.field-group select,
-.field-group textarea {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    font: inherit;
-    color: #1a1a2e;
-    background: var(--bg-white);
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.field-group input:focus,
-.field-group select:focus,
-.field-group textarea:focus {
-    outline: none;
-    border-color: #DC143C;
-    box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
-}
-
-.field-group textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-/* Hint text for form fields. */
-.field-hint {
-    font-size: 0.9rem;
-    color: #999;
-    font-weight: 500;
-}
-
-/* Styling for a checkbox field. */
-.checkbox-field {
-    flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    background: var(--bg-white);
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 0.8rem 1rem;
 }
 
-.checkbox-field input {
-    width: auto;
-    margin-left: 0.75rem;
+.top-bar h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    letter-spacing: -0.03em;
+    color: var(--primary);
 }
 
-/* Container for form action buttons (e.g., Save, Cancel). */
-.form-actions {
+/* Stats Cards */
+.stat-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow-subtle);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-premium);
+    border-color: var(--accent-soft);
+}
+
+.stat-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
     display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-/* Table for displaying inventory items. */
-.inventory-table {
-    min-width: 900px;
-}
-
-/* Action buttons within the inventory table (e.g., Edit, Delete). */
-.inventory-table .table-actions {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.inventory-table .table-actions .btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-/*
-    A message box for displaying feedback to the user.
-    Initially hidden.
-*/
-.message-box {
-    display: none;
-    padding: 1rem 1.25rem;
-    border-radius: 8px;
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
-    font-size: 1rem;
-    border-left: 4px solid transparent;
-    font-weight: 600;
-}
-
-/* Styles for a success message box. */
-.message-box.success {
-    display: block;
-    background: #d4edda;
-    color: #155724;
-    border-left-color: #28a745;
-}
-
-/* Styles for an error message box. */
-.message-box.error {
-    display: block;
-    background: #f8d7da;
-    color: #721c24;
-    border-left-color: #dc3545;
-}
-
-/* Styles for an info message box. */
-.message-box.info {
-    display: block;
-    background: #d1ecf1;
-    color: #0c5460;
-    border-left-color: #17a2b8;
-}
-
-/* Utility class for centering text. */
-.text-center {
-    text-align: center;
-}
-
-/* Layout for the inventory management page, with a form and a table. */
-.inventory-layout {
-    display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 1.5rem;
-    margin-top: 1.25rem;
-}
-
-/* System information display. */
-.system-info p {
-    margin: 0.75rem 0;
-    color: #666;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.system-info strong {
-    color: #1a1a2e;
-    margin-right: 0.5rem;
-    font-weight: 700;
-    font-size: 1rem;
-}
-
-/*
-    Modal styling for forms and dialogs.
-*/
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 2000;
     align-items: center;
     justify-content: center;
-}
-
-.modal.active {
-    display: flex;
-}
-
-.modal-content {
-    background-color: var(--bg-white);
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    max-width: 500px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem;
-    border-bottom: 1px solid #e8eaed;
-}
-
-.modal-header h3 {
-    margin: 0;
-    color: #1a1a2e;
-    font-size: 1.4rem;
-    font-weight: 700;
-}
-
-.close-button {
     font-size: 1.5rem;
-    cursor: pointer;
-    color: #999;
-    background: none;
-    border: none;
-    padding: 0;
+    margin-bottom: 1.5rem;
 }
 
-.close-button:hover {
-    color: #1a1a2e;
+.stat-icon.flights {
+    background: #fee2e2;
+    color: #ef4444;
 }
 
-.modal-body {
-    padding: 1.5rem;
+.stat-icon.hotels {
+    background: #dcfce7;
+    color: #22c55e;
 }
 
-/*
-    Styling for data tables used throughout the dashboard.
-*/
-.table-responsive {
-    overflow-x: auto;
-    margin-top: 1.25rem;
+.stat-icon.packages {
+    background: #f3e8ff;
+    color: #a855f7;
 }
 
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
+.stat-icon.wishlist {
+    background: #fef9c3;
+    color: #eab308;
 }
 
-.data-table thead {
-    background-color: #f8fafc;
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+    margin-bottom: 0.5rem;
 }
 
-.data-table th {
-    padding: 1rem 0.875rem;
-    text-align: left;
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.8rem;
     font-weight: 700;
-    color: #64748b;
-    border-bottom: 2px solid #f1f5f9;
-    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.data-table th.sortable {
-    cursor: pointer;
-    position: relative;
-    user-select: none;
+.dashboard-card {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-subtle);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    margin-bottom: 2.5rem;
 }
 
-.data-table th.sortable:hover {
-    background-color: #e2e8f0;
-    color: #DC143C;
+.dashboard-card h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
 }
 
-.data-table th.sortable::after {
-    content: '↕';
-    position: absolute;
-    right: 8px;
-    opacity: 0.3;
-    font-size: 0.8rem;
+.dashboard-card h3 i {
+    color: var(--accent);
 }
 
-.data-table th.sort-asc::after {
-    content: '↑';
-    opacity: 1;
+/* Quick Actions */
+.quick-action {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.1s ease;
 }
 
-.data-table th.sort-desc::after {
-    content: '↓';
-    opacity: 1;
+.quick-action:hover {
+    background: white;
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(220, 20, 60, 0.1);
 }
 
-.data-table td {
-    padding: 1rem 0.875rem;
-    border-bottom: 1px solid #e8eaed;
-    color: #4b5563;
-    font-size: 0.9375rem;
-    font-weight: 500;
+.quick-action i {
+    font-size: 2.25rem;
+    color: var(--primary);
+    transition: color 0.2s ease;
 }
 
-.data-table tbody tr:hover {
-    background-color: #f9fafb;
+.quick-action:hover i {
+    color: var(--accent);
 }
 
-/* Styling for system information display. */
-.system-info p {
-    margin: 0.5rem 0;
-    color: var(--text-light);
+.quick-action strong {
+    font-size: 0.95rem;
+    font-weight: 700;
 }
 
-.system-info strong {
-    color: var(--text-dark);
-    margin-right: var(--spacing-sm);
+/* Tables */
+.table-custom {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem;
 }
 
-/*
-    Button to toggle the sidebar on mobile devices.
-    It's hidden by default on larger screens.
-*/
-.sidebar-toggle {
-    display: none;
-    /* Hidden on desktop */
-    background: none;
+.table-custom th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
     border: none;
-    color: #1a1a2e;
-    font-size: 1.75rem;
-    cursor: pointer;
-    padding: 0 1rem;
 }
 
-/*
-    Responsive design for smaller screens.
-*/
-@media (max-width: 992px) {
+.table-custom td {
+    padding: 1.25rem 1rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
 
-    /* Hides the sidebar off-screen by default on tablets and smaller. */
-    .sidebar {
-        transform: translateX(-260px);
-        transition: transform 0.3s ease;
-        position: fixed;
-        /* Ensure it stays fixed on mobile */
-        z-index: 1100;
-        /* Higher z-index to appear above content */
-    }
+.table-custom td:first-child {
+    border-left: 1px solid #e2e8f0;
+    border-radius: 12px 0 0 12px;
+}
 
-    /* Shows the sidebar when it has the 'active' class (toggled by JS). */
-    .sidebar.active {
-        transform: translateX(0);
-    }
+.table-custom td:last-child {
+    border-right: 1px solid #e2e8f0;
+    border-radius: 0 12px 12px 0;
+}
 
-    /* Main content takes up the full width when the sidebar is hidden. */
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.status-confirmed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-pending {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Discover Nepal Cards */
+.destination-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.1s ease;
+}
+
+.destination-card:hover {
+    background: white;
+    border-color: var(--accent);
+    transform: scale(1.03);
+    box-shadow: var(--shadow-premium);
+}
+
+.destination-card h5 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 0.75rem;
+}
+
+.destination-card .wishlist-toggle {
+    margin-top: 1.25rem;
+    border: 1px solid #cbd5e1;
+    background: transparent;
+    color: var(--primary);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.6rem;
+    width: 100%;
+    transition: all 0.1s ease;
+}
+
+.destination-card .wishlist-toggle:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.destination-card .wishlist-toggle.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+/* Review Styles */
+.review-form {
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.star-rating {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: #fbbf24;
+}
+
+.review-item {
+    padding: 1.75rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    min-width: 320px;
+    box-shadow: var(--shadow-subtle);
+}
+
+@media (max-width: 1200px) {
     .main-content {
-        margin-left: 0;
+        padding: 3rem 2rem;
+    }
+}
+
+@media (max-width: 991px) {
+    .sidebar {
+        width: 90px;
+        padding: 2rem 1rem;
     }
 
-    .sidebar-toggle {
-        display: block;
-        /* Show the toggle button on smaller screens */
+    .sidebar-brand p,
+    .nav-menu span,
+    .user-card {
+        display: none;
     }
 
-    .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    .nav-menu a {
+        justify-content: center;
+        padding: 1rem;
     }
 
-    .inventory-card-header {
-        flex-direction: column;
-        gap: 1.25rem;
+    .main-content {
+        margin-left: 90px;
     }
 }
 
 @media (max-width: 768px) {
-    .top-bar {
-        padding: 1rem 1.5rem;
+    .sidebar {
+        display: none;
     }
 
-    .top-bar h1 {
-        font-size: 1.3rem;
-    }
-
-    .content-area {
+    .main-content {
+        margin-left: 0;
         padding: 1.5rem;
     }
 
-    /* Stacks stat cards vertically on mobile. */
-    .stats-grid {
-        grid-template-columns: 1fr;
+    .top-bar h1 {
+        font-size: 2rem;
     }
-
-    .stat-card {
+}
+/* Profile Section Enhancements */
+.profile-layout {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+}
+.profile-sidebar-card {
+    flex: 0 0 280px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-lg);
+    padding: 2.5rem;
+    text-align: center;
+}
+.profile-avatar-large {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--accent) 0%, #b91c1c 100%);
+    color: white;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 10px 25px -5px rgba(220, 20, 60, 0.3);
+}
+.profile-sidebar-card h4 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+.profile-badge {
+    margin-top: 1.5rem;
+    padding: 0.5rem 1rem;
+    background: #dcfce7;
+    color: #166534;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.profile-details-main {
+    flex: 1;
+}
+.detail-group {
+    background: white;
+    border: 1px solid #f1f5f9;
+    padding: 1.25rem;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+}
+.detail-group:hover {
+    border-color: var(--accent-soft);
+    background: #fdf2f2;
+}
+.detail-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+}
+.detail-group p {
+    margin: 0;
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 1.05rem;
+}
+@media (max-width: 991px) {
+    .profile-layout {
         flex-direction: column;
-        text-align: center;
+        gap: 2rem;
     }
-
-    .stat-icon {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-
-    .action-buttons {
-        flex-direction: column;
-    }
-
-    .action-buttons .btn {
+    .profile-sidebar-card {
+        flex: 1;
         width: 100%;
-    }
-
-    /* Stacks various layout elements vertically. */
-    .inventory-card-header,
-    .inventory-toolbar,
-    .form-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .inventory-layout,
-    .field-grid-2,
-    .field-grid-3 {
-        grid-template-columns: 1fr;
-    }
-
-    .inventory-select {
-        width: 100%;
-    }
-
-    .modal-content {
-        width: 95%;
-        max-height: 95vh;
     }
 }

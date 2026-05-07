@@ -39,7 +39,7 @@ body {
     border-radius: 15px;
     border: none;
     box-shadow: 0 3px 15px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     overflow: hidden;
 }
 

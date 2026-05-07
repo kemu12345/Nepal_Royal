@@ -55,7 +55,7 @@ body {
     border-radius: 50px;
     padding: 1rem 1.5rem 1rem 3rem;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .search-input:focus {
@@ -88,7 +88,7 @@ body {
     border-radius: 50px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .category-pill:hover,
@@ -108,7 +108,7 @@ body {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s ease;
+    transition: all 0.1s ease;
     height: 100%;
 }
 
@@ -249,7 +249,7 @@ body {
     font-weight: 600;
     width: 100%;
     margin-top: 1rem;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .btn-explore:hover {

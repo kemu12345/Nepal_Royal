@@ -110,7 +110,7 @@ h6 { font-size: 1.125rem; } /* 18px */
 a {
     color: var(--primary-color);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.1s ease;
 }
 
 a:hover {
@@ -138,7 +138,7 @@ img {
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     text-decoration: none;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -213,7 +213,7 @@ img {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     margin-bottom: 2rem;
     border: 1px solid #e8eaed;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .card:hover {

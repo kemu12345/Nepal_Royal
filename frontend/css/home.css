@@ -31,7 +31,7 @@ body {
     backdrop-filter: blur(10px);
     /* Creates a frosted glass effect */
     padding: 0.8rem 0;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .brand-nepal {
@@ -51,7 +51,7 @@ body {
 /* Styling for navigation links. */
 .navbar-nav .nav-link {
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     position: relative;
     color: rgba(255, 255, 255, 0.8) !important;
     /* Dark light white */
@@ -74,7 +74,7 @@ body {
     width: 0;
     height: 2px;
     background: var(--nepal-red);
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     transform: translateX(-50%);
 }
 
@@ -133,7 +133,7 @@ body {
     color: #666;
     font-weight: 600;
     padding: 0.75rem 1.5rem;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .search-tabs .nav-pills .nav-link:hover {
@@ -171,7 +171,7 @@ body {
     Includes a hover effect that lifts the card.
 */
 .destination-card {
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .destination-card:hover {
@@ -191,7 +191,7 @@ body {
 /* A subtle zoom effect on the icon inside the destination image on hover. */
 .destination-card:hover .destination-img i {
     transform: scale(1.2);
-    transition: transform 0.3s ease;
+    transition: transform 0.1s ease;
 }
 
 /*
@@ -199,7 +199,7 @@ body {
     Includes a more pronounced hover effect.
 */
 .service-card {
-    transition: all 0.4s ease;
+    transition: all 0.1s ease;
     border-radius: 15px;
 }
 
@@ -210,7 +210,7 @@ body {
 
 /* The icon within a service card. */
 .service-icon {
-    transition: transform 0.3s ease;
+    transition: transform 0.1s ease;
 }
 
 .service-card:hover .service-icon {
@@ -221,7 +221,7 @@ body {
     Styling for the "Why Choose Us" feature cards.
 */
 .feature-card {
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     border-radius: 15px;
 }
 
@@ -235,14 +235,14 @@ body {
 }
 
 .feature-icon {
-    transition: transform 0.3s ease;
+    transition: transform 0.1s ease;
 }
 
 /*
     Styling for the testimonial cards.
 */
 .testimonials-section .card {
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     border-radius: 15px;
 }
 
@@ -301,7 +301,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .footer .social-icons a:hover {
@@ -319,7 +319,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 #backToTop:hover {
@@ -365,7 +365,7 @@ body {
 .btn {
     font-weight: 600;
     letter-spacing: 0.3px;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
 }
 
 .btn-danger {
@@ -470,4 +470,59 @@ html {
 *:focus-visible {
     outline: 2px solid var(--nepal-gold);
     outline-offset: 2px;
+}
+
+.floating-support {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #25d366;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1001;
+    transition: all 0.1s ease;
+}
+
+.floating-support:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+.testimonial-card { 
+    min-width: 350px; 
+    max-width: 350px; 
+    flex-shrink: 0;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+    transition: border-color 0.1s ease;
+}
+
+.testimonial-card:hover { 
+    border-color: #003893 !important; 
+}
+
+#dynamicTestimonials {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 2rem;
+    padding: 1.5rem 0.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+#dynamicTestimonials::-webkit-scrollbar { 
+    height: 8px; 
+}
+
+#dynamicTestimonials::-webkit-scrollbar-thumb { 
+    background: #dee2e6; 
+    border-radius: 10px; 
 }
