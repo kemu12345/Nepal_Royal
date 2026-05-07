@@ -55,11 +55,17 @@
     --spacing-xxl: 3rem;   /* 48px */
 
     /*
-        Base typography settings.
+        Base typography settings using the Premium Explorer pairing.
+        Outfit for headings (modern/adventurous) and Inter for body (legibility).
     */
-    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-heading: 'Outfit', sans-serif;
     --font-size-base: 16px;
     --line-height-base: 1.6;
+
+    /* Semantic Text Colors */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
 }
 
 /*
@@ -83,21 +89,20 @@ body {
     background-color: var(--bg-light);
 }
 
-/*
-    Default styles for heading elements.
-*/
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
+    font-family: var(--font-heading);
+    color: var(--text-primary);
+    font-weight: 700;
     line-height: 1.2;
     margin-bottom: var(--spacing-md);
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1rem; }
+h1 { font-size: 4rem; font-weight: 800; letter-spacing: -0.02em; } /* 64px */
+h2 { font-size: 2.25rem; font-weight: 700; } /* 36px */
+h3 { font-size: 1.875rem; } /* 30px */
+h4 { font-size: 1.5rem; }   /* 24px */
+h5 { font-size: 1.25rem; }  /* 20px */
+h6 { font-size: 1.125rem; } /* 18px */
 
 /*
     Default styles for anchor (link) tags.

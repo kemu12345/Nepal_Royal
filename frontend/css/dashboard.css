@@ -111,7 +111,8 @@ body {
     The main content area that takes up the rest of the page.
 */
 .main-content {
-    margin-left: 260px; /* Same as sidebar width */
+    margin-left: 260px;
+    /* Same as sidebar width */
     flex: 1;
     padding: 0;
 }
@@ -258,11 +259,25 @@ body {
 }
 
 /* Gradients for icons */
-.stat-card:nth-child(1) .stat-icon { background: linear-gradient(135deg, #DC143C 0%, #ff4d6d 100%); }
-.stat-card:nth-child(2) .stat-icon { background: linear-gradient(135deg, #003893 0%, #0056e0 100%); }
-.stat-card:nth-child(3) .stat-icon { background: linear-gradient(135deg, #155724 0%, #28a745 100%); }
-.stat-card:nth-child(4) .stat-icon { background: linear-gradient(135deg, #856404 0%, #FFD700 100%); }
-.stat-card:nth-child(5) .stat-icon { background: linear-gradient(135deg, #28a745 0%, #34ce57 100%); }
+.stat-card:nth-child(1) .stat-icon {
+    background: linear-gradient(135deg, #DC143C 0%, #ff4d6d 100%);
+}
+
+.stat-card:nth-child(2) .stat-icon {
+    background: linear-gradient(135deg, #003893 0%, #0056e0 100%);
+}
+
+.stat-card:nth-child(3) .stat-icon {
+    background: linear-gradient(135deg, #155724 0%, #28a745 100%);
+}
+
+.stat-card:nth-child(4) .stat-icon {
+    background: linear-gradient(135deg, #856404 0%, #FFD700 100%);
+}
+
+.stat-card:nth-child(5) .stat-icon {
+    background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+}
 
 /* The container for the text information in a stat card. */
 .stat-info h3 {
@@ -681,8 +696,15 @@ body {
     font-size: 0.8rem;
 }
 
-.data-table th.sort-asc::after { content: '↑'; opacity: 1; }
-.data-table th.sort-desc::after { content: '↓'; opacity: 1; }
+.data-table th.sort-asc::after {
+    content: '↑';
+    opacity: 1;
+}
+
+.data-table th.sort-desc::after {
+    content: '↓';
+    opacity: 1;
+}
 
 .data-table td {
     padding: 1rem 0.875rem;
@@ -712,7 +734,8 @@ body {
     It's hidden by default on larger screens.
 */
 .sidebar-toggle {
-    display: none; /* Hidden on desktop */
+    display: none;
+    /* Hidden on desktop */
     background: none;
     border: none;
     color: #1a1a2e;
@@ -725,12 +748,15 @@ body {
     Responsive design for smaller screens.
 */
 @media (max-width: 992px) {
+
     /* Hides the sidebar off-screen by default on tablets and smaller. */
     .sidebar {
         transform: translateX(-260px);
         transition: transform 0.3s ease;
-        position: fixed; /* Ensure it stays fixed on mobile */
-        z-index: 1100; /* Higher z-index to appear above content */
+        position: fixed;
+        /* Ensure it stays fixed on mobile */
+        z-index: 1100;
+        /* Higher z-index to appear above content */
     }
 
     /* Shows the sidebar when it has the 'active' class (toggled by JS). */
@@ -744,7 +770,8 @@ body {
     }
 
     .sidebar-toggle {
-        display: block; /* Show the toggle button on smaller screens */
+        display: block;
+        /* Show the toggle button on smaller screens */
     }
 
     .stats-grid {
