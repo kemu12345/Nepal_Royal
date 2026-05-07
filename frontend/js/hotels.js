@@ -270,11 +270,16 @@ async function searchHotels(city, checkin, checkout) {
  * Resets all filters to their default values and re-applies them.
  */
 function resetFilters() {
-    document.getElementById('hotelTypeFilter').value = '';
-    document.getElementById('starFilter').value = '';
-    document.getElementById('sortFilter').value = 'rating-desc';
-    document.getElementById('priceRange').value = 20000;
-    document.getElementById('priceValue').textContent = 'NPR 20000';
+    const typeEl = document.getElementById('filter-type');
+    const ratingEl = document.getElementById('filter-rating');
+    const sortEl = document.getElementById('sort-by');
+    const priceEl = document.getElementById('filter-price');
+
+    if (typeEl) typeEl.value = '';
+    if (ratingEl) ratingEl.value = '';
+    if (sortEl) sortEl.value = 'price-asc';
+    if (priceEl) priceEl.value = '';
+
     applyFilters();
 }
 
@@ -351,12 +356,12 @@ function createHotelCard(hotel) {
     const roomsClass = availableRooms > 5 ? 'text-success' : availableRooms > 0 ? 'text-warning' : 'text-danger';
     const amenitiesStr = hotel.amenities || 'WiFi,Room Service';
     const amenities = amenitiesStr.split(',').slice(0, 4);
-    
+
     const roomType = hotel.room_type || 'Standard Room';
     const maxGuests = hotel.max_guests || 2;
     const basePrice = hotel.base_price_per_night || 5000;
     const currency = hotel.currency || 'NPR';
-    const roomId = hotel.room_id || 1;
+    const roomId = hotel.room_id || hotel.hotel_id || 1;
 
     const defaultImages = [
         'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=300&fit=crop',
@@ -432,16 +437,17 @@ function createHotelCard(hotel) {
  * Opens the booking modal with the details of the selected hotel.
  */
 function openBookingModal(roomId) {
-    selectedHotel = allHotels.find(h => h.room_id === roomId);
+    // Find the hotel by room_id or hotel_id, using loose equality to handle string/number mismatches.
+    selectedHotel = allHotels.find(h => (h.room_id || h.hotel_id || 1) == roomId);
     if (!selectedHotel) return;
 
-    const stars = '⭐'.repeat(Math.floor(selectedHotel.star_rating));
+    const stars = '⭐'.repeat(Math.floor(selectedHotel.star_rating || 3));
 
     const modalBody = document.getElementById('booking-details');
     modalBody.innerHTML = `
         <div class="text-center mb-4">
-            <div class="hotel-type-badge badge-${selectedHotel.hotel_type} mb-2" style="font-size: 0.9rem; padding: 0.4rem 1rem;">
-                ${selectedHotel.hotel_type.toUpperCase()}
+            <div class="hotel-type-badge badge-${selectedHotel.hotel_type || 'hotel'} mb-2" style="font-size: 0.9rem; padding: 0.4rem 1rem;">
+                ${(selectedHotel.hotel_type || 'hotel').toUpperCase()}
             </div>
             <h4 class="fw-bold mb-1">${selectedHotel.hotel_name}</h4>
             <div class="star-rating">${stars}</div>
@@ -452,15 +458,15 @@ function openBookingModal(roomId) {
             <div class="row text-center">
                 <div class="col-4">
                     <i class="bi bi-door-open fs-4 text-success"></i>
-                    <div class="small mt-1">${selectedHotel.room_type}</div>
+                    <div class="small mt-1">${selectedHotel.room_type || 'Standard Room'}</div>
                 </div>
                 <div class="col-4">
                     <i class="bi bi-people fs-4 text-success"></i>
-                    <div class="small mt-1">Max ${selectedHotel.max_guests} Guests</div>
+                    <div class="small mt-1">Max ${selectedHotel.max_guests || 2} Guests</div>
                 </div>
                 <div class="col-4">
                     <i class="bi bi-cash-stack fs-4 text-success"></i>
-                    <div class="small mt-1">${selectedHotel.currency} ${formatPrice(selectedHotel.base_price_per_night)}/night</div>
+                    <div class="small mt-1">${selectedHotel.currency || 'NPR'} ${formatPrice(selectedHotel.base_price_per_night || 5000)}/night</div>
                 </div>
             </div>
         </div>
@@ -477,19 +483,27 @@ function openBookingModal(roomId) {
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Number of Rooms</label>
                 <select class="form-select" id="roomCount">
-                    ${[1, 2, 3].map(n => `<option value="${n}">${n} Room${n > 1 ? 's' : ''}</option>`).join('')}
+                    ${[1, 2, 3, 4, 5].map(n => `<option value="${n}">${n} Room${n > 1 ? 's' : ''}</option>`).join('')}
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label fw-semibold">Guests</label>
                 <select class="form-select" id="guestCount">
-                    ${[1, 2, 3, 4].map(n => `<option value="${n}">${n} Guest${n > 1 ? 's' : ''}</option>`).join('')}
+                    ${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}">${n} Guest${n > 1 ? 's' : ''}</option>`).join('')}
                 </select>
             </div>
         </div>
     `;
 
-    const modal = new bootstrap.Modal(document.getElementById('bookingModal'));
+    // Pre-fill dates from URL if available.
+    const urlParams = new URLSearchParams(window.location.search);
+    const checkin = urlParams.get('checkin');
+    const checkout = urlParams.get('checkout');
+
+    if (checkin) document.getElementById('modalCheckin').value = checkin;
+    if (checkout) document.getElementById('modalCheckout').value = checkout;
+
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('bookingModal'));
     modal.show();
 }
 
@@ -535,7 +549,7 @@ async function confirmBooking() {
             },
             body: JSON.stringify({
                 booking_type: 'hotel',
-                item_id: selectedHotel.room_id,
+                item_id: selectedHotel.room_id || selectedHotel.hotel_id,
                 check_in: checkin,
                 check_out: checkout,
                 nights,
@@ -555,10 +569,6 @@ async function confirmBooking() {
         const modalEl = document.getElementById('bookingModal');
         const modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) {
-            // Blur the active element to prevent aria-hidden/focus warnings.
-            if (document.activeElement instanceof HTMLElement) {
-                document.activeElement.blur();
-            }
             modal.hide();
         }
 
