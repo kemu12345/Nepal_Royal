@@ -14,3 +14,23 @@
 ADVANCED_FEATURES.md
 README.md
 .DS_Store
+backend/.env
+*.sql.bak
+
+# Security - Never push these files
+backend/config/.env
+backend/.env
+*.log
+.DS_Store
+Thumbs.db
+
+# Ignore frontend for now
+frontend/
+# Sensitive files
+backend/.env
+backend/config/.env
+*.log
+.DS_Store
+
+# Ignore frontend for now
+frontend/
