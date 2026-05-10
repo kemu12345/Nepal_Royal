@@ -225,7 +225,7 @@ async function loadDashboardData() {
 
         if (totalUsers) totalUsers.textContent = String(summary.users ?? users.length ?? 0);
         if (totalBookings) totalBookings.textContent = String(summary.bookings ?? bookings.length ?? 0);
-        
+
         if (totalRevenue) {
             const revenue = bookings
                 .filter(b => b.booking_status === 'confirmed')
@@ -319,6 +319,8 @@ async function toggleUserStatus(userId, isCurrentlyActive) {
 }
 
 async function deleteUser(userId, name) {
+    if (!window.confirm(`Are you sure you want to permanently delete user ${name}? This action cannot be undone and will also remove all their bookings.`)) return;
+
     try {
         await RoyalNepal.apiRequest('manage_users.php', {
             method: 'DELETE',
@@ -739,32 +741,32 @@ function populateSupportDropdowns() {
     const airlinesSelect = document.getElementById('flightAirlineId');
     const flightOriginSelect = document.getElementById('flightOriginId');
     const flightDestSelect = document.getElementById('flightDestinationId');
-    
+
     if (airlinesSelect && adminState.support.airlines) {
-        airlinesSelect.innerHTML = '<option value="">Select Airline...</option>' + 
+        airlinesSelect.innerHTML = '<option value="">Select Airline...</option>' +
             adminState.support.airlines.map(a => `<option value="${a.airline_id}">${a.airline_name}</option>`).join('');
     }
-    
+
     // Bus Dropdowns
     const busOperatorSelect = document.getElementById('busOperatorId');
     const busOriginSelect = document.getElementById('busOriginId');
     const busDestSelect = document.getElementById('busDestinationId');
-    
+
     if (busOperatorSelect && adminState.support.operators) {
-        busOperatorSelect.innerHTML = '<option value="">Select Operator...</option>' + 
+        busOperatorSelect.innerHTML = '<option value="">Select Operator...</option>' +
             adminState.support.operators.map(o => `<option value="${o.operator_id}">${o.operator_name}</option>`).join('');
     }
 
     // Locations (shared)
     if (adminState.support.locations) {
         const locs = adminState.support.locations.map(l => `<option value="${l.location_id}">${l.location_name}</option>`).join('');
-        
+
         if (flightOriginSelect) flightOriginSelect.innerHTML = '<option value="">Select Origin...</option>' + locs;
         if (flightDestSelect) flightDestSelect.innerHTML = '<option value="">Select Destination...</option>' + locs;
-        
+
         if (busOriginSelect) busOriginSelect.innerHTML = '<option value="">Select Origin...</option>' + locs;
         if (busDestSelect) busDestSelect.innerHTML = '<option value="">Select Destination...</option>' + locs;
-        
+
         const hotelLocationSelect = document.getElementById('hotelLocationId');
         if (hotelLocationSelect) hotelLocationSelect.innerHTML = '<option value="">Select Location...</option>' + locs;
 
@@ -778,7 +780,7 @@ async function submitNewFlight() {
         const airlineId = document.getElementById('flightAirlineId').value;
         const originId = document.getElementById('flightOriginId').value;
         const destinationId = document.getElementById('flightDestinationId').value;
-        
+
         if (originId === destinationId) {
             window.alert('Error: Origin and destination cannot be the same');
             return;
@@ -827,14 +829,14 @@ async function submitNewFlight() {
 
 function editFlight(flight) {
     adminState.editingItem = { type: 'flight', id: Number(flight.flight_id) };
-    
+
     // Switch to section
     switchSection('add-flight');
-    
+
     // Update titles
     document.getElementById('flightFormTitle').textContent = 'Edit Flight';
     document.getElementById('flightSubmitBtn').textContent = 'Update Flight';
-    
+
     // Populate form
     document.getElementById('flightAirlineId').value = flight.airline_id;
     document.getElementById('flightOriginId').value = flight.origin_location_id;
@@ -874,7 +876,7 @@ async function submitNewBus() {
         const operatorId = document.getElementById('busOperatorId').value;
         const originId = document.getElementById('busOriginId').value;
         const destinationId = document.getElementById('busDestinationId').value;
-        
+
         if (originId === destinationId) {
             window.alert('Error: Origin and destination cannot be the same');
             return;
@@ -923,14 +925,14 @@ async function submitNewBus() {
 
 function editBus(bus) {
     adminState.editingItem = { type: 'bus', id: Number(bus.bus_id) };
-    
+
     // Switch to section
     switchSection('add-bus');
-    
+
     // Update titles
     document.getElementById('busFormTitle').textContent = 'Edit Bus';
     document.getElementById('busSubmitBtn').textContent = 'Update Bus';
-    
+
     // Populate form
     document.getElementById('busOperatorId').value = bus.operator_id;
     document.getElementById('busOriginId').value = bus.origin_location_id;
@@ -1009,14 +1011,14 @@ async function submitNewHotel() {
 
 function editHotel(hotel) {
     adminState.editingItem = { type: 'hotel', id: Number(hotel.hotel_id) };
-    
+
     // Switch to section
     switchSection('add-hotel');
-    
+
     // Update titles
     document.getElementById('hotelFormTitle').textContent = 'Edit Hotel';
     document.getElementById('hotelSubmitBtn').textContent = 'Update Hotel';
-    
+
     // Populate form
     document.getElementById('hotelName').value = hotel.hotel_name;
     document.getElementById('hotelLocationId').value = hotel.location_id;
@@ -1091,14 +1093,14 @@ async function submitNewPackage() {
 
 function editPackage(pkg) {
     adminState.editingItem = { type: 'package', id: Number(pkg.package_id) };
-    
+
     // Switch to section
     switchSection('add-package');
-    
+
     // Update titles
     document.getElementById('packageFormTitle').textContent = 'Edit Package';
     document.getElementById('packageSubmitBtn').textContent = 'Update Package';
-    
+
     // Populate form
     document.getElementById('packageName').value = pkg.package_name;
     document.getElementById('packageType').value = pkg.package_type;
@@ -1166,14 +1168,14 @@ async function submitNewPlace() {
 
 function editPlace(place) {
     adminState.editingItem = { type: 'place', id: Number(place.place_id) };
-    
+
     // Switch to section
     switchSection('add-place');
-    
+
     // Update titles
     document.getElementById('placeFormTitle').textContent = 'Edit Place';
     document.getElementById('placeSubmitBtn').textContent = 'Update Place';
-    
+
     // Populate form
     document.getElementById('placeName').value = place.place_name;
     document.getElementById('placeLocationId').value = place.location_id;
@@ -1240,9 +1242,9 @@ function promptId(label, sourceList, idField, defaultValue = 1) {
 
     const value = promptNumber(label, defaultValue);
     if (value === null) return null;
-    
+
     const parsedId = Math.trunc(value);
-    
+
     if (Array.isArray(sourceList) && sourceList.length > 0) {
         const exists = sourceList.some(item => Number(item[idField]) === parsedId);
         if (!exists) {
@@ -1250,7 +1252,7 @@ function promptId(label, sourceList, idField, defaultValue = 1) {
             return null;
         }
     }
-    
+
     return parsedId;
 }
 
@@ -1286,7 +1288,7 @@ function showMessage(text, type = 'info') {
  */
 async function updateBookingStatus(bookingId, newStatus) {
     const actionLabel = newStatus === 'confirmed' ? 'approve' : 'cancel';
-    
+
     try {
         await RoyalNepal.apiRequest('update_booking_status.php', {
             method: 'PUT',
@@ -1606,7 +1608,7 @@ function setupTableFilters() {
             const query = e.target.value.toLowerCase();
             const tableId = e.target.getAttribute('data-filter-table');
             const tbody = document.getElementById(tableId);
-            
+
             if (!tbody) return;
 
             const rows = tbody.querySelectorAll('tr');
@@ -1628,7 +1630,7 @@ function setupTableSorting() {
             const tbody = table.querySelector('tbody');
             const index = Array.from(th.parentNode.cells).indexOf(th);
             const isAsc = th.classList.contains('sort-asc');
-            
+
             // Clear other headers
             th.parentNode.querySelectorAll('th').forEach(header => {
                 header.classList.remove('sort-asc', 'sort-desc');
@@ -1669,7 +1671,7 @@ function editLocation(l) {
     switchSection('add-location');
     document.getElementById('locationFormTitle').textContent = 'Edit Location';
     document.getElementById('locationSubmitBtn').textContent = 'Update Location';
-    
+
     document.getElementById('locationName').value = l.location_name;
     document.getElementById('locationType').value = l.location_type;
     document.getElementById('locationProvince').value = l.province;
@@ -1682,7 +1684,7 @@ function editAirline(a) {
     switchSection('add-airline');
     document.getElementById('airlineFormTitle').textContent = 'Edit Airline';
     document.getElementById('airlineSubmitBtn').textContent = 'Update Airline';
-    
+
     document.getElementById('airlineName').value = a.airline_name;
     document.getElementById('airlineCode').value = a.airline_code;
     document.getElementById('airlineContact').value = a.contact_number || '';
@@ -1693,7 +1695,7 @@ function editOperator(o) {
     switchSection('add-operator');
     document.getElementById('operatorFormTitle').textContent = 'Edit Operator';
     document.getElementById('operatorSubmitBtn').textContent = 'Update Operator';
-    
+
     document.getElementById('operatorName').value = o.operator_name;
     document.getElementById('operatorContact').value = o.contact_number || '';
     document.getElementById('operatorRating').value = o.rating || 4.0;

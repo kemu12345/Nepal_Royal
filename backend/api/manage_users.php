@@ -92,9 +92,22 @@ try {
             echo json_encode(["success" => false, "message" => "Provide is_active or role to update"]);
         }
     } elseif ($method === 'DELETE') {
-        $stmt = $db->prepare("DELETE FROM users WHERE user_id = ?");
-        $stmt->execute([$targetId]);
-        echo json_encode(["success" => true, "message" => "User deleted successfully"]);
+        $db->beginTransaction();
+        try {
+            // Associated bookings have ON DELETE RESTRICT in schema.sql
+            // Child tables of bookings (flight_bookings, etc) have ON DELETE CASCADE
+            $stmtBookings = $db->prepare("DELETE FROM bookings WHERE user_id = ?");
+            $stmtBookings->execute([$targetId]);
+
+            $stmt = $db->prepare("DELETE FROM users WHERE user_id = ?");
+            $stmt->execute([$targetId]);
+            
+            $db->commit();
+            echo json_encode(["success" => true, "message" => "User and their bookings deleted successfully"]);
+        } catch (Exception $e) {
+            $db->rollBack();
+            throw $e;
+        }
     }
 
 } catch (Exception $e) {

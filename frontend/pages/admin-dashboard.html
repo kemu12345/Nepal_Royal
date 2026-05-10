@@ -1,84 +1,85 @@
 <!doctype html>
 <html lang="en-US">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Admin Dashboard - Royal Nepal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/dashboard.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>Royal Nepal</h2>
-                <p class="tagline">Admin Panel</p>
+            <div class="sidebar-brand">
+                <h2>ROYAL NEPAL</h2>
+                <p>Admin Panel</p>
             </div>
 
-            <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" data-section="dashboard">
-                    <span class="icon">📊</span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="nav-item" data-section="users">
-                    <span class="icon">👥</span>
-                    <span>Users</span>
-                </a>
-                <a href="#" class="nav-item" data-section="flights">
-                    <span class="icon">✈️</span>
-                    <span>Flights</span>
-                </a>
-                <a href="#" class="nav-item" data-section="buses">
-                    <span class="icon">🚌</span>
-                    <span>Buses</span>
-                </a>
-                <a href="#" class="nav-item" data-section="hotels">
-                    <span class="icon">🏨</span>
-                    <span>Hotels</span>
-                </a>
-                <a href="#" class="nav-item" data-section="packages">
-                    <span class="icon">📦</span>
-                    <span>Packages</span>
-                </a>
-                <a href="#" class="nav-item" data-section="places">
-                    <span class="icon">🏔️</span>
-                    <span>Places</span>
-                </a>
-                <a href="#" class="nav-item" data-section="locations">
-                    <span class="icon">📍</span>
-                    <span>Locations</span>
-                </a>
-                <a href="#" class="nav-item" data-section="airlines">
-                    <span class="icon">🏢</span>
-                    <span>Airlines</span>
-                </a>
-                <a href="#" class="nav-item" data-section="operators">
-                    <span class="icon">🚌</span>
-                    <span>Bus Operators</span>
-                </a>
-                <a href="#" class="nav-item" data-section="bookings">
-                    <span class="icon">📋</span>
-                    <span>Bookings</span>
-                </a>
-                <a href="#" class="nav-item logout-btn">
-                    <span class="icon">🚪</span>
-                    <span>Logout</span>
-                </a>
-            </nav>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="users">
+                    <i class="bi bi-people"></i><span>Users</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="flights">
+                    <i class="bi bi-airplane"></i><span>Flights</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="buses">
+                    <i class="bi bi-bus-front"></i><span>Buses</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="hotels">
+                    <i class="bi bi-building"></i><span>Hotels</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="packages">
+                    <i class="bi bi-gift"></i><span>Packages</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="places">
+                    <i class="bi bi-geo-alt"></i><span>Places</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="locations">
+                    <i class="bi bi-pin-map"></i><span>Locations</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="airlines">
+                    <i class="bi bi-cloud-arrow-up"></i><span>Airlines</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="operators">
+                    <i class="bi bi-truck-front"></i><span>Bus Operators</span>
+                </a></li>
+                <li><a href="#" class="nav-item" data-section="bookings">
+                    <i class="bi bi-calendar-check"></i><span>Bookings</span>
+                </a></li>
+                <li>
+                    <hr style="border-color: rgba(255,255,255,0.1);">
+                </li>
+                <li><a href="#" class="nav-item logout-btn">
+                    <i class="bi bi-box-arrow-left"></i><span>Logout</span>
+                </a></li>
+            </ul>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Bar -->
             <header class="top-bar">
-                <button class="sidebar-toggle" id="sidebarToggle">☰</button>
-                <h1 id="pageTitle">Dashboard Overview</h1>
+                <div class="d-flex align-items-center">
+                    <button id="sidebarToggle" class="sidebar-toggle me-3 d-lg-none">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <h1 class="h3 mb-0" id="pageTitle">Dashboard Overview</h1>
+                </div>
                 <div class="user-info">
-                    <span id="userName">Admin User</span>
-                    <span class="badge" id="userRole">Admin</span>
+                    <span id="adminName" class="fw-bold">Royal Admin</span>
+                    <span class="badge bg-light text-dark border">Admin</span>
                 </div>
             </header>
 
@@ -149,7 +150,8 @@
                             <button class="btn btn-primary" type="button" data-action="add-flight">Add Flight</button>
                             <button class="btn btn-primary" type="button" data-action="add-bus">Add Bus</button>
                             <button class="btn btn-primary" type="button" data-action="add-hotel">Add Hotel</button>
-                            <button class="btn btn-primary" type="button" data-action="add-package">Create Package</button>
+                            <button class="btn btn-primary" type="button" data-action="add-package">Create
+                                Package</button>
                             <button class="btn btn-secondary" type="button" data-action="add-place">Add Place</button>
                         </div>
                     </div>
@@ -158,7 +160,7 @@
                     <div class="card">
                         <h2>Recent Bookings</h2>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th>Booking ID</th>
@@ -191,15 +193,19 @@
                 <!-- USERS SECTION -->
                 <div id="section-users" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>All Users</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search users..." class="search-input" data-filter-table="usersTableBody">
+                                <input type="text" placeholder="Search users..." class="search-input"
+                                    data-filter-table="usersTableBody">
                             </div>
-                            <button class="btn btn-secondary btn-sm" onclick="exportTableToCSV('usersTableBody', 'users.csv')">Export CSV</button>
+                            <button class="btn btn-secondary btn-sm"
+                                onclick="exportTableToCSV('usersTableBody', 'users.csv')">Export CSV</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th class="sortable">User ID</th>
@@ -224,16 +230,20 @@
                 <!-- FLIGHTS SECTION -->
                 <div id="section-flights" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>Flight Listings</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search flights..." class="search-input" data-filter-table="flightsTableBody">
+                                <input type="text" placeholder="Search flights..." class="search-input"
+                                    data-filter-table="flightsTableBody">
                             </div>
-                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('flightsTableBody', 'flights.csv')">Export CSV</button>
+                            <button class="btn btn-secondary btn-sm me-2"
+                                onclick="exportTableToCSV('flightsTableBody', 'flights.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-flight">Add Flight</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th class="sortable">Flight ID</th>
@@ -259,27 +269,33 @@
                 <!-- ADD FLIGHT SECTION -->
                 <div id="section-add-flight" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="flightFormTitle">Add New Flight</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('flights')">Back to Flights</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('flights')">Back to
+                                Flights</button>
+                                </div>
                         </div>
                         <form id="addFlightForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="flightAirlineId">Airline</label>
-                                <select id="flightAirlineId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <select id="flightAirlineId" class="form-control" required
+                                    >
                                     <option value="">Select Airline...</option>
                                 </select>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightOriginId">Origin Location</label>
-                                    <select id="flightOriginId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="flightOriginId" class="form-control" required
+                                        >
                                         <option value="">Select Origin...</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightDestinationId">Destination Location</label>
-                                    <select id="flightDestinationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="flightDestinationId" class="form-control" required
+                                        >
                                         <option value="">Select Destination...</option>
                                     </select>
                                 </div>
@@ -287,36 +303,48 @@
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightNumber">Flight Number</label>
-                                    <input type="text" id="flightNumber" class="form-control" placeholder="e.g. RN-101" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="flightNumber" class="form-control" placeholder="e.g. RN-101"
+                                        required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightDeparture">Departure Time (HH:MM:SS)</label>
-                                    <input type="text" id="flightDeparture" class="form-control" value="09:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="flightDeparture" class="form-control" value="09:00:00"
+                                        required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightArrival">Arrival Time (HH:MM:SS)</label>
-                                    <input type="text" id="flightArrival" class="form-control" value="10:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="flightArrival" class="form-control" value="10:00:00" required
+                                        >
                                 </div>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightDuration">Duration (minutes)</label>
-                                    <input type="number" id="flightDuration" class="form-control" value="60" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="flightDuration" class="form-control" value="60" required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightSeats">Total Seats</label>
-                                    <input type="number" id="flightSeats" class="form-control" value="40" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="flightSeats" class="form-control" value="40" required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightPrice">Base Price (NPR)</label>
-                                    <input type="number" id="flightPrice" class="form-control" value="5000" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="flightPrice" class="form-control" value="5000" required
+                                        >
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1.5rem;">
                                 <label for="flightDays">Operating Days</label>
-                                <input type="text" id="flightDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="flightDays" class="form-control"
+                                    value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required
+                                    >
                             </div>
-                            <button type="submit" id="flightSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Flight</button>
+                            <button type="submit" id="flightSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Flight</button>
                         </form>
                     </div>
                 </div>
@@ -324,16 +352,20 @@
                 <!-- BUSES SECTION -->
                 <div id="section-buses" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>Bus Listings</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search buses..." class="search-input" data-filter-table="busesTableBody">
+                                <input type="text" placeholder="Search buses..." class="search-input"
+                                    data-filter-table="busesTableBody">
                             </div>
-                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('busesTableBody', 'buses.csv')">Export CSV</button>
+                            <button class="btn btn-secondary btn-sm me-2"
+                                onclick="exportTableToCSV('busesTableBody', 'buses.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-bus">Add Bus</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th class="sortable">Bus ID</th>
@@ -359,27 +391,33 @@
                 <!-- ADD BUS SECTION -->
                 <div id="section-add-bus" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="busFormTitle">Add New Bus</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('buses')">Back to Buses</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('buses')">Back to
+                                Buses</button>
+                                </div>
                         </div>
                         <form id="addBusForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="busOperatorId">Bus Operator</label>
-                                <select id="busOperatorId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <select id="busOperatorId" class="form-control" required
+                                    >
                                     <option value="">Select Operator...</option>
                                 </select>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busOriginId">Origin Location</label>
-                                    <select id="busOriginId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="busOriginId" class="form-control" required
+                                        >
                                         <option value="">Select Origin...</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busDestinationId">Destination Location</label>
-                                    <select id="busDestinationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="busDestinationId" class="form-control" required
+                                        >
                                         <option value="">Select Destination...</option>
                                     </select>
                                 </div>
@@ -387,36 +425,47 @@
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busNumber">Bus Number</label>
-                                    <input type="text" id="busNumber" class="form-control" placeholder="e.g. RN-BUS-12" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="busNumber" class="form-control" placeholder="e.g. RN-BUS-12"
+                                        required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busDeparture">Departure Time (HH:MM:SS)</label>
-                                    <input type="text" id="busDeparture" class="form-control" value="07:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="busDeparture" class="form-control" value="07:00:00" required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busArrival">Arrival Time (HH:MM:SS)</label>
-                                    <input type="text" id="busArrival" class="form-control" value="13:00:00" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="busArrival" class="form-control" value="13:00:00" required
+                                        >
                                 </div>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busDuration">Duration (minutes)</label>
-                                    <input type="number" id="busDuration" class="form-control" value="360" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="busDuration" class="form-control" value="360" required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busSeats">Total Seats</label>
-                                    <input type="number" id="busSeats" class="form-control" value="32" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="busSeats" class="form-control" value="32" required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busPrice">Base Price (NPR)</label>
-                                    <input type="number" id="busPrice" class="form-control" value="1500" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="busPrice" class="form-control" value="1500" required
+                                        >
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1.5rem;">
                                 <label for="busDays">Operating Days</label>
-                                <input type="text" id="busDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="busDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun"
+                                    required
+                                    >
                             </div>
-                            <button type="submit" id="busSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Bus</button>
+                            <button type="submit" id="busSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Bus</button>
                         </form>
                     </div>
                 </div>
@@ -424,16 +473,20 @@
                 <!-- HOTELS SECTION -->
                 <div id="section-hotels" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>Hotel Listings</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search hotels..." class="search-input" data-filter-table="hotelsTableBody">
+                                <input type="text" placeholder="Search hotels..." class="search-input"
+                                    data-filter-table="hotelsTableBody">
                             </div>
-                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('hotelsTableBody', 'hotels.csv')">Export CSV</button>
+                            <button class="btn btn-secondary btn-sm me-2"
+                                onclick="exportTableToCSV('hotelsTableBody', 'hotels.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-hotel">Add Hotel</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th class="sortable">Hotel ID</th>
@@ -459,25 +512,32 @@
                 <!-- ADD HOTEL SECTION -->
                 <div id="section-add-hotel" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="hotelFormTitle">Add New Hotel</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('hotels')">Back to Hotels</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('hotels')">Back to
+                                Hotels</button>
+                                </div>
                         </div>
                         <form id="addHotelForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="hotelName">Hotel Name</label>
-                                <input type="text" id="hotelName" class="form-control" placeholder="e.g. Everest View Hotel" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="hotelName" class="form-control"
+                                    placeholder="e.g. Everest View Hotel" required
+                                    >
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelLocationId">Location</label>
-                                    <select id="hotelLocationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="hotelLocationId" class="form-control" required
+                                        >
                                         <option value="">Select Location...</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelType">Hotel Type</label>
-                                    <select id="hotelType" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="hotelType" class="form-control" required
+                                        >
                                         <option value="hotel">Hotel</option>
                                         <option value="resort">Resort</option>
                                         <option value="guesthouse">Guesthouse</option>
@@ -486,33 +546,43 @@
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelRating">Star Rating (0-5)</label>
-                                    <input type="number" id="hotelRating" class="form-control" min="0" max="5" value="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="hotelRating" class="form-control" min="0" max="5" value="3"
+                                        required
+                                        >
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="hotelAddress">Address</label>
-                                <input type="text" id="hotelAddress" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="hotelAddress" class="form-control" required
+                                    >
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelContact">Contact Number</label>
-                                    <input type="text" id="hotelContact" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="hotelContact" class="form-control"
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelEmail">Email Address</label>
-                                    <input type="email" id="hotelEmail" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="email" id="hotelEmail" class="form-control"
+                                        >
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="hotelDescription">Description</label>
-                                <textarea id="hotelDescription" class="form-control" rows="3" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                                <textarea id="hotelDescription" class="form-control" rows="3"
+                                    ></textarea>
                             </div>
                             <div class="form-group" style="margin-bottom: 1.5rem;">
                                 <label for="hotelImageUrl">Image URL</label>
-                                <input type="url" id="hotelImageUrl" class="form-control" placeholder="https://example.com/image.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="url" id="hotelImageUrl" class="form-control"
+                                    placeholder="https://example.com/image.jpg"
+                                    >
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
                             </div>
-                            <button type="submit" id="hotelSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Hotel</button>
+                            <button type="submit" id="hotelSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Hotel</button>
                         </form>
                     </div>
                 </div>
@@ -520,16 +590,20 @@
                 <!-- PACKAGES SECTION -->
                 <div id="section-packages" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>Holiday Packages</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search packages..." class="search-input" data-filter-table="packagesTableBody">
+                                <input type="text" placeholder="Search packages..." class="search-input"
+                                    data-filter-table="packagesTableBody">
                             </div>
-                            <button class="btn btn-secondary btn-sm me-2" onclick="exportTableToCSV('packagesTableBody', 'packages.csv')">Export CSV</button>
+                            <button class="btn btn-secondary btn-sm me-2"
+                                onclick="exportTableToCSV('packagesTableBody', 'packages.csv')">Export CSV</button>
                             <button class="btn btn-primary" type="button" data-action="add-package">Add Package</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th>Package ID</th>
@@ -555,19 +629,25 @@
                 <!-- ADD PACKAGE SECTION -->
                 <div id="section-add-package" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="packageFormTitle">Add New Package</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('packages')">Back to Packages</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('packages')">Back to
+                                Packages</button>
+                                </div>
                         </div>
                         <form id="addPackageForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="packageName">Package Name</label>
-                                <input type="text" id="packageName" class="form-control" placeholder="e.g. Everest Base Camp Trek" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="packageName" class="form-control"
+                                    placeholder="e.g. Everest Base Camp Trek" required
+                                    >
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="packageType">Package Type</label>
-                                    <select id="packageType" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="packageType" class="form-control" required
+                                        >
                                         <option value="trekking">Trekking</option>
                                         <option value="tour">Tour</option>
                                         <option value="wildlife">Wildlife</option>
@@ -577,29 +657,37 @@
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="packagePrice">Base Price (NPR)</label>
-                                    <input type="number" id="packagePrice" class="form-control" value="20000" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="packagePrice" class="form-control" value="20000" required
+                                        >
                                 </div>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="packageDays">Duration (Days)</label>
-                                    <input type="number" id="packageDays" class="form-control" value="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="packageDays" class="form-control" value="3" required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="packageNights">Duration (Nights)</label>
-                                    <input type="number" id="packageNights" class="form-control" value="2" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="packageNights" class="form-control" value="2" required
+                                        >
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="packageDescription">Description</label>
-                                <textarea id="packageDescription" class="form-control" rows="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                                <textarea id="packageDescription" class="form-control" rows="3" required
+                                    ></textarea>
                             </div>
                             <div class="form-group" style="margin-bottom: 1.5rem;">
                                 <label for="packageImageUrl">Image URL</label>
-                                <input type="url" id="packageImageUrl" class="form-control" placeholder="https://example.com/package.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="url" id="packageImageUrl" class="form-control"
+                                    placeholder="https://example.com/package.jpg"
+                                    >
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
                             </div>
-                            <button type="submit" id="packageSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Package</button>
+                            <button type="submit" id="packageSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Package</button>
                         </form>
                     </div>
                 </div>
@@ -607,15 +695,18 @@
                 <!-- PLACES SECTION -->
                 <div id="section-places" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>Tourist Destinations</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search places..." class="search-input" data-filter-table="placesTableBody">
+                                <input type="text" placeholder="Search places..." class="search-input"
+                                    data-filter-table="placesTableBody">
                             </div>
                             <button class="btn btn-primary" type="button" data-action="add-place">Add Place</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th>Place ID</th>
@@ -636,29 +727,36 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- ADD PLACE SECTION -->
                 <div id="section-add-place" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="placeFormTitle">Add New Place</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('places')">Back to Places</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('places')">Back to
+                                Places</button>
+                                </div>
                         </div>
                         <form id="addPlaceForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="placeName">Place Name</label>
-                                <input type="text" id="placeName" class="form-control" placeholder="e.g. Swayambhunath Stupa" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="placeName" class="form-control"
+                                    placeholder="e.g. Swayambhunath Stupa" required
+                                    >
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="placeLocationId">Location</label>
-                                    <select id="placeLocationId" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="placeLocationId" class="form-control" required
+                                        >
                                         <option value="">Select a Location</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="placeCategory">Category</label>
-                                    <select id="placeCategory" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="placeCategory" class="form-control" required
+                                        >
                                         <option value="cultural">Cultural</option>
                                         <option value="historical">Historical</option>
                                         <option value="religious">Religious</option>
@@ -673,14 +771,19 @@
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="placeDescription">Description</label>
-                                <textarea id="placeDescription" class="form-control" rows="3" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+                                <textarea id="placeDescription" class="form-control" rows="3" required
+                                    ></textarea>
                             </div>
                             <div class="form-group" style="margin-bottom: 1.5rem;">
                                 <label for="placeImageUrl">Image URL</label>
-                                <input type="url" id="placeImageUrl" class="form-control" placeholder="https://example.com/place.jpg" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="url" id="placeImageUrl" class="form-control"
+                                    placeholder="https://example.com/place.jpg"
+                                    >
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
                             </div>
-                            <button type="submit" id="placeSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Place</button>
+                            <button type="submit" id="placeSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Place</button>
                         </form>
                     </div>
                 </div>
@@ -688,15 +791,19 @@
                 <!-- LOCATIONS SECTION -->
                 <div id="section-locations" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>System Locations</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search locations..." class="search-input" data-filter-table="locationsTableBody">
+                                <input type="text" placeholder="Search locations..." class="search-input"
+                                    data-filter-table="locationsTableBody">
                             </div>
-                            <button class="btn btn-primary" type="button" data-action="add-location">Add Location</button>
+                            <button class="btn btn-primary" type="button" data-action="add-location">Add
+                                Location</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -709,7 +816,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="locationsTableBody">
-                                    <tr><td colspan="7" class="text-center">Loading...</td></tr>
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -719,19 +828,25 @@
                 <!-- ADD/EDIT LOCATION SECTION -->
                 <div id="section-add-location" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="locationFormTitle">Add New Location</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('locations')">Back to Locations</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('locations')">Back to
+                                Locations</button>
+                                </div>
                         </div>
                         <form id="addLocationForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="locationName">Location Name</label>
-                                <input type="text" id="locationName" class="form-control" placeholder="e.g. Kathmandu" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="locationName" class="form-control" placeholder="e.g. Kathmandu"
+                                    required
+                                    >
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="locationType">Type</label>
-                                    <select id="locationType" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="locationType" class="form-control" required
+                                        >
                                         <option value="city">City</option>
                                         <option value="trekking_area">Trekking Area</option>
                                         <option value="district">District</option>
@@ -740,7 +855,8 @@
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="locationProvince">Province</label>
-                                    <select id="locationProvince" class="form-control" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <select id="locationProvince" class="form-control" required
+                                        >
                                         <option value="Koshi Province">Koshi Province</option>
                                         <option value="Madhesh Province">Madhesh Province</option>
                                         <option value="Bagmati Province">Bagmati Province</option>
@@ -754,14 +870,19 @@
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="locationAirport">Airport Code (Optional)</label>
-                                    <input type="text" id="locationAirport" class="form-control" placeholder="e.g. KTM" maxlength="3" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="locationAirport" class="form-control" placeholder="e.g. KTM"
+                                        maxlength="3"
+                                        >
                                 </div>
-                                <div class="form-group" style="flex: 1; display: flex; align-items: center; gap: 0.5rem; padding-top: 1.5rem;">
+                                <div class="form-group"
+                                    style="flex: 1; display: flex; align-items: center; gap: 0.5rem; padding-top: 1.5rem;">
                                     <input type="checkbox" id="locationPopular" style="width: 20px; height: 20px;">
                                     <label for="locationPopular">Mark as Popular</label>
                                 </div>
                             </div>
-                            <button type="submit" id="locationSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Location</button>
+                            <button type="submit" id="locationSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Location</button>
                         </form>
                     </div>
                 </div>
@@ -769,15 +890,18 @@
                 <!-- AIRLINES SECTION -->
                 <div id="section-airlines" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>Airlines</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search airlines..." class="search-input" data-filter-table="airlinesTableBody">
+                                <input type="text" placeholder="Search airlines..." class="search-input"
+                                    data-filter-table="airlinesTableBody">
                             </div>
                             <button class="btn btn-primary" type="button" data-action="add-airline">Add Airline</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -789,7 +913,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="airlinesTableBody">
-                                    <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -799,26 +925,36 @@
                 <!-- ADD/EDIT AIRLINE SECTION -->
                 <div id="section-add-airline" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="airlineFormTitle">Add New Airline</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('airlines')">Back to Airlines</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('airlines')">Back to
+                                Airlines</button>
+                                </div>
                         </div>
                         <form id="addAirlineForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="airlineName">Airline Name</label>
-                                <input type="text" id="airlineName" class="form-control" placeholder="e.g. Buddha Air" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="airlineName" class="form-control" placeholder="e.g. Buddha Air"
+                                    required
+                                    >
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="airlineCode">Airline Code</label>
-                                    <input type="text" id="airlineCode" class="form-control" placeholder="e.g. U4" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="airlineCode" class="form-control" placeholder="e.g. U4"
+                                        required
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="airlineContact">Contact Number</label>
-                                    <input type="text" id="airlineContact" class="form-control" placeholder="+977-..." style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="airlineContact" class="form-control" placeholder="+977-..."
+                                        >
                                 </div>
                             </div>
-                            <button type="submit" id="airlineSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Airline</button>
+                            <button type="submit" id="airlineSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Airline</button>
                         </form>
                     </div>
                 </div>
@@ -826,15 +962,19 @@
                 <!-- OPERATORS SECTION -->
                 <div id="section-operators" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>Bus Operators</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search operators..." class="search-input" data-filter-table="operatorsTableBody">
+                                <input type="text" placeholder="Search operators..." class="search-input"
+                                    data-filter-table="operatorsTableBody">
                             </div>
-                            <button class="btn btn-primary" type="button" data-action="add-operator">Add Operator</button>
+                            <button class="btn btn-primary" type="button" data-action="add-operator">Add
+                                Operator</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -846,7 +986,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="operatorsTableBody">
-                                    <tr><td colspan="6" class="text-center">Loading...</td></tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center">Loading...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -856,26 +998,36 @@
                 <!-- ADD/EDIT OPERATOR SECTION -->
                 <div id="section-add-operator" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2 id="operatorFormTitle">Add New Operator</h2>
-                            <button class="btn btn-secondary" type="button" onclick="switchSection('operators')">Back to Operators</button>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <button class="btn btn-secondary" type="button" onclick="switchSection('operators')">Back to
+                                Operators</button>
+                                </div>
                         </div>
                         <form id="addOperatorForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="operatorName">Operator Name</label>
-                                <input type="text" id="operatorName" class="form-control" placeholder="e.g. Green Line Tours" required style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                <input type="text" id="operatorName" class="form-control"
+                                    placeholder="e.g. Green Line Tours" required
+                                    >
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="operatorContact">Contact Number</label>
-                                    <input type="text" id="operatorContact" class="form-control" placeholder="+977-..." style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="text" id="operatorContact" class="form-control" placeholder="+977-..."
+                                        >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="operatorRating">Rating (1-5)</label>
-                                    <input type="number" id="operatorRating" class="form-control" value="4.0" step="0.1" min="1" max="5" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                                    <input type="number" id="operatorRating" class="form-control" value="4.0" step="0.1"
+                                        min="1" max="5"
+                                        >
                                 </div>
                             </div>
-                            <button type="submit" id="operatorSubmitBtn" class="btn btn-success" style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save Operator</button>
+                            <button type="submit" id="operatorSubmitBtn" class="btn btn-success"
+                                style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
+                                Operator</button>
                         </form>
                     </div>
                 </div>
@@ -883,15 +1035,19 @@
                 <!-- BOOKINGS SECTION -->
                 <div id="section-bookings" class="section">
                     <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
                             <h2>All Bookings</h2>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
                             <div class="table-search">
-                                <input type="text" placeholder="Search bookings (ID, Name, Type...)" class="search-input" data-filter-table="bookingsTableBody">
+                                <input type="text" placeholder="Search bookings (ID, Name, Type...)"
+                                    class="search-input" data-filter-table="bookingsTableBody">
                             </div>
-                            <button class="btn btn-secondary btn-sm" onclick="exportTableToCSV('bookingsTableBody', 'bookings.csv')">Export CSV</button>
+                            <button class="btn btn-secondary btn-sm"
+                                onclick="exportTableToCSV('bookingsTableBody', 'bookings.csv')">Export CSV</button>
+                                </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="data-table">
+                            <table class="table table-custom">
                                 <thead>
                                     <tr>
                                         <th class="sortable">Booking ID</th>
@@ -918,7 +1074,10 @@
         </main>
     </div>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
     <script src="../js/main.js"></script>
     <script src="../js/admin.js"></script>
 </body>
+
 </html>
