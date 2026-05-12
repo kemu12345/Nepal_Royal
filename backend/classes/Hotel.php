@@ -47,12 +47,18 @@ class Hotel {
      * @return array An array of hotel records matching the criteria.
      */
     public function search($location_id = null, $check_in = null, $check_out = null, $filters = []) {
-        // Base SQL query to select active hotels.
-        // It joins with the locations table to get location name and province.
+        // Base SQL query to select active hotels and their minimum room price.
+        // It joins with locations and hotel_rooms to provide comprehensive data for results.
         $query = "SELECT h.*,
-                         l.location_name, l.province
+                         l.location_name, l.province,
+                         MIN(hr.base_price_per_night) as base_price_per_night,
+                         SUM(hr.available_rooms) as available_rooms,
+                         MIN(hr.room_id) as room_id,
+                         MIN(hr.room_type) as room_type,
+                         MIN(hr.capacity) as max_guests
                   FROM " . $this->table . " h
                   INNER JOIN locations l ON h.location_id = l.location_id
+                  LEFT JOIN hotel_rooms hr ON h.hotel_id = hr.hotel_id AND hr.is_available = 1
                   WHERE h.is_active = 1";
 
         // Append location filter if provided.
@@ -67,15 +73,16 @@ class Hotel {
         if (isset($filters['hotel_type'])) {
             $query .= " AND h.hotel_type = :hotel_type";
         }
-        // This subquery filters hotels based on the price of their available rooms.
+        
+        // Finalize the base query structure with grouping.
+        $query .= " GROUP BY h.hotel_id";
+
+        // Use HAVING for filters that depend on aggregate values (like price).
         if (isset($filters['max_price'])) {
-            $query .= " AND h.hotel_id IN (
-                SELECT DISTINCT hotel_id FROM hotel_rooms
-                WHERE base_price_per_night <= :max_price AND is_available = 1
-            )";
+            $query .= " HAVING base_price_per_night <= :max_price";
         }
 
-        // Order the results by star rating (descending) and then by hotel name (ascending).
+        // Order the results by star rating (descending).
         $query .= " ORDER BY h.star_rating DESC, h.hotel_name ASC";
 
         // Prepare the SQL statement.

@@ -83,7 +83,7 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-4">
-                            <label class="form-label fw-semibold"><i class="bi bi-building text-success me-1"></i>Hotel Type</label>
+                            <label for="filter-type" class="form-label fw-semibold"><i class="bi bi-building text-success me-1"></i>Hotel Type</label>
                             <select class="form-select" id="filter-type">
                                 <option value="">All Types</option>
                                 <option value="hotel">Hotel</option>
@@ -93,7 +93,7 @@
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-semibold"><i class="bi bi-star-fill text-warning me-1"></i>Star Rating</label>
+                            <label for="filter-rating" class="form-label fw-semibold"><i class="bi bi-star-fill text-warning me-1"></i>Star Rating</label>
                             <select class="form-select" id="filter-rating">
                                 <option value="">All Ratings</option>
                                 <option value="5">5 Star</option>
@@ -102,7 +102,7 @@
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-semibold"><i class="bi bi-sort-down text-info me-1"></i>Sort By</label>
+                            <label for="sort-by" class="form-label fw-semibold"><i class="bi bi-sort-down text-info me-1"></i>Sort By</label>
                             <select class="form-select" id="sort-by">
                                 <option value="price-asc">Price: Low to High</option>
                                 <option value="price-desc">Price: High to Low</option>
@@ -111,7 +111,7 @@
                             </select>
                         </div>
                         <div class="mb-4">
-                            <label class="form-label fw-semibold"><i class="bi bi-currency-dollar text-danger me-1"></i>Max Price (NPR/night)</label>
+                            <label for="filter-price" class="form-label fw-semibold"><i class="bi bi-currency-dollar text-danger me-1"></i>Max Price (NPR/night)</label>
                             <input type="number" class="form-control" id="filter-price" placeholder="Enter max price">
                         </div>
                         <button class="btn btn-outline-success w-100" onclick="resetFilters()">

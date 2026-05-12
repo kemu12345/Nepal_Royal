@@ -296,7 +296,13 @@ function applyFilters() {
     filteredHotels = allHotels.filter(hotel => {
         if (typeFilter && hotel.hotel_type !== typeFilter) return false;
         if (ratingFilter && parseFloat(hotel.star_rating) < parseFloat(ratingFilter)) return false;
-        if (parseFloat(hotel.base_price_per_night) > parseFloat(priceFilter)) return false;
+        
+        // Fix: If a price filter is set, exclude hotels with no price or price above the limit
+        if (priceFilter) {
+            if (!hotel.base_price_per_night || parseFloat(hotel.base_price_per_night) > parseFloat(priceFilter)) {
+                return false;
+            }
+        }
         return true;
     });
 
@@ -336,7 +342,10 @@ function displayHotels(hotels) {
 
     if (hotels.length === 0) {
         resultsEl.innerHTML = '';
-        if (emptyEl) emptyEl.style.display = 'block';
+        if (emptyEl) {
+            emptyEl.style.display = 'block';
+            emptyEl.classList.add('animate__animated', 'animate__fadeIn');
+        }
         return;
     }
 
@@ -384,7 +393,7 @@ function createHotelCard(hotel) {
                         <div class="hotel-image" style="position: relative; overflow: hidden; height: 200px; background: #1a1a2e;">
                             <span class="hotel-type-badge ${typeClass}" style="position: absolute; top: 10px; left: 10px; z-index: 2;">${hotel.hotel_type}</span>
                             <img src="${imageUrl}" alt="${hotel.hotel_name}"
-                                 onerror="this.src='${fallbackImg}'"
+                                 onerror="if(this.src!=='${fallbackImg}'){this.src='${fallbackImg}';}else{this.onerror=null;this.src='https://via.placeholder.com/600x300?text=No+Image';}"
                                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
                         </div>
                     </div>
@@ -400,9 +409,6 @@ function createHotelCard(hotel) {
                             <div class="room-info mb-3">
                                 <span class="badge bg-light text-dark me-2">
                                     <i class="bi bi-door-open me-1"></i>${roomType}
-                                </span>
-                                <span class="badge bg-light text-dark">
-                                    <i class="bi bi-people me-1"></i>Max ${maxGuests} Guests
                                 </span>
                             </div>
                             
@@ -456,15 +462,11 @@ function openBookingModal(roomId) {
         
         <div class="room-details p-3 rounded mb-4" style="background: #f8f9fa;">
             <div class="row text-center">
-                <div class="col-4">
+                <div class="col-6">
                     <i class="bi bi-door-open fs-4 text-success"></i>
                     <div class="small mt-1">${selectedHotel.room_type || 'Standard Room'}</div>
                 </div>
-                <div class="col-4">
-                    <i class="bi bi-people fs-4 text-success"></i>
-                    <div class="small mt-1">Max ${selectedHotel.max_guests || 2} Guests</div>
-                </div>
-                <div class="col-4">
+                <div class="col-6">
                     <i class="bi bi-cash-stack fs-4 text-success"></i>
                     <div class="small mt-1">${selectedHotel.currency || 'NPR'} ${formatPrice(selectedHotel.base_price_per_night || 5000)}/night</div>
                 </div>
@@ -473,24 +475,25 @@ function openBookingModal(roomId) {
         
         <div class="row g-3">
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Check-in Date</label>
+                <label for="modalCheckin" class="form-label fw-semibold">Check-in Date</label>
                 <input type="date" class="form-control" id="modalCheckin" min="${new Date().toISOString().split('T')[0]}">
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Check-out Date</label>
+                <label for="modalCheckout" class="form-label fw-semibold">Check-out Date</label>
                 <input type="date" class="form-control" id="modalCheckout">
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Number of Rooms</label>
+                <label for="roomCount" class="form-label fw-semibold">Number of Rooms</label>
                 <select class="form-select" id="roomCount">
                     ${[1, 2, 3, 4, 5].map(n => `<option value="${n}">${n} Room${n > 1 ? 's' : ''}</option>`).join('')}
                 </select>
             </div>
             <div class="col-md-6">
-                <label class="form-label fw-semibold">Guests</label>
+                <label for="guestCount" class="form-label fw-semibold">Guests</label>
                 <select class="form-select" id="guestCount">
-                    ${[1, 2, 3, 4, 5, 6].map(n => `<option value="${n}">${n} Guest${n > 1 ? 's' : ''}</option>`).join('')}
+                    ${[1, 2, 3, 4, 5].map(n => `<option value="${n}">${n} Guest${n > 1 ? 's' : ''}</option>`).join('')}
                 </select>
+                <div class="form-text text-danger small" id="guestValidationMsg" style="display: none;">Maximum 4 guests allowed per room</div>
             </div>
         </div>
     `;
@@ -502,6 +505,14 @@ function openBookingModal(roomId) {
 
     if (checkin) document.getElementById('modalCheckin').value = checkin;
     if (checkout) document.getElementById('modalCheckout').value = checkout;
+
+    // Add event listener for guest count validation
+    document.getElementById('guestCount')?.addEventListener('change', (e) => {
+        const msgEl = document.getElementById('guestValidationMsg');
+        if (msgEl) {
+            msgEl.style.display = e.target.value >= 5 ? 'block' : 'none';
+        }
+    });
 
     const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('bookingModal'));
     modal.show();
@@ -539,6 +550,15 @@ async function confirmBooking() {
     try {
         const rooms = Number.parseInt(document.getElementById('roomCount')?.value || '1', 10);
         const guests = Number.parseInt(document.getElementById('guestCount')?.value || '1', 10);
+        
+        // Add validation for 5 guests
+        if (guests >= 5) {
+            const msgEl = document.getElementById('guestValidationMsg');
+            if (msgEl) msgEl.style.display = 'block';
+            showToast('Sorry, we do not accept 5 or more guests in a single room', 'warning');
+            return;
+        }
+
         const nights = Math.max(1, Math.ceil((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24)));
 
         const response = await fetch(`${API_BASE_URL}/create_booking.php`, {
