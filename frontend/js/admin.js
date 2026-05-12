@@ -900,6 +900,7 @@ async function submitNewBus() {
         const busType = document.getElementById('busType').value;
         const departureTime = document.getElementById('busDeparture').value;
         const arrivalTime = document.getElementById('busArrival').value;
+        const durationMinutes = document.getElementById('busDuration').value;
         const totalSeats = document.getElementById('busSeats').value;
         const basePrice = document.getElementById('busPrice').value;
         const operatesOnDays = document.getElementById('busDays').value;
@@ -918,6 +919,7 @@ async function submitNewBus() {
                 destination_location_id: Number(destinationId),
                 departure_time: departureTime,
                 arrival_time: arrivalTime,
+                duration_minutes: Number(durationMinutes),
                 total_seats: Number(totalSeats),
                 available_seats: isEditing ? undefined : Number(totalSeats),
                 base_price: Number(basePrice),
@@ -952,9 +954,10 @@ function editBus(bus) {
     document.getElementById('busOriginId').value = bus.origin_location_id;
     document.getElementById('busDestinationId').value = bus.destination_location_id;
     document.getElementById('busNumber').value = bus.bus_number;
-    document.getElementById('busType').value = bus.bus_type;
+    document.getElementById('busType').value = bus.bus_type || 'regular';
     document.getElementById('busDeparture').value = bus.departure_time;
     document.getElementById('busArrival').value = bus.arrival_time;
+    document.getElementById('busDuration').value = bus.duration_minutes ?? 0;
     document.getElementById('busSeats').value = bus.total_seats;
     document.getElementById('busPrice').value = bus.base_price;
     document.getElementById('busDays').value = bus.operates_on_days;

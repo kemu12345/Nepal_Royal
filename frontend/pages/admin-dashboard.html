@@ -430,17 +430,25 @@
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
+                                    <label for="busType">Bus Type</label>
+                                    <select id="busType" class="form-control">
+                                        <option value="regular">Regular</option>
+                                        <option value="sleeper">Sleeper</option>
+                                        <option value="deluxe">Deluxe</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
                                     <label for="busDeparture">Departure Time (HH:MM:SS)</label>
                                     <input type="text" id="busDeparture" class="form-control" value="07:00:00" required
                                         >
                                 </div>
+                            </div>
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busArrival">Arrival Time (HH:MM:SS)</label>
                                     <input type="text" id="busArrival" class="form-control" value="13:00:00" required
                                         >
                                 </div>
-                            </div>
-                            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busDuration">Duration (minutes)</label>
                                     <input type="number" id="busDuration" class="form-control" value="360" required
