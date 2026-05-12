@@ -40,11 +40,23 @@ document.addEventListener('DOMContentLoaded', () => {
         displaySearchSummary(from, to, date);
         searchBuses(from, to, date);
     } else {
-        // If no search parameters, load demo data for display purposes.
-        loadDemoBuses();
+        // If no search parameters, fetch all available buses from the database.
+        displaySearchSummary(null, null, null);
+        searchBuses(null, null, null);
     }
 
-    // Set up event listeners for the filter and sort controls.
+    // Set up event listeners for filters and sorting
+    const filterDate = document.getElementById('filter-date');
+    if (filterDate) {
+        filterDate.value = date || new Date().toISOString().split('T')[0];
+        filterDate.min = new Date().toISOString().split('T')[0];
+        filterDate.addEventListener('change', () => {
+            const currentParams = new URLSearchParams(window.location.search);
+            currentParams.set('date', filterDate.value);
+            window.location.search = currentParams.toString();
+        });
+    }
+
     document.getElementById('filter-operator')?.addEventListener('change', applyFilters);
     document.getElementById('filter-type')?.addEventListener('change', applyFilters);
     document.getElementById('sort-by')?.addEventListener('change', applyFilters);
@@ -99,7 +111,7 @@ function updateAuthButtons() {
 function getDemoBuses() {
     return [
         {
-            bus_id: 1,
+            bus_id: 101, // Unique ID for demo
             operator_name: 'Sajha Yatayat',
             bus_number: 'BA 1 KHA 2345',
             bus_type: 'deluxe',
@@ -113,7 +125,7 @@ function getDemoBuses() {
             available_seats: 25
         },
         {
-            bus_id: 2,
+            bus_id: 102, // Unique ID for demo
             operator_name: 'Greenline Tours',
             bus_number: 'BA 2 KHA 5678',
             bus_type: 'ac',
@@ -127,7 +139,7 @@ function getDemoBuses() {
             available_seats: 12
         },
         {
-            bus_id: 3,
+            bus_id: 12, // Matches Database ID for Buddha Air Bus (KTM-Chitwan)
             operator_name: 'Buddha Air Bus',
             bus_number: 'BA 3 KHA 9012',
             bus_type: 'sleeper',
@@ -141,7 +153,7 @@ function getDemoBuses() {
             available_seats: 8
         },
         {
-            bus_id: 4,
+            bus_id: 13, // Matches Database ID for Local Express (Pokhara-Lumbini)
             operator_name: 'Local Express',
             bus_number: 'BA 4 KHA 3456',
             bus_type: 'regular',
@@ -183,6 +195,13 @@ async function displaySearchSummary(fromId, toId, date) {
         const data = await response.json();
 
         if (data.success) {
+            if (!fromId || !toId) {
+                summaryEl.innerHTML = `
+                    <span class="badge bg-primary px-3 py-2"><i class="bi bi-bus-front me-2"></i>All Available Routes</span>
+                `;
+                return;
+            }
+
             const fromLocation = data.data.find(loc => loc.location_id == fromId);
             const toLocation = data.data.find(loc => loc.location_id == toId);
             
@@ -211,9 +230,17 @@ async function searchBuses(from, to, date) {
     if (emptyEl) emptyEl.style.display = 'none';
 
     try {
-        const response = await fetch(
-            `${API_BASE_URL}/get_buses.php?from=${from}&to=${to}&date=${date}`
-        );
+        let url = `${API_BASE_URL}/get_buses.php`;
+        const params = [];
+        if (from) params.push(`from=${from}`);
+        if (to) params.push(`to=${to}`);
+        if (date) params.push(`date=${date}`);
+        
+        if (params.length > 0) {
+            url += '?' + params.join('&');
+        }
+
+        const response = await fetch(url);
         const data = await response.json();
 
         if (loadingEl) loadingEl.style.display = 'none';
@@ -272,6 +299,11 @@ function resetFilters() {
     if (typeFilter) typeFilter.value = '';
     if (sortFilter) sortFilter.value = 'price-asc';
     if (priceFilter) priceFilter.value = '';
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const originalDate = urlParams.get('date') || new Date().toISOString().split('T')[0];
+    const filterDate = document.getElementById('filter-date');
+    if (filterDate) filterDate.value = originalDate;
     
     applyFilters();
 }
@@ -414,8 +446,13 @@ function openBookingModal(busId) {
     selectedBus = allBuses.find(b => b.bus_id === busId);
     if (!selectedBus) return;
     
+    const travelDate = new URLSearchParams(window.location.search).get('date') || new Date().toISOString().split('T')[0];
+    
     const modalBody = document.getElementById('booking-details');
     modalBody.innerHTML = `
+        <div class="text-center mb-3">
+            <span class="badge bg-light text-dark px-3 py-2 border mb-3"><i class="bi bi-calendar3 me-2"></i>Travel Date: ${formatDate(travelDate)}</span>
+        </div>
         <div class="text-center mb-4">
             <div class="bus-type-badge badge-${selectedBus.bus_type} mb-3" style="font-size: 1rem; padding: 0.5rem 1.5rem;">
                 ${selectedBus.bus_type.toUpperCase()}
@@ -562,8 +599,14 @@ function formatDuration(minutes) {
 /**
  * Helper function to format time from "HH:MM:SS" to "HH:MM".
  */
-function formatTime(time) {
-    return time.substring(0, 5);
+function formatTime(timeString) {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    let h = parseInt(hours);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12; // the hour '0' should be '12'
+    return `${h}:${minutes} ${ampm}`;
 }
 
 /**
@@ -580,6 +623,7 @@ function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
         weekday: 'short',
+        year: 'numeric',
         month: 'short',
         day: 'numeric'
     });

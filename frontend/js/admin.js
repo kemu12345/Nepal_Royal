@@ -348,7 +348,7 @@ function renderFlightsTable(flights) {
             <td>${escapeHtml(f.airline_name || '-')}</td>
             <td>${escapeHtml(f.origin_name || '-')}</td>
             <td>${escapeHtml(f.destination_name || '-')}</td>
-            <td>${escapeHtml(f.departure_time || '-')}</td>
+            <td>${formatTime(f.departure_time)}</td>
             <td>${formatAmount(f.base_price, f.currency)}</td>
             <td>${f.available_seats ?? 0}</td>
             <td>
@@ -394,7 +394,7 @@ function renderBusesTable(buses) {
             <td>${escapeHtml(b.operator_name || '-')}</td>
             <td>${escapeHtml(b.origin_name || '-')}</td>
             <td>${escapeHtml(b.destination_name || '-')}</td>
-            <td>${escapeHtml(b.departure_time || '-')}</td>
+            <td>${formatTime(b.departure_time)}</td>
             <td>${formatAmount(b.base_price, b.currency)}</td>
             <td>${b.available_seats ?? 0}</td>
             <td>
@@ -664,6 +664,20 @@ function escapeHtml(value) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+}
+
+function formatTime(timeString) {
+    if (!timeString || timeString === '-') return '-';
+    // Handle "HH:MM:SS" or "HH:MM"
+    const parts = timeString.split(':');
+    if (parts.length < 2) return timeString;
+    
+    let h = parseInt(parts[0]);
+    const minutes = parts[1];
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12; // the hour '0' should be '12'
+    return `${h}:${minutes} ${ampm}`;
 }
 
 /**

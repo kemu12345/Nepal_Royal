@@ -35,21 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const to = urlParams.get('to');
     const date = urlParams.get('date');
 
-    // If search parameters are missing, load demo flights with default values.
+    // If search parameters are missing, fetch all available flights from the database.
     if (!from || !to || !date) {
-        const defaultFrom = '1'; // Kathmandu
-        const defaultTo = '2';   // Pokhara
-        const defaultDate = new Date().toISOString().split('T')[0];
-        
-        displaySearchSummary(defaultFrom, defaultTo, defaultDate);
-        
-        const loadingEl = document.getElementById('loading');
-        if (loadingEl) loadingEl.style.display = 'none';
-
-        allFlights = getDemoFlights(defaultFrom, defaultTo, defaultDate);
-        filteredFlights = [...allFlights];
-        populateAirlineFilter(allFlights);
-        applyFilters();
+        displaySearchSummary(null, null, null);
+        searchFlights(null, null, null);
     } else {
         // Display a summary of the search in the page header.
         displaySearchSummary(from, to, date);
@@ -59,6 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Set up event listeners for the filter and sort controls.
+    const filterDate = document.getElementById('filter-date');
+    if (filterDate) {
+        filterDate.value = date || new Date().toISOString().split('T')[0];
+        filterDate.min = new Date().toISOString().split('T')[0];
+        filterDate.addEventListener('change', () => {
+            const currentParams = new URLSearchParams(window.location.search);
+            currentParams.set('date', filterDate.value);
+            window.location.search = currentParams.toString();
+        });
+    }
+
     document.getElementById('filter-airline').addEventListener('change', applyFilters);
     document.getElementById('filter-price').addEventListener('input', debounce(applyFilters, 300));
     document.getElementById('sort-by')?.addEventListener('change', applyFilters);
@@ -113,6 +113,12 @@ function resetFilters() {
     document.getElementById('filter-airline').value = '';
     document.getElementById('filter-price').value = '';
     document.getElementById('sort-by').value = 'price-asc';
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const originalDate = urlParams.get('date') || new Date().toISOString().split('T')[0];
+    const filterDate = document.getElementById('filter-date');
+    if (filterDate) filterDate.value = originalDate;
+    
     applyFilters();
 }
 
@@ -126,6 +132,13 @@ async function displaySearchSummary(fromId, toId, date) {
         const data = await response.json();
 
         if (data.success) {
+            if (!fromId || !toId) {
+                document.getElementById('search-summary').innerHTML = `
+                    <span class="badge bg-primary px-3 py-2"><i class="bi bi-airplane-engines me-2"></i>All Available Flights</span>
+                `;
+                return;
+            }
+
             const fromLocation = data.data.find(loc => loc.location_id == fromId);
             const toLocation = data.data.find(loc => loc.location_id == toId);
 
@@ -133,9 +146,6 @@ async function displaySearchSummary(fromId, toId, date) {
             const toName = toLocation?.location_name || 'Unknown';
             
             document.getElementById('search-summary').innerHTML = `
-                <i class="bi bi-geo-alt text-warning me-1"></i>${fromName} 
-                <i class="bi bi-arrow-right mx-2"></i> 
-                <i class="bi bi-geo-alt-fill text-warning me-1"></i>${toName} 
                 <span class="badge bg-light text-dark ms-2"><i class="bi bi-calendar3 me-1"></i>${formatDate(date)}</span>
             `;
         }
@@ -158,9 +168,17 @@ async function searchFlights(from, to, date) {
     if (noResultsEl) noResultsEl.style.display = 'none';
 
     try {
-        const response = await fetch(
-            `${API_BASE_URL}/get_flights.php?from=${from}&to=${to}&date=${date}`
-        );
+        let url = `${API_BASE_URL}/get_flights.php`;
+        const params = [];
+        if (from) params.push(`from=${from}`);
+        if (to) params.push(`to=${to}`);
+        if (date) params.push(`date=${date}`);
+        
+        if (params.length > 0) {
+            url += '?' + params.join('&');
+        }
+
+        const response = await fetch(url);
         const data = await response.json();
 
         if (loadingEl) loadingEl.style.display = 'none';
@@ -385,8 +403,13 @@ function openBookingModal(flightId) {
     selectedFlight = allFlights.find(f => f.flight_id == flightId);
     if (!selectedFlight) return;
     
+    const travelDate = new URLSearchParams(window.location.search).get('date') || new Date().toISOString().split('T')[0];
+    
     const detailsEl = document.getElementById('booking-details');
     detailsEl.innerHTML = `
+        <div class="text-center mb-3">
+            <span class="badge bg-light text-dark px-3 py-2 border mb-3"><i class="bi bi-calendar3 me-2"></i>Travel Date: ${formatDate(travelDate)}</span>
+        </div>
         <div class="text-center mb-4">
             <span class="airline-badge fs-5">${selectedFlight.airline_name}</span>
             <div class="text-muted mt-2">${selectedFlight.flight_number}</div>
@@ -574,8 +597,14 @@ function formatDuration(minutes) {
 /**
  * Helper function to format time from "HH:MM:SS" to "HH:MM".
  */
-function formatTime(time) {
-    return time.substring(0, 5);
+function formatTime(timeString) {
+    if (!timeString) return '';
+    const [hours, minutes] = timeString.split(':');
+    let h = parseInt(hours);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12;
+    h = h ? h : 12; // the hour '0' should be '12'
+    return `${h}:${minutes} ${ampm}`;
 }
 
 /**
