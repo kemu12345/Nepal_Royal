@@ -51,8 +51,8 @@ class Hotel {
         // It joins with locations and hotel_rooms to provide comprehensive data for results.
         $query = "SELECT h.*,
                          l.location_name, l.province,
-                         MIN(hr.base_price_per_night) as base_price_per_night,
-                         SUM(hr.available_rooms) as available_rooms,
+                         COALESCE(MIN(hr.base_price_per_night), 0) as base_price_per_night,
+                         COALESCE(SUM(hr.available_rooms), 0) as available_rooms,
                          MIN(hr.room_id) as room_id,
                          MIN(hr.room_type) as room_type,
                          MIN(hr.capacity) as max_guests

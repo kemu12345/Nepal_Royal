@@ -361,7 +361,7 @@ function displayHotels(hotels) {
 function createHotelCard(hotel) {
     const stars = '⭐'.repeat(Math.floor(hotel.star_rating || 3));
     const typeClass = `badge-${hotel.hotel_type || 'hotel'}`;
-    const availableRooms = hotel.available_rooms !== undefined && hotel.available_rooms !== null ? parseInt(hotel.available_rooms) : 10;
+    const availableRooms = hotel.available_rooms !== undefined && hotel.available_rooms !== null ? parseInt(hotel.available_rooms) : 0;
     const roomsClass = availableRooms > 5 ? 'text-success' : availableRooms > 0 ? 'text-warning' : 'text-danger';
     const amenitiesStr = hotel.amenities || 'WiFi,Room Service';
     const amenities = amenitiesStr.split(',').slice(0, 4);
@@ -370,7 +370,7 @@ function createHotelCard(hotel) {
     const maxGuests = hotel.max_guests || 2;
     const basePrice = hotel.base_price_per_night || 5000;
     const currency = hotel.currency || 'NPR';
-    const roomId = hotel.room_id || hotel.hotel_id || 1;
+    const roomId = hotel.room_id;
 
     const defaultImages = [
         'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=300&fit=crop',
@@ -429,8 +429,8 @@ function createHotelCard(hotel) {
                             <i class="bi bi-door-closed me-1"></i>
                             ${availableRooms > 0 ? `${availableRooms} rooms left` : 'No rooms'}
                         </div>
-                        <button class="btn btn-book w-100" onclick="openBookingModal(${roomId})" ${availableRooms === 0 ? 'disabled' : ''}>
-                            ${availableRooms === 0 ? 'Sold Out' : '<i class="bi bi-calendar-check me-1"></i>Book Now'}
+                        <button class="btn btn-book w-100" onclick="openBookingModal(${roomId})" ${(availableRooms === 0 || !roomId) ? 'disabled' : ''}>
+                            ${(availableRooms === 0 || !roomId) ? 'Sold Out' : '<i class="bi bi-calendar-check me-1"></i>Book Now'}
                         </button>
                     </div>
                 </div>
@@ -444,7 +444,7 @@ function createHotelCard(hotel) {
  */
 function openBookingModal(roomId) {
     // Find the hotel by room_id or hotel_id, using loose equality to handle string/number mismatches.
-    selectedHotel = allHotels.find(h => (h.room_id || h.hotel_id || 1) == roomId);
+    selectedHotel = allHotels.find(h => h.room_id == roomId);
     if (!selectedHotel) return;
 
     const stars = '⭐'.repeat(Math.floor(selectedHotel.star_rating || 3));
