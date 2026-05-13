@@ -83,10 +83,14 @@
                     </div>
 
                     <div class="form-group-custom">
-                        <label for="phone">Phone Number (Optional)</label>
+                        <label for="phone">Phone Number</label>
                         <div class="input-container">
                             <i class="bi bi-telephone"></i>
-                            <input type="tel" id="phone" placeholder="+977-XXXXXXXXXX">
+                            <input type="tel" id="phone" placeholder="98XXXXXXXX" 
+                                required 
+                                pattern="[0-9]{10}" 
+                                maxlength="10"
+                                title="Phone number must be exactly 10 digits">
                         </div>
                     </div>
 

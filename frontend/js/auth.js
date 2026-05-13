@@ -326,6 +326,12 @@ if (registerForm) {
             return;
         }
 
+        const phonePattern = /^[0-9]{10}$/;
+        if (!phonePattern.test(phone)) {
+            showMessage('Phone number must be exactly 10 digits', 'error');
+            return;
+        }
+
         if (password.length < 6) {
             showMessage('Password must be at least 6 characters', 'error');
             return;

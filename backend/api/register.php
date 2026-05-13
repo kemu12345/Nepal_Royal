@@ -60,6 +60,16 @@ if (!preg_match('/^\p{L}+$/u', $data->first_name) || !preg_match('/^\p{L}+$/u', 
     exit();
 }
 
+// Validate phone number (exactly 10 digits)
+if (empty($data->phone) || !preg_match('/^[0-9]{10}$/', $data->phone)) {
+    http_response_code(400);
+    echo json_encode([
+        "success" => false,
+        "message" => "Phone number must be exactly 10 digits"
+    ]);
+    exit();
+}
+
 // Database connection
 $database = new Database();
 $db = $database->getConnection();
