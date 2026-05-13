@@ -209,6 +209,32 @@ try {
     // If all queries were successful, commit the transaction.
     $db->commit();
 
+    // Send notifications
+    try {
+        include_once '../classes/Notification.php';
+        $notification = new \RoyalNepal\classes\Notification($db);
+        
+        // 1. Notify the User
+        $notification->create(
+            $user_id, 
+            'booking_created', 
+            'Booking Received', 
+            "Your booking request (Ref: $booking_reference) has been received and is currently pending approval.",
+            $booking_id
+        );
+
+        // 2. Notify Admins
+        $notification->notifyAdmins(
+            'new_booking',
+            'New Booking Alert',
+            "A new $booking_type booking ($booking_reference) has been placed and requires review.",
+            $booking_id
+        );
+    } catch (\Exception $ne) {
+        // Log notification error but don't fail the booking
+        error_log("Notification Error: " . $ne->getMessage());
+    }
+
     // Return a success response with the new booking details.
     http_response_code(201); // Created
     echo json_encode([

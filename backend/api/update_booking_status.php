@@ -108,6 +108,34 @@ try {
     $updateStmt = $db->prepare("UPDATE bookings SET booking_status = ? WHERE booking_id = ?");
     $updateStmt->execute([$newStatus, $bookingId]);
 
+    // Send notification to the user
+    try {
+        include_once '../classes/Notification.php';
+        $notification = new \RoyalNepal\classes\Notification($db);
+
+        // Get the user_id and reference for the booking
+        $userQuery = $db->prepare("SELECT user_id, booking_reference FROM bookings WHERE booking_id = ?");
+        $userQuery->execute([$bookingId]);
+        $bookingData = $userQuery->fetch(PDO::FETCH_ASSOC);
+
+        if ($bookingData) {
+            $title = $newStatus === 'confirmed' ? 'Booking Confirmed!' : 'Booking Cancelled';
+            $message = $newStatus === 'confirmed' 
+                ? "Good news! Your booking {$bookingData['booking_reference']} has been approved. Safe travels!"
+                : "We regret to inform you that your booking {$bookingData['booking_reference']} has been cancelled.";
+            
+            $notification->create(
+                $bookingData['user_id'],
+                'booking_update',
+                $title,
+                $message,
+                $bookingId
+            );
+        }
+    } catch (Exception $ne) {
+        error_log("Notification Error in update_booking_status: " . $ne->getMessage());
+    }
+
     http_response_code(200);
     echo json_encode([
         "success" => true,
