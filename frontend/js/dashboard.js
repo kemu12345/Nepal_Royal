@@ -1,5 +1,5 @@
 const WISHLIST_KEY = 'royalNepalWishlist';
-const API_BASE_URL = (() => {
+const API_BASE_URL = window.RoyalNepalRoutes?.apiBaseUrl() || (() => {
     const { protocol, port, hostname, origin, pathname } = window.location;
 
     // Dev mode: file:// pages or Live Server ports
@@ -154,7 +154,11 @@ async function loadUserBookingData() {
     const data = await response.json();
     if (!response.ok || !data.success) {
         if (response.status === 401 || response.status === 403) {
-            window.location.href = 'login.html?redirect=dashboard.html';
+            if (window.RoyalNepalRoutes) {
+                window.RoyalNepalRoutes.redirectToLogin({ replace: true });
+            } else {
+                window.location.replace('login.html?redirect=dashboard.html');
+            }
             return;
         }
         throw new Error(data.message || 'Unable to load booking history');
@@ -199,10 +203,21 @@ async function loadUserBookingData() {
 document.addEventListener('DOMContentLoaded', () => {
     // Check authentication
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    let user = {};
 
-    if (!isLoggedIn) {
-        window.location.href = 'login.html?redirect=dashboard.html';
+    try {
+        user = JSON.parse(localStorage.getItem('user') || '{}');
+    } catch (_error) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isLoggedIn');
+    }
+
+    if (!isLoggedIn || !user.user_id) {
+        if (window.RoyalNepalRoutes) {
+            window.RoyalNepalRoutes.redirectToLogin({ replace: true });
+        } else {
+            window.location.replace('login.html?redirect=dashboard.html');
+        }
         return;
     }
 
@@ -340,7 +355,11 @@ function formatTimeAgo(dateString) {
 function logout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
-    window.location.href = 'home.html';
+    if (window.RoyalNepalRoutes) {
+        window.RoyalNepalRoutes.navigateTo('home', { replace: true });
+    } else {
+        window.location.replace('home.html');
+    }
 }
 
 // --- Review System Logic ---

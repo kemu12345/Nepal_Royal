@@ -5,7 +5,7 @@
 */
 
 // Base URL for the backend API.
-const API_BASE_URL = (() => {
+const API_BASE_URL = window.RoyalNepalRoutes?.apiBaseUrl() || (() => {
     const { protocol, port, hostname, pathname } = window.location;
     
     // For local development with separate servers (e.g. Live Server + PHP Server)
@@ -31,7 +31,15 @@ const API_BASE_URL = (() => {
  */
 function getCurrentUser() {
     const userJson = localStorage.getItem('user');
-    return userJson ? JSON.parse(userJson) : null;
+    if (!userJson) return null;
+
+    try {
+        return JSON.parse(userJson);
+    } catch (_error) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isLoggedIn');
+        return null;
+    }
 }
 
 /**
@@ -62,8 +70,11 @@ async function logout() {
         localStorage.removeItem('user');
         localStorage.removeItem('isLoggedIn');
 
-        // Redirect the user to the login page.
-        window.location.href = 'login.html';
+        if (window.RoyalNepalRoutes) {
+            window.RoyalNepalRoutes.navigateTo('login', { replace: true });
+        } else {
+            window.location.replace('login.html');
+        }
     }
 }
 
@@ -75,17 +86,27 @@ async function logout() {
  * @returns {boolean} True if the user is authenticated and has the required role.
  */
 function requireAuth(requiredRole = null) {
-    if (!isLoggedIn()) {
-        window.location.href = 'login.html';
+    const user = getCurrentUser();
+
+    if (!isLoggedIn() || !user) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isLoggedIn');
+        if (window.RoyalNepalRoutes) {
+            window.RoyalNepalRoutes.redirectToLogin({ replace: true });
+        } else {
+            window.location.replace('login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search));
+        }
         return false;
     }
 
-    const user = getCurrentUser();
-
     // If a role is required, check if the user has that role.
-    if (requiredRole && user && user.role !== requiredRole) {
+    if (requiredRole && user.role !== requiredRole) {
         alert('You do not have permission to access this page.');
-        window.location.href = 'dashboard.html'; // Redirect to a safe page.
+        if (window.RoyalNepalRoutes) {
+            window.RoyalNepalRoutes.navigateTo('dashboard', { replace: true });
+        } else {
+            window.location.replace('dashboard.html');
+        }
         return false;
     }
 
@@ -193,12 +214,13 @@ function displayUserInfo() {
                         <i class="bi bi-person-circle me-2"></i>${user.first_name}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="${user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="${window.RoyalNepalRoutes?.pageUrl(window.RoyalNepalRoutes.defaultDashboardRoute(user)) || (user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html')}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger logout-btn" href="#"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
                     </ul>
                 </div>
             `;
+            window.RoyalNepalRoutes?.normalizeInternalPageLinks(parentLi);
         }
     });
 }

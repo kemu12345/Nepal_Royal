@@ -23,6 +23,10 @@ function buildApiBaseCandidates() {
         console.warn('Unable to read saved API base URL:', error);
     }
 
+    if (window.RoyalNepalRoutes) {
+        candidates.add(window.RoyalNepalRoutes.apiBaseUrl());
+    }
+
     // For local development with separate servers
     if (protocol === 'file:' || port === '5500' || port === '5501') {
         candidates.add(`http://${hostname || 'localhost'}:8000/backend/api`);
@@ -153,6 +157,19 @@ function toggleButtonLoading(button, isLoading) {
     }
 }
 
+function getStoredUser() {
+    const userJson = localStorage.getItem('user');
+    if (!userJson) return null;
+
+    try {
+        return JSON.parse(userJson);
+    } catch (_error) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('isLoggedIn');
+        return null;
+    }
+}
+
 /**
  * Fetches and sets the CSRF token.
  */
@@ -272,12 +289,18 @@ if (loginForm) {
 
                 // Redirect the user to the appropriate dashboard or the redirect URL.
                 setTimeout(() => {
-                    if (redirectUrl) {
-                        window.location.href = redirectUrl;
+                    if (window.RoyalNepalRoutes) {
+                        const fallbackRoute = window.RoyalNepalRoutes.defaultDashboardRoute(data.data);
+                        const targetUrl = redirectUrl
+                            ? window.RoyalNepalRoutes.safeRedirectUrl(redirectUrl, fallbackRoute)
+                            : window.RoyalNepalRoutes.pageUrl(fallbackRoute);
+                        window.location.replace(targetUrl);
+                    } else if (redirectUrl) {
+                        window.location.replace(redirectUrl);
                     } else if (data.data.role === 'admin') {
-                        window.location.href = 'admin-dashboard.html';
+                        window.location.replace('admin-dashboard.html');
                     } else {
-                        window.location.href = 'dashboard.html';
+                        window.location.replace('dashboard.html');
                     }
                 }, 1500);
             } else {
@@ -378,7 +401,11 @@ if (registerForm) {
 
                 // Redirects to the login page after successful registration.
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    if (window.RoyalNepalRoutes) {
+                        window.RoyalNepalRoutes.navigateTo('login', { replace: true });
+                    } else {
+                        window.location.replace('login.html');
+                    }
                 }, 2000);
             } else {
                 showMessage(data.message || 'Registration failed', 'error');
@@ -398,16 +425,21 @@ if (registerForm) {
  */
 function checkAuthStatus() {
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-    const currentPage = window.location.pathname;
+    const path = window.location.pathname.toLowerCase();
+    const isAuthPage = window.RoyalNepalRoutes?.isAuthPage() ||
+        path.endsWith('login.html') || path.endsWith('register.html') ||
+        path.includes('/login.html') || path.includes('/register.html');
 
-    if (isLoggedIn === 'true' && (currentPage.includes('login.html') || currentPage.includes('register.html'))) {
-        const user = JSON.parse(localStorage.getItem('user'));
+    if (isLoggedIn === 'true' && isAuthPage) {
+        const user = getStoredUser();
+        if (!user) return;
 
-        // Redirect to the appropriate dashboard based on user role.
-        if (user && user.role === 'admin') {
-            window.location.href = 'admin-dashboard.html';
+        if (window.RoyalNepalRoutes) {
+            window.RoyalNepalRoutes.redirectToDashboard(user, { replace: true });
+        } else if (user.role === 'admin') {
+            window.location.replace('admin-dashboard.html');
         } else {
-            window.location.href = 'dashboard.html';
+            window.location.replace('dashboard.html');
         }
     }
 }
@@ -418,7 +450,11 @@ function checkAuthStatus() {
 function logout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
-    window.location.href = 'home.html';
+    if (window.RoyalNepalRoutes) {
+        window.RoyalNepalRoutes.navigateTo('home', { replace: true });
+    } else {
+        window.location.replace('home.html');
+    }
 }
 
 /**
