@@ -549,3 +549,52 @@ body {
         width: 100%;
     }
 }
+
+/* Notifications Styles */
+.notification-item.unread {
+    background-color: #f0f7ff !important;
+}
+
+.notification-item:hover {
+    background-color: #f8fafc !important;
+}
+
+.notif-icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.notif-icon-circle.booking_created {
+    background: #e0f2fe;
+    color: #0ea5e9;
+}
+
+.notif-icon-circle.booking_update {
+    background: #dcfce7;
+    color: #22c55e;
+}
+
+.notif-icon-circle.new_booking {
+    background: #fef9c3;
+    color: #eab308;
+}
+
+.notif-icon-circle.system {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+#notifItemsContainer::-webkit-scrollbar {
+    width: 6px;
+}
+
+#notifItemsContainer::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}

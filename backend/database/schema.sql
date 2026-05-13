@@ -470,7 +470,7 @@ CREATE TABLE reviews (
 CREATE TABLE notifications (
     notification_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
-    notification_type ENUM('booking', 'payment', 'promotion', 'reminder', 'update') NOT NULL,
+    notification_type VARCHAR(50) NOT NULL,
     title VARCHAR(200) NOT NULL,
     message TEXT NOT NULL,
     related_booking_id INT UNSIGNED NULL,

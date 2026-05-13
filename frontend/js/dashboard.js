@@ -232,7 +232,110 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserBookingData().catch((error) => {
         console.error('Dashboard booking history error:', error);
     });
+
+    loadNotifications();
 });
+
+async function loadNotifications() {
+    const badge = document.getElementById('notifBadge');
+    const headerCount = document.getElementById('notifCountHeader');
+    const container = document.getElementById('notifItemsContainer');
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/get_notifications.php`, { credentials: 'include' });
+        const res = await response.json();
+
+        if (!res.success) return;
+
+        const notifications = res.data || [];
+        const unread = notifications.filter(n => Number(n.is_read) === 0);
+
+        // Update badge
+        if (unread.length > 0) {
+            badge.textContent = unread.length;
+            badge.classList.remove('d-none');
+            headerCount.textContent = `${unread.length} New`;
+        } else {
+            badge.classList.add('d-none');
+            headerCount.textContent = '0 New';
+        }
+
+        if (notifications.length === 0) {
+            container.innerHTML = `
+                <li class="p-4 text-center text-muted">
+                    <i class="bi bi-bell-slash d-block fs-2 mb-2"></i>
+                    No notifications
+                </li>
+            `;
+            return;
+        }
+
+        container.innerHTML = notifications.map(n => `
+            <li class="p-3 border-bottom notification-item ${Number(n.is_read) === 0 ? 'unread' : ''}" 
+                data-notif-id="${n.notification_id}" style="cursor: pointer; transition: 0.2s;">
+                <div class="d-flex gap-3">
+                    <div class="notif-icon-circle ${n.notification_type}">
+                        <i class="bi ${getNotifIcon(n.notification_type)}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between">
+                            <strong class="small">${n.title}</strong>
+                            <small class="text-muted" style="font-size: 0.7rem;">${formatTimeAgo(n.created_at)}</small>
+                        </div>
+                        <p class="mb-0 text-secondary small mt-1" style="line-height: 1.3;">${n.message}</p>
+                    </div>
+                </div>
+            </li>
+        `).join('');
+
+        // Bind clicks to mark as read
+        container.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', async () => {
+                const id = item.dataset.notifId;
+                await markNotificationRead(id);
+                loadNotifications(); // Refresh
+            });
+        });
+
+    } catch (err) {
+        console.error('Error loading notifications:', err);
+    }
+}
+
+async function markNotificationRead(id) {
+    try {
+        await fetch(`${API_BASE_URL}/mark_notification_read.php`, {
+            method: 'POST',
+            body: JSON.stringify({ notification_id: id }),
+            credentials: 'include'
+        });
+    } catch (err) {
+        console.error('Error marking notification as read:', err);
+    }
+}
+
+function getNotifIcon(type) {
+    const icons = {
+        'booking_created': 'bi-calendar-plus',
+        'booking_update': 'bi-info-circle',
+        'new_booking': 'bi-plus-circle',
+        'system': 'bi-gear'
+    };
+    return icons[type] || 'bi-bell';
+}
+
+function formatTimeAgo(dateString) {
+    const now = new Date();
+    const date = new Date(dateString);
+    const seconds = Math.floor((now - date) / 1000);
+
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return date.toLocaleDateString();
+}
 
 function logout() {
     localStorage.removeItem('isLoggedIn');

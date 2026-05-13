@@ -62,11 +62,28 @@
                 <p class="text-muted mb-0">Here's what's happening with your travels</p>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <button class="btn btn-light position-relative">
-                    <i class="bi bi-bell fs-5"></i>
-                    <span
-                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">2</span>
-                </button>
+                <div class="dropdown">
+                    <button class="btn btn-light position-relative" type="button" id="notifButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span id="notifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-0" id="notifList" style="width: 320px; border-radius: 16px; overflow: hidden;">
+                        <li class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Notifications</h6>
+                            <span class="badge bg-light text-dark" id="notifCountHeader">0 New</span>
+                        </li>
+                        <div id="notifItemsContainer" style="max-height: 400px; overflow-y: auto;">
+                            <!-- Notifications will be loaded here -->
+                            <li class="p-4 text-center text-muted">
+                                <i class="bi bi-bell-slash d-block fs-2 mb-2"></i>
+                                No new notifications
+                            </li>
+                        </div>
+                        <li class="p-2 text-center border-top">
+                            <a href="#" class="text-decoration-none small text-primary fw-bold">View All Notifications</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
 
