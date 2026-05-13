@@ -636,7 +636,12 @@ function formatDate(dateString) {
  * Logs the user out and reloads the page.
  */
 function logout() {
+    if (window.RoyalNepalRoutes) {
+        window.RoyalNepalRoutes.logoutToHome();
+        return;
+    }
+
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
-    window.location.reload();
+    window.location.replace('home.html');
 }

@@ -71,9 +71,9 @@ async function logout() {
         localStorage.removeItem('isLoggedIn');
 
         if (window.RoyalNepalRoutes) {
-            window.RoyalNepalRoutes.navigateTo('login', { replace: true });
+            window.RoyalNepalRoutes.navigateTo('home', { replace: true });
         } else {
-            window.location.replace('login.html');
+            window.location.replace('home.html');
         }
     }
 }

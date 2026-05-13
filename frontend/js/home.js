@@ -86,9 +86,14 @@ function initAuthButtons() {
  * Handles the user logout process by clearing session data from local storage.
  */
 function handleLogout() {
+    if (window.RoyalNepalRoutes) {
+        window.RoyalNepalRoutes.logoutToHome();
+        return;
+    }
+
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
-    window.location.reload();
+    window.location.replace('home.html');
 }
 
 /**

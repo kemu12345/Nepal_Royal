@@ -653,7 +653,12 @@ function formatDate(dateString) {
  * Handles the user logout process.
  */
 function logout() {
+    if (window.RoyalNepalRoutes) {
+        window.RoyalNepalRoutes.logoutToHome();
+        return;
+    }
+
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('user');
-    window.location.reload();
+    window.location.replace('home.html');
 }
