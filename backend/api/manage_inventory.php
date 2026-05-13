@@ -534,56 +534,66 @@ function handleDelete($db, $data) {
     $item_type = $data->item_type;
     $item_id = $data->item_id;
 
-    // This is a "soft delete" which marks the item as inactive instead of removing it from the database.
-    // This preserves data integrity and allows for potential recovery.
+    // Perform a Hard Delete to completely remove the record from the database.
+    // Note: This will fail if there are foreign key constraints (e.g., existing bookings).
     switch($item_type) {
         case 'flight':
-            $query = "UPDATE domestic_flights SET is_active = 0 WHERE flight_id = ?";
+            $query = "DELETE FROM domestic_flights WHERE flight_id = ?";
             break;
 
         case 'bus':
-            $query = "UPDATE buses SET is_active = 0 WHERE bus_id = ?";
+            $query = "DELETE FROM buses WHERE bus_id = ?";
             break;
 
         case 'hotel':
-            $query = "UPDATE hotels SET is_active = 0 WHERE hotel_id = ?";
+            // The schema defines ON DELETE CASCADE for hotel_rooms, so deleting a hotel will also remove its rooms.
+            $query = "DELETE FROM hotels WHERE hotel_id = ?";
             break;
 
         case 'package':
-            $query = "UPDATE tour_packages SET is_active = 0 WHERE package_id = ?";
+            $query = "DELETE FROM tour_packages WHERE package_id = ?";
             break;
 
         case 'place':
-            $query = "UPDATE places SET is_active = 0 WHERE place_id = ?";
+            $query = "DELETE FROM places WHERE place_id = ?";
             break;
 
         case 'location':
-            $query = "DELETE FROM locations WHERE location_id = ?"; // Locations don't have is_active
+            $query = "DELETE FROM locations WHERE location_id = ?";
             break;
 
         case 'airline':
-            $query = "UPDATE airlines SET is_active = 0 WHERE airline_id = ?";
+            $query = "DELETE FROM airlines WHERE airline_id = ?";
             break;
 
         case 'operator':
-            $query = "UPDATE bus_operators SET is_active = 0 WHERE operator_id = ?";
+            $query = "DELETE FROM bus_operators WHERE operator_id = ?";
             break;
 
         default:
-            // If the item type is not recognized, throw an error.
             throw new Exception("Invalid item type");
     }
 
-    // Prepare and execute the soft delete query.
-    $stmt = $db->prepare($query);
-    $stmt->execute([$item_id]);
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute([$item_id]);
 
-    // Send a 200 OK response with a success message.
-    http_response_code(200);
-    echo json_encode([
-        "success" => true,
-        "message" => ucfirst($item_type) . " deleted successfully"
-    ]);
+        if ($stmt->rowCount() === 0) {
+            throw new Exception("Item not found or already deleted");
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            "success" => true,
+            "message" => ucfirst($item_type) . " permanently deleted from database"
+        ]);
+    } catch (PDOException $e) {
+        // Handle foreign key constraint errors (Code 23000)
+        if ($e->getCode() == '23000') {
+            throw new Exception("Cannot delete this " . $item_type . " because it has existing bookings or related records. Try deactivating it instead.");
+        }
+        throw $e;
+    }
 }
 
 /**
