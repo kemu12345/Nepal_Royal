@@ -613,7 +613,10 @@ function formatTime(timeString) {
  * Helper function to format a number as a price string with commas.
  */
 function formatPrice(price) {
-    return parseFloat(price).toLocaleString('en-US');
+    return parseFloat(price || 0).toLocaleString('en-NP', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    });
 }
 
 /**
