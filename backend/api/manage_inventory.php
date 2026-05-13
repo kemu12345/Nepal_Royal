@@ -152,6 +152,8 @@ function handleCreate($db, $data) {
                 throw new Exception("Origin and destination cannot be the same");
             }
 
+            $busDurationMinutes = calculateDurationMinutes($data->departure_time, $data->arrival_time);
+
             // SQL query to insert a new bus.
             $query = "INSERT INTO buses
                       (operator_id, bus_number, origin_location_id, destination_location_id,
@@ -168,7 +170,7 @@ function handleCreate($db, $data) {
                 (int)$data->destination_location_id,
                 $data->departure_time,
                 $data->arrival_time,
-                (int)$data->duration_minutes,
+                $busDurationMinutes,
                 $data->bus_type ?? 'regular',
                 (int)$data->total_seats,
                 (int)($data->available_seats ?? $data->total_seats),
@@ -366,6 +368,8 @@ function handleUpdate($db, $data) {
             if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
+            $busDurationMinutes = calculateDurationMinutes($data->departure_time, $data->arrival_time);
+
             // SQL query to update an existing bus record.
             $query = "UPDATE buses SET
                       operator_id = ?, bus_number = ?, origin_location_id = ?, destination_location_id = ?,
@@ -383,7 +387,7 @@ function handleUpdate($db, $data) {
                 $data->destination_location_id,
                 $data->departure_time,
                 $data->arrival_time,
-                $data->duration_minutes,
+                $busDurationMinutes,
                 $data->bus_type ?? 'regular',
                 $data->total_seats,
                 $data->available_seats ?? $data->total_seats,

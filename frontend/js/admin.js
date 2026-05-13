@@ -70,6 +70,7 @@ function initializeEventListeners() {
 
     const addBusForm = document.getElementById('addBusForm');
     if (addBusForm) {
+        setupBusDurationSync();
         addBusForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (validateBusForm()) {
@@ -193,6 +194,39 @@ function setupFlightDurationSync() {
     arrivalEl.addEventListener('change', syncFlightDurationFromTimes);
 
     syncFlightDurationFromTimes();
+}
+
+function syncBusDurationFromTimes() {
+    const departureEl = document.getElementById('busDeparture');
+    const arrivalEl = document.getElementById('busArrival');
+    const durationEl = document.getElementById('busDuration');
+
+    if (!departureEl || !arrivalEl || !durationEl) return null;
+
+    const duration = calculateDurationMinutes(departureEl.value, arrivalEl.value);
+    if (duration !== null) {
+        durationEl.value = String(duration);
+    }
+
+    return duration;
+}
+
+function setupBusDurationSync() {
+    const departureEl = document.getElementById('busDeparture');
+    const arrivalEl = document.getElementById('busArrival');
+    const durationEl = document.getElementById('busDuration');
+
+    if (!departureEl || !arrivalEl || !durationEl) return;
+
+    durationEl.readOnly = true;
+    durationEl.title = 'Calculated automatically from departure and arrival time';
+
+    departureEl.addEventListener('input', syncBusDurationFromTimes);
+    departureEl.addEventListener('change', syncBusDurationFromTimes);
+    arrivalEl.addEventListener('input', syncBusDurationFromTimes);
+    arrivalEl.addEventListener('change', syncBusDurationFromTimes);
+
+    syncBusDurationFromTimes();
 }
 
 /**
@@ -976,7 +1010,7 @@ async function submitNewBus() {
         const busType = document.getElementById('busType').value;
         const departureTime = document.getElementById('busDeparture').value;
         const arrivalTime = document.getElementById('busArrival').value;
-        const durationMinutes = document.getElementById('busDuration').value;
+        const durationMinutes = syncBusDurationFromTimes();
         const totalSeats = document.getElementById('busSeats').value;
         const basePrice = document.getElementById('busPrice').value;
         const operatesOnDays = document.getElementById('busDays').value;
@@ -1033,7 +1067,7 @@ function editBus(bus) {
     document.getElementById('busType').value = bus.bus_type || 'regular';
     document.getElementById('busDeparture').value = bus.departure_time;
     document.getElementById('busArrival').value = bus.arrival_time;
-    document.getElementById('busDuration').value = bus.duration_minutes ?? 0;
+    syncBusDurationFromTimes();
     document.getElementById('busSeats').value = bus.total_seats;
     document.getElementById('busPrice').value = bus.base_price;
     document.getElementById('busDays').value = bus.operates_on_days;
@@ -1437,7 +1471,7 @@ function validateFlightForm() {
 function validateBusForm() {
     const originId = document.getElementById('busOriginId').value;
     const destinationId = document.getElementById('busDestinationId').value;
-    const duration = Number(document.getElementById('busDuration').value);
+    const duration = syncBusDurationFromTimes();
     const seats = Number(document.getElementById('busSeats').value);
     const price = Number(document.getElementById('busPrice').value);
 
