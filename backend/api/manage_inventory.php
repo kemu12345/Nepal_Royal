@@ -115,6 +115,8 @@ function handleCreate($db, $data) {
                 throw new Exception("Origin and destination cannot be the same");
             }
 
+            $flightDurationMinutes = calculateDurationMinutes($data->departure_time, $data->arrival_time);
+
             // SQL query to insert a new flight into the database.
             $query = "INSERT INTO domestic_flights
                       (airline_id, flight_number, origin_location_id, destination_location_id,
@@ -131,7 +133,7 @@ function handleCreate($db, $data) {
                 (int)$data->destination_location_id,
                 $data->departure_time,
                 $data->arrival_time,
-                (int)$data->duration_minutes,
+                $flightDurationMinutes,
                 $data->aircraft_type ?? null,
                 (int)$data->total_seats,
                 (int)($data->available_seats ?? $data->total_seats),
@@ -328,6 +330,8 @@ function handleUpdate($db, $data) {
             if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
+            $flightDurationMinutes = calculateDurationMinutes($data->departure_time, $data->arrival_time);
+
             // SQL query to update an existing flight record.
             $query = "UPDATE domestic_flights SET
                       airline_id = ?, flight_number = ?, origin_location_id = ?, destination_location_id = ?,
@@ -345,7 +349,7 @@ function handleUpdate($db, $data) {
                 $data->destination_location_id,
                 $data->departure_time,
                 $data->arrival_time,
-                $data->duration_minutes,
+                $flightDurationMinutes,
                 $data->aircraft_type ?? null,
                 $data->total_seats,
                 $data->available_seats ?? $data->total_seats,
@@ -622,4 +626,31 @@ function requireFields($data, $fields) {
             }
         }
     }
+}
+
+function calculateDurationMinutes($departureTime, $arrivalTime) {
+    $departureMinutes = parseTimeToMinutes($departureTime);
+    $arrivalMinutes = parseTimeToMinutes($arrivalTime);
+
+    $duration = $arrivalMinutes - $departureMinutes;
+    if ($duration <= 0) {
+        $duration += 24 * 60;
+    }
+
+    return $duration;
+}
+
+function parseTimeToMinutes($timeValue) {
+    if (!is_string($timeValue) || !preg_match('/^(\d{1,2}):(\d{2})(?::\d{2})?$/', $timeValue, $matches)) {
+        throw new Exception("Invalid time format");
+    }
+
+    $hours = (int)$matches[1];
+    $minutes = (int)$matches[2];
+
+    if ($hours < 0 || $hours > 23 || $minutes < 0 || $minutes > 59) {
+        throw new Exception("Invalid time value");
+    }
+
+    return ($hours * 60) + $minutes;
 }

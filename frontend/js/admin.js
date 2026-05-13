@@ -59,6 +59,7 @@ function initializeEventListeners() {
 
     const addFlightForm = document.getElementById('addFlightForm');
     if (addFlightForm) {
+        setupFlightDurationSync();
         addFlightForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (validateFlightForm()) {
@@ -136,6 +137,62 @@ function initializeEventListeners() {
             }
         });
     }
+}
+
+function parseTimeToMinutes(timeValue) {
+    if (!timeValue) return null;
+
+    const [hours, minutes] = timeValue.split(':').map(Number);
+    if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return null;
+
+    return (hours * 60) + minutes;
+}
+
+function calculateDurationMinutes(departureTime, arrivalTime) {
+    const departureMinutes = parseTimeToMinutes(departureTime);
+    const arrivalMinutes = parseTimeToMinutes(arrivalTime);
+
+    if (departureMinutes === null || arrivalMinutes === null) return null;
+
+    let duration = arrivalMinutes - departureMinutes;
+    if (duration <= 0) {
+        duration += 24 * 60;
+    }
+
+    return duration;
+}
+
+function syncFlightDurationFromTimes() {
+    const departureEl = document.getElementById('flightDeparture');
+    const arrivalEl = document.getElementById('flightArrival');
+    const durationEl = document.getElementById('flightDuration');
+
+    if (!departureEl || !arrivalEl || !durationEl) return null;
+
+    const duration = calculateDurationMinutes(departureEl.value, arrivalEl.value);
+    if (duration !== null) {
+        durationEl.value = String(duration);
+    }
+
+    return duration;
+}
+
+function setupFlightDurationSync() {
+    const departureEl = document.getElementById('flightDeparture');
+    const arrivalEl = document.getElementById('flightArrival');
+    const durationEl = document.getElementById('flightDuration');
+
+    if (!departureEl || !arrivalEl || !durationEl) return;
+
+    durationEl.readOnly = true;
+    durationEl.title = 'Calculated automatically from departure and arrival time';
+
+    departureEl.addEventListener('input', syncFlightDurationFromTimes);
+    departureEl.addEventListener('change', syncFlightDurationFromTimes);
+    arrivalEl.addEventListener('input', syncFlightDurationFromTimes);
+    arrivalEl.addEventListener('change', syncFlightDurationFromTimes);
+
+    syncFlightDurationFromTimes();
 }
 
 /**
@@ -821,7 +878,7 @@ async function submitNewFlight() {
         const flightNumber = document.getElementById('flightNumber').value;
         const departureTime = document.getElementById('flightDeparture').value;
         const arrivalTime = document.getElementById('flightArrival').value;
-        const durationMinutes = document.getElementById('flightDuration').value;
+        const durationMinutes = syncFlightDurationFromTimes();
         const totalSeats = document.getElementById('flightSeats').value;
         const basePrice = document.getElementById('flightPrice').value;
         const operatesOnDays = document.getElementById('flightDays').value;
@@ -876,7 +933,7 @@ function editFlight(flight) {
     document.getElementById('flightNumber').value = flight.flight_number;
     document.getElementById('flightDeparture').value = flight.departure_time;
     document.getElementById('flightArrival').value = flight.arrival_time;
-    document.getElementById('flightDuration').value = flight.duration_minutes;
+    syncFlightDurationFromTimes();
     document.getElementById('flightSeats').value = flight.total_seats;
     document.getElementById('flightPrice').value = flight.base_price;
     document.getElementById('flightDays').value = flight.operates_on_days;
@@ -1351,7 +1408,7 @@ async function updateBookingStatus(bookingId, newStatus) {
 function validateFlightForm() {
     const originId = document.getElementById('flightOriginId').value;
     const destinationId = document.getElementById('flightDestinationId').value;
-    const duration = Number(document.getElementById('flightDuration').value);
+    const duration = syncFlightDurationFromTimes();
     const seats = Number(document.getElementById('flightSeats').value);
     const price = Number(document.getElementById('flightPrice').value);
     const departure = document.getElementById('flightDeparture').value;
