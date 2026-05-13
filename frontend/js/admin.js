@@ -61,7 +61,9 @@ function initializeEventListeners() {
     if (addFlightForm) {
         addFlightForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewFlight();
+            if (validateFlightForm()) {
+                await submitNewFlight();
+            }
         });
     }
 
@@ -69,7 +71,9 @@ function initializeEventListeners() {
     if (addBusForm) {
         addBusForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewBus();
+            if (validateBusForm()) {
+                await submitNewBus();
+            }
         });
     }
 
@@ -77,7 +81,9 @@ function initializeEventListeners() {
     if (addHotelForm) {
         addHotelForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewHotel();
+            if (validateHotelForm()) {
+                await submitNewHotel();
+            }
         });
     }
 
@@ -85,7 +91,9 @@ function initializeEventListeners() {
     if (addPackageForm) {
         addPackageForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewPackage();
+            if (validatePackageForm()) {
+                await submitNewPackage();
+            }
         });
     }
 
@@ -93,7 +101,9 @@ function initializeEventListeners() {
     if (addPlaceForm) {
         addPlaceForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewPlace();
+            if (validatePlaceForm()) {
+                await submitNewPlace();
+            }
         });
     }
 
@@ -101,7 +111,9 @@ function initializeEventListeners() {
     if (addLocationForm) {
         addLocationForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewLocation();
+            if (validateLocationForm()) {
+                await submitNewLocation();
+            }
         });
     }
 
@@ -109,7 +121,9 @@ function initializeEventListeners() {
     if (addAirlineForm) {
         addAirlineForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewAirline();
+            if (validateAirlineForm()) {
+                await submitNewAirline();
+            }
         });
     }
 
@@ -117,7 +131,9 @@ function initializeEventListeners() {
     if (addOperatorForm) {
         addOperatorForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            await submitNewOperator();
+            if (validateOperatorForm()) {
+                await submitNewOperator();
+            }
         });
     }
 }
@@ -351,6 +367,7 @@ function renderFlightsTable(flights) {
             <td>${formatTime(f.departure_time)}</td>
             <td>${formatAmount(f.base_price, f.currency)}</td>
             <td>${f.available_seats ?? 0}</td>
+            <td>${Number(f.is_active) === 1 ? 'Active' : 'Inactive'}</td>
             <td>
                 <button class="btn btn-secondary btn-sm" type="button" data-flight-edit="${f.flight_id}">Edit</button>
                 <button class="btn btn-danger btn-sm" type="button" data-flight-delete="${f.flight_id}">Delete</button>
@@ -397,6 +414,7 @@ function renderBusesTable(buses) {
             <td>${formatTime(b.departure_time)}</td>
             <td>${formatAmount(b.base_price, b.currency)}</td>
             <td>${b.available_seats ?? 0}</td>
+            <td>${Number(b.is_active) === 1 ? 'Active' : 'Inactive'}</td>
             <td>
                 <button class="btn btn-secondary btn-sm" type="button" data-bus-edit="${b.bus_id}">Edit</button>
                 <button class="btn btn-danger btn-sm" type="button" data-bus-delete="${b.bus_id}">Delete</button>
@@ -827,7 +845,7 @@ async function submitNewFlight() {
                 base_price: Number(basePrice),
                 currency: 'NPR',
                 operates_on_days: operatesOnDays,
-                is_active: 1
+                is_active: Number(document.getElementById('flightStatus').value)
             })
         });
 
@@ -862,6 +880,7 @@ function editFlight(flight) {
     document.getElementById('flightSeats').value = flight.total_seats;
     document.getElementById('flightPrice').value = flight.base_price;
     document.getElementById('flightDays').value = flight.operates_on_days;
+    document.getElementById('flightStatus').value = flight.is_active;
 }
 
 async function deleteFlight(flight) {
@@ -925,7 +944,7 @@ async function submitNewBus() {
                 base_price: Number(basePrice),
                 currency: 'NPR',
                 operates_on_days: operatesOnDays,
-                is_active: 1
+                is_active: Number(document.getElementById('busStatus').value)
             })
         });
 
@@ -961,6 +980,7 @@ function editBus(bus) {
     document.getElementById('busSeats').value = bus.total_seats;
     document.getElementById('busPrice').value = bus.base_price;
     document.getElementById('busDays').value = bus.operates_on_days;
+    document.getElementById('busStatus').value = bus.is_active;
 }
 
 async function deleteBus(bus) {
@@ -1012,7 +1032,7 @@ async function submitNewHotel() {
                 contact_number: contactNumber || null,
                 email: email || null,
                 image_url: imageUrl || null,
-                is_active: 1
+                is_active: Number(document.getElementById('hotelStatus').value)
             })
         });
 
@@ -1046,6 +1066,7 @@ function editHotel(hotel) {
     document.getElementById('hotelEmail').value = hotel.email || '';
     document.getElementById('hotelDescription').value = hotel.description;
     document.getElementById('hotelImageUrl').value = hotel.image_url || '';
+    document.getElementById('hotelStatus').value = hotel.is_active;
 }
 
 async function deleteHotel(hotel) {
@@ -1094,7 +1115,7 @@ async function submitNewPackage() {
                 base_price: Number(basePrice),
                 currency: 'NPR',
                 image_url: imageUrl || null,
-                is_active: 1
+                is_active: Number(document.getElementById('packageStatus').value)
             })
         });
 
@@ -1126,6 +1147,7 @@ function editPackage(pkg) {
     document.getElementById('packagePrice').value = pkg.base_price;
     document.getElementById('packageDescription').value = pkg.description;
     document.getElementById('packageImageUrl').value = pkg.image_url || '';
+    document.getElementById('packageStatus').value = pkg.is_active;
 }
 
 async function deletePackage(pkg) {
@@ -1323,6 +1345,140 @@ async function updateBookingStatus(bookingId, newStatus) {
 }
 
 /**
+ * FORM VALIDATION FUNCTIONS
+ */
+
+function validateFlightForm() {
+    const originId = document.getElementById('flightOriginId').value;
+    const destinationId = document.getElementById('flightDestinationId').value;
+    const duration = Number(document.getElementById('flightDuration').value);
+    const seats = Number(document.getElementById('flightSeats').value);
+    const price = Number(document.getElementById('flightPrice').value);
+    const departure = document.getElementById('flightDeparture').value;
+    const arrival = document.getElementById('flightArrival').value;
+
+    if (originId === destinationId) {
+        showMessage('Origin and destination cannot be the same', 'error');
+        return false;
+    }
+    if (duration <= 0) {
+        showMessage('Duration must be positive', 'error');
+        return false;
+    }
+    if (seats <= 0) {
+        showMessage('Total seats must be positive', 'error');
+        return false;
+    }
+    if (price < 0) {
+        showMessage('Price cannot be negative', 'error');
+        return false;
+    }
+    
+    return true;
+}
+
+function validateBusForm() {
+    const originId = document.getElementById('busOriginId').value;
+    const destinationId = document.getElementById('busDestinationId').value;
+    const duration = Number(document.getElementById('busDuration').value);
+    const seats = Number(document.getElementById('busSeats').value);
+    const price = Number(document.getElementById('busPrice').value);
+
+    if (originId === destinationId) {
+        showMessage('Origin and destination cannot be the same', 'error');
+        return false;
+    }
+    if (duration <= 0) {
+        showMessage('Duration must be positive', 'error');
+        return false;
+    }
+    if (seats <= 0) {
+        showMessage('Total seats must be positive', 'error');
+        return false;
+    }
+    if (price < 0) {
+        showMessage('Price cannot be negative', 'error');
+        return false;
+    }
+    return true;
+}
+
+function validateHotelForm() {
+    const rating = Number(document.getElementById('hotelRating').value);
+    if (rating < 0 || rating > 5) {
+        showMessage('Star rating must be between 0 and 5', 'error');
+        return false;
+    }
+    return true;
+}
+
+function validatePackageForm() {
+    const days = Number(document.getElementById('packageDays').value);
+    const nights = Number(document.getElementById('packageNights').value);
+    const price = Number(document.getElementById('packagePrice').value);
+
+    if (days <= 0) {
+        showMessage('Duration days must be at least 1', 'error');
+        return false;
+    }
+    if (nights < 0) {
+        showMessage('Duration nights cannot be negative', 'error');
+        return false;
+    }
+    if (price < 0) {
+        showMessage('Price cannot be negative', 'error');
+        return false;
+    }
+    return true;
+}
+
+function validatePlaceForm() {
+    const name = document.getElementById('placeName').value.trim();
+    if (name.length < 3) {
+        showMessage('Place name is too short', 'error');
+        return false;
+    }
+    return true;
+}
+
+function validateLocationForm() {
+    const name = document.getElementById('locationName').value.trim();
+    if (name.length < 2) {
+        showMessage('Location name is too short', 'error');
+        return false;
+    }
+    return true;
+}
+
+function validateAirlineForm() {
+    const name = document.getElementById('airlineName').value.trim();
+    const code = document.getElementById('airlineCode').value.trim();
+    if (name.length < 2) {
+        showMessage('Airline name is too short', 'error');
+        return false;
+    }
+    if (code.length < 2) {
+        showMessage('Airline code must be at least 2 characters', 'error');
+        return false;
+    }
+    return true;
+}
+
+function validateOperatorForm() {
+    const name = document.getElementById('operatorName').value.trim();
+    const rating = Number(document.getElementById('operatorRating').value);
+    if (name.length < 2) {
+        showMessage('Operator name is too short', 'error');
+        return false;
+    }
+    if (rating < 0 || rating > 5) {
+        showMessage('Rating must be between 0 and 5', 'error');
+        return false;
+    }
+    return true;
+}
+
+/**
  * RENDERING FUNCTIONS FOR SUPPORT TABLES
  */
 
@@ -1446,7 +1602,7 @@ async function submitNewAirline() {
                 airline_name: name,
                 airline_code: code,
                 contact_number: contact || null,
-                is_active: 1
+                is_active: Number(document.getElementById('airlineStatus').value)
             })
         });
 
@@ -1476,7 +1632,7 @@ async function submitNewOperator() {
                 operator_name: name,
                 contact_number: contact || null,
                 rating: Number(rating),
-                is_active: 1
+                is_active: Number(document.getElementById('operatorStatus').value)
             })
         });
 
@@ -1705,6 +1861,7 @@ function editAirline(a) {
     document.getElementById('airlineName').value = a.airline_name;
     document.getElementById('airlineCode').value = a.airline_code;
     document.getElementById('airlineContact').value = a.contact_number || '';
+    document.getElementById('airlineStatus').value = a.is_active;
 }
 
 function editOperator(o) {
@@ -1716,6 +1873,7 @@ function editOperator(o) {
     document.getElementById('operatorName').value = o.operator_name;
     document.getElementById('operatorContact').value = o.contact_number || '';
     document.getElementById('operatorRating').value = o.rating || 4.0;
+    document.getElementById('operatorStatus').value = o.is_active;
 }
 
 /**

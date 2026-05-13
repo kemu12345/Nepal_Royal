@@ -253,6 +253,7 @@
                                         <th>Departure</th>
                                         <th class="sortable">Price</th>
                                         <th class="sortable">Available Seats</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -308,39 +309,45 @@
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
-                                    <label for="flightDeparture">Departure Time (HH:MM:SS)</label>
-                                    <input type="text" id="flightDeparture" class="form-control" value="09:00:00"
+                                    <label for="flightDeparture">Departure Time</label>
+                                    <input type="time" id="flightDeparture" class="form-control" value="09:00"
                                         required
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
-                                    <label for="flightArrival">Arrival Time (HH:MM:SS)</label>
-                                    <input type="text" id="flightArrival" class="form-control" value="10:00:00" required
+                                    <label for="flightArrival">Arrival Time</label>
+                                    <input type="time" id="flightArrival" class="form-control" value="10:00" required
                                         >
                                 </div>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightDuration">Duration (minutes)</label>
-                                    <input type="number" id="flightDuration" class="form-control" value="60" required
+                                    <input type="number" id="flightDuration" class="form-control" value="60" min="1" required
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightSeats">Total Seats</label>
-                                    <input type="number" id="flightSeats" class="form-control" value="40" required
+                                    <input type="number" id="flightSeats" class="form-control" value="40" min="1" required
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightPrice">Base Price (NPR)</label>
-                                    <input type="number" id="flightPrice" class="form-control" value="5000" required
+                                    <input type="number" id="flightPrice" class="form-control" value="5000" min="0" required
                                         >
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label for="flightDays">Operating Days</label>
                                 <input type="text" id="flightDays" class="form-control"
                                     value="Mon,Tue,Wed,Thu,Fri,Sat,Sun" required
                                     >
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="flightStatus">Status</label>
+                                <select id="flightStatus" class="form-control">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
                             </div>
                             <button type="submit" id="flightSubmitBtn" class="btn btn-success"
                                 style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
@@ -375,6 +382,7 @@
                                         <th>Departure</th>
                                         <th class="sortable">Price</th>
                                         <th class="sortable">Available Seats</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -438,38 +446,44 @@
                                     </select>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
-                                    <label for="busDeparture">Departure Time (HH:MM:SS)</label>
-                                    <input type="text" id="busDeparture" class="form-control" value="07:00:00" required
+                                    <label for="busDeparture">Departure Time</label>
+                                    <input type="time" id="busDeparture" class="form-control" value="07:00" required
                                         >
                                 </div>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
-                                    <label for="busArrival">Arrival Time (HH:MM:SS)</label>
-                                    <input type="text" id="busArrival" class="form-control" value="13:00:00" required
+                                    <label for="busArrival">Arrival Time</label>
+                                    <input type="time" id="busArrival" class="form-control" value="13:00" required
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busDuration">Duration (minutes)</label>
-                                    <input type="number" id="busDuration" class="form-control" value="360" required
+                                    <input type="number" id="busDuration" class="form-control" value="360" min="1" required
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busSeats">Total Seats</label>
-                                    <input type="number" id="busSeats" class="form-control" value="32" required
+                                    <input type="number" id="busSeats" class="form-control" value="32" min="1" required
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busPrice">Base Price (NPR)</label>
-                                    <input type="number" id="busPrice" class="form-control" value="1500" required
+                                    <input type="number" id="busPrice" class="form-control" value="1500" min="0" required
                                         >
                                 </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label for="busDays">Operating Days</label>
                                 <input type="text" id="busDays" class="form-control" value="Mon,Tue,Wed,Thu,Fri,Sat,Sun"
                                     required
                                     >
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="busStatus">Status</label>
+                                <select id="busStatus" class="form-control">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
                             </div>
                             <button type="submit" id="busSubmitBtn" class="btn btn-success"
                                 style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
@@ -588,6 +602,13 @@
                                     >
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
                             </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="hotelStatus">Status</label>
+                                <select id="hotelStatus" class="form-control">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
                             <button type="submit" id="hotelSubmitBtn" class="btn btn-success"
                                 style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
                                 Hotel</button>
@@ -665,19 +686,19 @@
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="packagePrice">Base Price (NPR)</label>
-                                    <input type="number" id="packagePrice" class="form-control" value="20000" required
+                                    <input type="number" id="packagePrice" class="form-control" value="20000" min="0" required
                                         >
                                 </div>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="packageDays">Duration (Days)</label>
-                                    <input type="number" id="packageDays" class="form-control" value="3" required
+                                    <input type="number" id="packageDays" class="form-control" value="3" min="1" required
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="packageNights">Duration (Nights)</label>
-                                    <input type="number" id="packageNights" class="form-control" value="2" required
+                                    <input type="number" id="packageNights" class="form-control" value="2" min="0" required
                                         >
                                 </div>
                             </div>
@@ -692,6 +713,13 @@
                                     placeholder="https://example.com/package.jpg"
                                     >
                                 <small class="text-muted">Paste a direct link to an image. (Optional)</small>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label for="packageStatus">Status</label>
+                                <select id="packageStatus" class="form-control">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
                             </div>
                             <button type="submit" id="packageSubmitBtn" class="btn btn-success"
                                 style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
@@ -959,6 +987,13 @@
                                     <input type="text" id="airlineContact" class="form-control" placeholder="+977-..."
                                         >
                                 </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="airlineStatus">Status</label>
+                                    <select id="airlineStatus" class="form-control">
+                                        <option value="1">Active</option>
+                                        <option value="0">Inactive</option>
+                                    </select>
+                                </div>
                             </div>
                             <button type="submit" id="airlineSubmitBtn" class="btn btn-success"
                                 style="padding: 0.75rem 2rem; font-weight: bold; border-radius: 4px; border: none; cursor: pointer;">Save
@@ -1027,10 +1062,17 @@
                                         >
                                 </div>
                                 <div class="form-group" style="flex: 1;">
-                                    <label for="operatorRating">Rating (1-5)</label>
-                                    <input type="number" id="operatorRating" class="form-control" value="4.0" step="0.1"
-                                        min="1" max="5"
+                                    <label for="operatorRating">Rating (0-5)</label>
+                                    <input type="number" id="operatorRating" class="form-control" min="0" max="5" step="0.1"
+                                        value="4.0" required
                                         >
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="operatorStatus">Status</label>
+                                    <select id="operatorStatus" class="form-control">
+                                        <option value="1">Active</option>
+                                        <option value="0">Inactive</option>
+                                    </select>
                                 </div>
                             </div>
                             <button type="submit" id="operatorSubmitBtn" class="btn btn-success"

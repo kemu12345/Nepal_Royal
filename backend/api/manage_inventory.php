@@ -125,20 +125,20 @@ function handleCreate($db, $data) {
             // Prepare and execute the SQL statement with data from the request.
             $stmt = $db->prepare($query);
             $stmt->execute([
-                $data->airline_id,
+                (int)$data->airline_id,
                 $data->flight_number,
-                $data->origin_location_id,
-                $data->destination_location_id,
+                (int)$data->origin_location_id,
+                (int)$data->destination_location_id,
                 $data->departure_time,
                 $data->arrival_time,
-                $data->duration_minutes,
-                $data->aircraft_type ?? null, // Use null if not provided.
-                $data->total_seats,
-                $data->available_seats ?? $data->total_seats, // Default to total seats.
-                $data->base_price,
-                $data->currency ?? 'NPR', // Default currency to NPR.
+                (int)$data->duration_minutes,
+                $data->aircraft_type ?? null,
+                (int)$data->total_seats,
+                (int)($data->available_seats ?? $data->total_seats),
+                (float)$data->base_price,
+                $data->currency ?? 'NPR',
                 $data->operates_on_days,
-                $data->is_active ?? 1 // Default to active.
+                (int)($data->is_active ?? 1)
             ]);
             break;
 
@@ -160,21 +160,21 @@ function handleCreate($db, $data) {
             // Prepare and execute the statement.
             $stmt = $db->prepare($query);
             $stmt->execute([
-                $data->operator_id,
+                (int)$data->operator_id,
                 $data->bus_number,
-                $data->origin_location_id,
-                $data->destination_location_id,
+                (int)$data->origin_location_id,
+                (int)$data->destination_location_id,
                 $data->departure_time,
                 $data->arrival_time,
-                $data->duration_minutes,
+                (int)$data->duration_minutes,
                 $data->bus_type ?? 'regular',
-                $data->total_seats,
-                $data->available_seats ?? $data->total_seats,
-                $data->base_price,
+                (int)$data->total_seats,
+                (int)($data->available_seats ?? $data->total_seats),
+                (float)$data->base_price,
                 $data->currency ?? 'NPR',
                 $data->amenities ?? null,
                 $data->operates_on_days,
-                $data->is_active ?? 1
+                (int)($data->is_active ?? 1)
             ]);
             break;
 
@@ -324,7 +324,8 @@ function handleUpdate($db, $data) {
     // Use a switch statement to handle updates for different item types.
     switch($item_type) {
         case 'flight':
-            if (isset($data->origin_location_id) && isset($data->destination_location_id) && $data->origin_location_id == $data->destination_location_id) {
+            requireFields($data, ['airline_id', 'flight_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
+            if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
             // SQL query to update an existing flight record.
@@ -357,7 +358,8 @@ function handleUpdate($db, $data) {
             break;
 
         case 'bus':
-            if (isset($data->origin_location_id) && isset($data->destination_location_id) && $data->origin_location_id == $data->destination_location_id) {
+            requireFields($data, ['operator_id', 'bus_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
+            if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
             // SQL query to update an existing bus record.
@@ -391,6 +393,7 @@ function handleUpdate($db, $data) {
             break;
 
         case 'hotel':
+            requireFields($data, ['hotel_name', 'location_id', 'address']);
             // SQL query to update an existing hotel record.
             $query = "UPDATE hotels SET
                       vendor_id = ?, hotel_name = ?, location_id = ?, address = ?, description = ?,
@@ -417,6 +420,7 @@ function handleUpdate($db, $data) {
             break;
 
         case 'package':
+            requireFields($data, ['package_name', 'package_type', 'description', 'duration_days', 'duration_nights', 'base_price']);
             // SQL query to update an existing tour package record.
             $query = "UPDATE tour_packages SET
                       package_name = ?, package_type = ?, description = ?, detailed_itinerary = ?,
@@ -450,6 +454,7 @@ function handleUpdate($db, $data) {
             break;
 
         case 'place':
+            requireFields($data, ['place_name', 'location_id', 'category', 'description']);
             // SQL query to update an existing place record.
             $query = "UPDATE places SET
                       place_name = ?, location_id = ?, category = ?, description = ?, history = ?,
@@ -480,18 +485,21 @@ function handleUpdate($db, $data) {
             break;
 
         case 'location':
+            requireFields($data, ['location_name', 'location_type', 'province']);
             $query = "UPDATE locations SET location_name = ?, location_type = ?, province = ?, airport_code = ?, is_popular = ? WHERE location_id = ?";
             $stmt = $db->prepare($query);
             $stmt->execute([$data->location_name, $data->location_type, $data->province, $data->airport_code ?? null, $data->is_popular ?? 0, $item_id]);
             break;
 
         case 'airline':
+            requireFields($data, ['airline_name', 'airline_code']);
             $query = "UPDATE airlines SET airline_name = ?, airline_code = ?, contact_number = ?, is_active = ? WHERE airline_id = ?";
             $stmt = $db->prepare($query);
             $stmt->execute([$data->airline_name, $data->airline_code, $data->contact_number ?? null, $data->is_active ?? 1, $item_id]);
             break;
 
         case 'operator':
+            requireFields($data, ['operator_name']);
             $query = "UPDATE bus_operators SET operator_name = ?, contact_number = ?, rating = ?, is_active = ? WHERE operator_id = ?";
             $stmt = $db->prepare($query);
             $stmt->execute([$data->operator_name, $data->contact_number ?? null, $data->rating ?? 4.0, $data->is_active ?? 1, $item_id]);
@@ -591,6 +599,17 @@ function requireFields($data, $fields) {
         if (!isset($data->$field) || $data->$field === '') {
             // Throw an exception with a user-friendly error message.
             throw new Exception(ucfirst(str_replace('_', ' ', $field)) . " is required");
+        }
+
+        // Specific validation for numeric fields
+        $numericFields = ['airline_id', 'origin_location_id', 'destination_location_id', 'duration_minutes', 'total_seats', 'base_price', 'operator_id', 'location_id', 'star_rating', 'duration_days', 'duration_nights', 'rating'];
+        if (in_array($field, $numericFields)) {
+            if (!is_numeric($data->$field)) {
+                throw new Exception(ucfirst(str_replace('_', ' ', $field)) . " must be a number");
+            }
+            if ($data->$field < 0) {
+                throw new Exception(ucfirst(str_replace('_', ' ', $field)) . " cannot be negative");
+            }
         }
     }
 }
