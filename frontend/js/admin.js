@@ -1835,6 +1835,21 @@ async function submitNewOperator() {
         const contact = document.getElementById('operatorContact').value;
         const rating = document.getElementById('operatorRating').value;
 
+        if (!name || !contact) {
+            showMessage('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        if (!/^[a-zA-Z\s]{3,100}$/.test(name.trim())) {
+            showMessage('Operator Name must be 3-100 characters containing only letters and spaces.', 'warning');
+            return;
+        }
+
+        if (!/^(\+977-[0-9]{1,3}-[0-9]{6,8}|(98|97)[0-9]{8})$/.test(contact.trim())) {
+            showMessage('Contact Number must be in format +977-1-XXXXXXX or 10-digit mobile starting with 98 or 97.', 'warning');
+            return;
+        }
+
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'operator';
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
@@ -1842,8 +1857,8 @@ async function submitNewOperator() {
             body: JSON.stringify({
                 item_type: 'operator',
                 item_id: isEditing ? adminState.editingItem.id : undefined,
-                operator_name: name,
-                contact_number: contact || null,
+                operator_name: name.trim(),
+                contact_number: contact.trim(),
                 rating: Number(rating),
                 is_active: Number(document.getElementById('operatorStatus').value)
             })
