@@ -909,13 +909,18 @@ async function submitNewFlight() {
             return;
         }
 
-        const flightNumber = document.getElementById('flightNumber').value;
+        const flightNumber = document.getElementById('flightNumber').value.trim();
         const departureTime = document.getElementById('flightDeparture').value;
         const arrivalTime = document.getElementById('flightArrival').value;
         const durationMinutes = syncFlightDurationFromTimes();
         const totalSeats = document.getElementById('flightSeats').value;
         const basePrice = document.getElementById('flightPrice').value;
         const operatesOnDays = document.getElementById('flightDays').value;
+
+        if (!/^[A-Za-z]{2}-[0-9]{3}$/.test(flightNumber)) {
+            showMessage('Flight number must use the format yt-909', 'error');
+            return;
+        }
 
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'flight';
 
@@ -1006,7 +1011,7 @@ async function submitNewBus() {
             return;
         }
 
-        const busNumber = document.getElementById('busNumber').value;
+        const busNumber = document.getElementById('busNumber').value.trim();
         const busType = document.getElementById('busType').value;
         const departureTime = document.getElementById('busDeparture').value;
         const arrivalTime = document.getElementById('busArrival').value;
@@ -1014,6 +1019,11 @@ async function submitNewBus() {
         const totalSeats = document.getElementById('busSeats').value;
         const basePrice = document.getElementById('busPrice').value;
         const operatesOnDays = document.getElementById('busDays').value;
+
+        if (!/^[A-Za-z]{2}-[0-9]{3}$/.test(busNumber)) {
+            showMessage('Bus number must use the format yt-909', 'error');
+            return;
+        }
 
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'bus';
 
@@ -1442,14 +1452,17 @@ async function updateBookingStatus(bookingId, newStatus) {
 function validateFlightForm() {
     const originId = document.getElementById('flightOriginId').value;
     const destinationId = document.getElementById('flightDestinationId').value;
+    const flightNumber = document.getElementById('flightNumber').value.trim();
     const duration = syncFlightDurationFromTimes();
     const seats = Number(document.getElementById('flightSeats').value);
     const price = Number(document.getElementById('flightPrice').value);
-    const departure = document.getElementById('flightDeparture').value;
-    const arrival = document.getElementById('flightArrival').value;
 
     if (originId === destinationId) {
         showMessage('Origin and destination cannot be the same', 'error');
+        return false;
+    }
+    if (!/^[A-Za-z]{2}-[0-9]{3}$/.test(flightNumber)) {
+        showMessage('Flight number must use the format yt-909', 'error');
         return false;
     }
     if (duration <= 0) {
@@ -1471,12 +1484,17 @@ function validateFlightForm() {
 function validateBusForm() {
     const originId = document.getElementById('busOriginId').value;
     const destinationId = document.getElementById('busDestinationId').value;
+    const busNumber = document.getElementById('busNumber').value.trim();
     const duration = syncBusDurationFromTimes();
     const seats = Number(document.getElementById('busSeats').value);
     const price = Number(document.getElementById('busPrice').value);
 
     if (originId === destinationId) {
         showMessage('Origin and destination cannot be the same', 'error');
+        return false;
+    }
+    if (!/^[A-Za-z]{2}-[0-9]{3}$/.test(busNumber)) {
+        showMessage('Bus number must use the format yt-909', 'error');
         return false;
     }
     if (duration <= 0) {

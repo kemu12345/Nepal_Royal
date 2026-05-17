@@ -304,7 +304,9 @@
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="flightNumber">Flight Number</label>
-                                    <input type="text" id="flightNumber" class="form-control" placeholder="e.g. RN-101"
+                                    <input type="text" id="flightNumber" class="form-control" placeholder="e.g. yt-909"
+                                        pattern="^[A-Za-z]{2}-[0-9]{3}$"
+                                        title="Use the format yt-909"
                                         required
                                         >
                                 </div>
@@ -433,7 +435,9 @@
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="busNumber">Bus Number</label>
-                                    <input type="text" id="busNumber" class="form-control" placeholder="e.g. RN-BUS-12"
+                                    <input type="text" id="busNumber" class="form-control" placeholder="e.g. yt-909"
+                                        pattern="^[A-Za-z]{2}-[0-9]{3}$"
+                                        title="Use the format yt-909"
                                         required
                                         >
                                 </div>

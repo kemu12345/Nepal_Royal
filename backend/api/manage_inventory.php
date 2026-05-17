@@ -111,6 +111,8 @@ function handleCreate($db, $data) {
             // Define required fields for creating a flight.
             requireFields($data, ['airline_id', 'flight_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
 
+            $flightNumber = normalizeInventoryNumber($data->flight_number, '/^[A-Za-z]{2}-[0-9]{3}$/', 'Flight number', 'yt-909');
+
             if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
@@ -128,7 +130,7 @@ function handleCreate($db, $data) {
             $stmt = $db->prepare($query);
             $stmt->execute([
                 (int)$data->airline_id,
-                $data->flight_number,
+                $flightNumber,
                 (int)$data->origin_location_id,
                 (int)$data->destination_location_id,
                 $data->departure_time,
@@ -148,6 +150,8 @@ function handleCreate($db, $data) {
             // Define required fields for creating a bus.
             requireFields($data, ['operator_id', 'bus_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
 
+            $busNumber = normalizeInventoryNumber($data->bus_number, '/^[A-Za-z]{2}-[0-9]{3}$/', 'Bus number', 'yt-909');
+
             if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
@@ -165,7 +169,7 @@ function handleCreate($db, $data) {
             $stmt = $db->prepare($query);
             $stmt->execute([
                 (int)$data->operator_id,
-                $data->bus_number,
+                $busNumber,
                 (int)$data->origin_location_id,
                 (int)$data->destination_location_id,
                 $data->departure_time,
@@ -329,6 +333,7 @@ function handleUpdate($db, $data) {
     switch($item_type) {
         case 'flight':
             requireFields($data, ['airline_id', 'flight_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
+            $flightNumber = normalizeInventoryNumber($data->flight_number, '/^[A-Za-z]{2}-[0-9]{3}$/', 'Flight number', 'yt-909');
             if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
@@ -346,7 +351,7 @@ function handleUpdate($db, $data) {
             $stmt = $db->prepare($query);
             $stmt->execute([
                 $data->airline_id,
-                $data->flight_number,
+                $flightNumber,
                 $data->origin_location_id,
                 $data->destination_location_id,
                 $data->departure_time,
@@ -365,6 +370,7 @@ function handleUpdate($db, $data) {
 
         case 'bus':
             requireFields($data, ['operator_id', 'bus_number', 'origin_location_id', 'destination_location_id', 'departure_time', 'arrival_time', 'duration_minutes', 'total_seats', 'base_price', 'operates_on_days']);
+            $busNumber = normalizeInventoryNumber($data->bus_number, '/^[A-Za-z]{2}-[0-9]{3}$/', 'Bus number', 'yt-909');
             if ($data->origin_location_id == $data->destination_location_id) {
                 throw new Exception("Origin and destination cannot be the same");
             }
@@ -382,7 +388,7 @@ function handleUpdate($db, $data) {
             $stmt = $db->prepare($query);
             $stmt->execute([
                 $data->operator_id,
-                $data->bus_number,
+                $busNumber,
                 $data->origin_location_id,
                 $data->destination_location_id,
                 $data->departure_time,
@@ -630,6 +636,23 @@ function requireFields($data, $fields) {
             }
         }
     }
+}
+
+function normalizeInventoryNumber($value, $pattern, $label, $example) {
+    if (!is_string($value)) {
+        throw new Exception($label . " is required");
+    }
+
+    $normalized = trim($value);
+    if ($normalized === '') {
+        throw new Exception($label . " is required");
+    }
+
+    if (!preg_match($pattern, $normalized)) {
+        throw new Exception($label . " must use the format " . $example);
+    }
+
+    return $normalized;
 }
 
 function calculateDurationMinutes($departureTime, $arrivalTime) {
