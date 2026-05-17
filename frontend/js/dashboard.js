@@ -217,7 +217,7 @@ function renderBookingsTable() {
     if (!filteredBookings.length) {
         recentBody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5">
+                <td colspan="6" class="text-center py-5">
                     <img src="../assets/images/empty-bookings.svg" alt="No bookings" style="width: 150px; opacity: 0.5; margin-bottom: 1rem;" onerror="this.style.display='none'">
                     <h5 class="text-muted fw-bold">No Bookings Found</h5>
                     <p class="text-muted mb-0">We couldn't find any bookings matching your criteria.</p>
@@ -242,16 +242,6 @@ function renderBookingsTable() {
                 </span>
             </td>
             <td class="fw-bold">${formatAmount(b.total_amount, b.currency)}</td>
-            <td class="text-end">
-                <button class="btn-action" title="View Details" onclick="viewBookingDetails('${b.booking_id}')">
-                    <i class="bi bi-eye"></i>
-                </button>
-                ${(b.booking_status || 'pending').toLowerCase() !== 'cancelled' ? `
-                <button class="btn-action btn-cancel ms-1" title="Cancel Booking" onclick="cancelBooking('${b.booking_id}')">
-                    <i class="bi bi-x-circle"></i>
-                </button>
-                ` : ''}
-            </td>
         </tr>
     `).join('');
 }
