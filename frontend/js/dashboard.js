@@ -187,7 +187,6 @@ async function loadUserBookingData() {
     if (document.getElementById('summaryPending')) document.getElementById('summaryPending').textContent = pendingCount;
     if (document.getElementById('summaryCancelled')) document.getElementById('summaryCancelled').textContent = cancelledCount;
 
-    renderUpcomingTrip();
     renderBookingsTable();
 }
 
@@ -257,59 +256,6 @@ function renderBookingsTable() {
     `).join('');
 }
 
-function renderUpcomingTrip() {
-    const upcomingSection = document.getElementById('upcomingTripSection');
-    const upcomingContent = document.getElementById('upcomingTripContent');
-    if (!upcomingSection || !upcomingContent) return;
-
-    // Find the next upcoming confirmed booking
-    const now = new Date();
-    // Assuming booking_date is the date of travel for simplicity, or we just take the latest one.
-    // We'll filter for future dates. If there are no future dates, just don't show it.
-    const upcoming = allUserBookings
-        .filter(b => (b.booking_status || '').toLowerCase() === 'confirmed')
-        .filter(b => {
-             // Basic attempt to see if date is in the future.
-             // Usually booking_date is when it was booked, but let's assume it's travel date for this context if we don't have separate fields.
-             // Alternatively, let's just show the most recent confirmed booking.
-             return true; 
-        })
-        .sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date))[0]; // Most recent
-
-    if (!upcoming) {
-        upcomingSection.style.display = 'none';
-        return;
-    }
-
-    upcomingSection.style.display = 'block';
-    
-    let iconClass = 'bi-airplane';
-    if(upcoming.booking_type === 'hotel') iconClass = 'bi-building';
-    if(upcoming.booking_type === 'bus') iconClass = 'bi-bus-front';
-    if(upcoming.booking_type === 'package') iconClass = 'bi-gift';
-
-    upcomingContent.innerHTML = `
-        <div class="upcoming-trip-header">
-            <div>
-                <p class="upcoming-trip-subtitle text-uppercase tracking-wider mb-1">Next Adventure</p>
-                <h4 class="upcoming-trip-title">${bookingDestination(upcoming)}</h4>
-            </div>
-            <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.5rem;">
-                <i class="bi ${iconClass}"></i>
-            </div>
-        </div>
-        <div class="upcoming-trip-details">
-            <div class="upcoming-trip-detail-item">
-                <i class="bi bi-calendar-check"></i>
-                <span>${new Date(upcoming.booking_date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</span>
-            </div>
-            <div class="upcoming-trip-detail-item">
-                <i class="bi bi-upc-scan"></i>
-                <span>Ref: ${upcoming.booking_reference || upcoming.booking_id}</span>
-            </div>
-        </div>
-    `;
-}
 
 function viewBookingDetails(id) {
     alert('Viewing details for booking ID: ' + id + '\\n\\n(This feature will be implemented in the future)');
