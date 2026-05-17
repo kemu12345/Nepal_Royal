@@ -3,34 +3,18 @@
 # when committing code. This helps keep the repository clean from
 # unnecessary or sensitive files.
 
-
-# Ignore IDE-specific settings files.
-# This ensures that personal editor configurations are not shared
-# across the team.
+# Ignore IDE-specific settings files
 .vscode/
 
-# Ignore Markdown files that are for documentation or project management,
-# not part of the core application code.
-ADVANCED_FEATURES.md
-README.md
-.DS_Store
-backend/.env
-*.sql.bak
-
-# Security - Never push these files
-backend/config/.env
-backend/.env
-*.log
+# Ignore OS files
 .DS_Store
 Thumbs.db
 
-# Ignore frontend for now
-frontend/
-# Sensitive files
+# Ignore backup and log files
+*.log
+*.sql.bak
+
+# Security - Never push environment/config files
 backend/.env
 backend/config/.env
-*.log
-.DS_Store
-
-# Ignore frontend for now
-frontend/
+*.env
