@@ -26,6 +26,7 @@ const API_BASE_URL = (() => {
 let allPlaces = [];         // Holds all places fetched from the API.
 let filteredPlaces = [];    // Holds the places after applying filters.
 let currentCategory = '';   // The currently selected category filter.
+const WISHLIST_KEY = 'royalNepalWishlist';
 
 // Curated images for popular places to ensure the UI looks premium even if DB URLs are missing.
 const placeImages = {
@@ -57,6 +58,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update the navigation bar to show user info if logged in.
     updateAuthButtons();
+
+    document.addEventListener('click', (event) => {
+        const button = event.target.closest('.wishlist-toggle');
+        if (!button) return;
+
+        toggleWishlist({
+            name: button.dataset.place,
+            category: button.dataset.category || 'Destination',
+            image_url: button.dataset.image || ''
+        });
+    });
 });
 
 /**
@@ -71,6 +83,63 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(() => func.apply(this, args), wait);
     };
+}
+
+function readWishlist() {
+    try {
+        const parsed = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (_error) {
+        return [];
+    }
+}
+
+function writeWishlist(items) {
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(items));
+}
+
+function toggleWishlist(place) {
+    if (!place?.name) return;
+
+    const existing = readWishlist();
+    const alreadySaved = existing.some((item) => item.name === place.name);
+
+    const updated = alreadySaved
+        ? existing.filter((item) => item.name !== place.name)
+        : [...existing, place];
+
+    writeWishlist(updated);
+    syncWishlistButtons();
+    syncModalWishlistButton(place.name);
+}
+
+function syncWishlistButtons() {
+    const savedNames = new Set(readWishlist().map((item) => item.name));
+    document.querySelectorAll('.wishlist-toggle').forEach((button) => {
+        const place = button.dataset.place;
+        const isSaved = savedNames.has(place);
+        button.classList.toggle('active', isSaved);
+        button.innerHTML = isSaved
+            ? '<i class="bi bi-bookmark-check-fill me-2"></i>Saved'
+            : '<i class="bi bi-bookmark-plus me-2"></i>Save to Wishlist';
+    });
+}
+
+function syncModalWishlistButton(placeName) {
+    const button = document.getElementById('modalWishlistButton');
+    if (!button) return;
+
+    if (placeName) {
+        button.dataset.place = placeName;
+    }
+
+    const savedNames = new Set(readWishlist().map((item) => item.name));
+    const isSaved = savedNames.has(button.dataset.place);
+
+    button.classList.toggle('active', isSaved);
+    button.innerHTML = isSaved
+        ? '<i class="bi bi-bookmark-check-fill me-2"></i>Saved to Wishlist'
+        : '<i class="bi bi-bookmark-plus me-2"></i>Save to Wishlist';
 }
 
 /**
@@ -354,6 +423,7 @@ function createPlaceCard(place) {
     }
 
     const imageUrl = placeImages[place.place_name] || place.image_url;
+    const isSaved = readWishlist().some((item) => item.name === place.place_name);
 
     return `
         <div class="col-md-6 col-lg-4">
@@ -374,9 +444,20 @@ function createPlaceCard(place) {
                     <div class="place-features">
                         ${features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
                     </div>
-                    <button class="btn btn-explore" onclick="viewPlace(${place.place_id})">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Explore More
-                    </button>
+                    <div class="place-actions">
+                        <button class="btn btn-explore" onclick="viewPlace(${place.place_id})">
+                            <i class="bi bi-arrow-right-circle me-2"></i>Explore More
+                        </button>
+                        <button type="button"
+                            class="btn btn-wishlist wishlist-toggle ${isSaved ? 'active' : ''}"
+                            data-place="${place.place_name}"
+                            data-category="${place.category || 'Destination'}"
+                            data-image="${imageUrl || ''}">
+                            ${isSaved
+                                ? '<i class="bi bi-bookmark-check-fill me-2"></i>Saved'
+                                : '<i class="bi bi-bookmark-plus me-2"></i>Save to Wishlist'}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -399,6 +480,7 @@ function viewPlace(placeId) {
     const categoryBadge = document.getElementById('modalCategoryBadge');
     const entryFeeEl = document.getElementById('modalEntryFee');
     const unescoStatusEl = document.getElementById('modalUnescoStatus');
+    const wishlistButton = document.getElementById('modalWishlistButton');
 
     if (titleEl) titleEl.textContent = place.place_name;
     if (locationEl) locationEl.innerHTML = `<i class="bi bi-geo-alt-fill me-1"></i>${place.location_name || 'Nepal'}`;
@@ -429,6 +511,20 @@ function viewPlace(placeId) {
     if (unescoStatusEl) {
         unescoStatusEl.textContent = place.is_unesco_heritage == 1 ? 'Yes, World Heritage' : 'Not Listed';
         unescoStatusEl.className = place.is_unesco_heritage == 1 ? 'fw-bold mb-0 text-success' : 'fw-bold mb-0 text-secondary';
+    }
+
+    if (wishlistButton) {
+        wishlistButton.dataset.place = place.place_name;
+        wishlistButton.dataset.category = place.category || 'Destination';
+        wishlistButton.dataset.image = imageUrl || '';
+        wishlistButton.onclick = () => {
+            toggleWishlist({
+                name: place.place_name,
+                category: place.category || 'Destination',
+                image_url: imageUrl || ''
+            });
+        };
+        syncModalWishlistButton(place.place_name);
     }
 
     // Show the modal
