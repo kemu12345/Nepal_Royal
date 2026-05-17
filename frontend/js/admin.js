@@ -1785,6 +1785,26 @@ async function submitNewAirline() {
         const code = document.getElementById('airlineCode').value;
         const contact = document.getElementById('airlineContact').value;
 
+        if (!name || !code || !contact) {
+            showMessage('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        if (!/^[a-zA-Z\s]{3,100}$/.test(name.trim())) {
+            showMessage('Airline Name must be 3-100 characters containing only letters and spaces.', 'warning');
+            return;
+        }
+
+        if (!/^[A-Za-z0-9]{2}$/.test(code.trim())) {
+            showMessage('Airline Code must be exactly 2 alphanumeric characters (e.g. U4, YT).', 'warning');
+            return;
+        }
+
+        if (!/^(\+977-[0-9]{1,3}-[0-9]{6,8}|(98|97)[0-9]{8})$/.test(contact.trim())) {
+            showMessage('Contact Number must be in format +977-1-XXXXXXX or 10-digit mobile starting with 98 or 97.', 'warning');
+            return;
+        }
+
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'airline';
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
@@ -1792,9 +1812,9 @@ async function submitNewAirline() {
             body: JSON.stringify({
                 item_type: 'airline',
                 item_id: isEditing ? adminState.editingItem.id : undefined,
-                airline_name: name,
-                airline_code: code,
-                contact_number: contact || null,
+                airline_name: name.trim(),
+                airline_code: code.trim().toUpperCase(),
+                contact_number: contact.trim(),
                 is_active: Number(document.getElementById('airlineStatus').value)
             })
         });
