@@ -596,7 +596,7 @@
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelContact">Contact Number</label>
-                                    <input type="tel" id="hotelContact" class="form-control" pattern="[0-9]{10}"
+                                    <input type="tel" id="hotelContact" class="form-control" pattern="^(98|97)[0-9]{8}$"
                                         oninput="this.value = this.value.replace(/[^0-9]/g, '')" minlength="10" maxlength="10" required>
                                 </div>
                                 <div class="form-group" style="flex: 1;">

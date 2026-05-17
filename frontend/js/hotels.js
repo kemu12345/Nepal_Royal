@@ -514,7 +514,7 @@ function openBookingModal(roomId) {
             <div class="col-md-6">
                 <label for="contactNumber" class="form-label fw-semibold">Contact Number <span class="text-danger">*</span></label>
                 <input type="tel" class="form-control" id="contactNumber" placeholder="e.g. 98XXXXXXXX" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
-                <div class="form-text text-danger small" id="contactValidationMsg" style="display: none;">Please enter exactly 10 digits.</div>
+                <div class="form-text text-danger small" id="contactValidationMsg" style="display: none;">Please enter a 10-digit number starting with 98 or 97.</div>
             </div>
             <div class="col-md-6">
                 <label for="contactAddress" class="form-label fw-semibold">Address <span class="text-danger">*</span></label>
@@ -628,8 +628,8 @@ async function confirmBooking() {
         const contactNumber = document.getElementById('contactNumber').value.trim();
         const contactAddress = document.getElementById('contactAddress').value.trim();
         
-        // Validate contact number (exactly 10 digits)
-        const phoneRegex = /^[0-9]{10}$/;
+        // Validate contact number (exactly 10 digits starting with 98 or 97)
+        const phoneRegex = /^(98|97)[0-9]{8}$/;
         if (!phoneRegex.test(contactNumber)) {
             document.getElementById('contactValidationMsg').style.display = 'block';
             return;
