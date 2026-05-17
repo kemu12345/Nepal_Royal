@@ -933,8 +933,9 @@
                                 <div class="form-group" style="flex: 1;">
                                     <label for="locationAirport">Airport Code (Optional)</label>
                                     <input type="text" id="locationAirport" class="form-control" placeholder="e.g. KTM"
-                                        maxlength="3"
+                                        pattern="^[A-Za-z]{3}$" minlength="3" maxlength="3" style="text-transform: uppercase;"
                                         >
+                                    <small class="text-muted">Exactly 3 letters (e.g. KTM).</small>
                                 </div>
                                 <div class="form-group"
                                     style="flex: 1; display: flex; align-items: center; gap: 0.5rem; padding-top: 1.5rem;">

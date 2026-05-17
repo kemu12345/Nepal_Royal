@@ -1749,6 +1749,11 @@ async function submitNewLocation() {
             return;
         }
 
+        if (airport && !/^[A-Za-z]{3}$/.test(airport.trim())) {
+            showMessage('Airport Code must be exactly 3 letters (e.g. KTM, PKR).', 'warning');
+            return;
+        }
+
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'location';
 
         await RoyalNepal.apiRequest('manage_inventory.php', {
@@ -1759,7 +1764,7 @@ async function submitNewLocation() {
                 location_name: name,
                 location_type: type,
                 province: province,
-                airport_code: airport || null,
+                airport_code: airport ? airport.trim().toUpperCase() : null,
                 is_popular: popular
             })
         });
