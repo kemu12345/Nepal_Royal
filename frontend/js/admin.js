@@ -1011,6 +1011,7 @@ async function submitNewHotel() {
         const hotelType = document.getElementById('hotelType').value;
         const starRating = document.getElementById('hotelRating').value;
         const basePrice = document.getElementById('hotelBasePrice').value;
+        const totalRooms = document.getElementById('hotelTotalRooms').value;
         const address = document.getElementById('hotelAddress').value;
         const contactNumber = document.getElementById('hotelContact').value.trim();
         const email = document.getElementById('hotelEmail').value;
@@ -1018,7 +1019,7 @@ async function submitNewHotel() {
         const imageUrl = document.getElementById('hotelImageUrl').value;
 
         // Validation
-        if (!hotelName || !locationId || !hotelType || !starRating || !address || !basePrice) {
+        if (!hotelName || !locationId || !hotelType || !starRating || !address || !basePrice || !totalRooms) {
             showMessage('Please fill in all required fields.', 'warning');
             return;
         }
@@ -1055,6 +1056,7 @@ async function submitNewHotel() {
                 star_rating: Number(starRating),
                 hotel_type: hotelType,
                 base_price: basePrice ? Number(basePrice) : undefined,
+                total_rooms: totalRooms ? Number(totalRooms) : undefined,
                 contact_number: contactNumber || null,
                 email: email || null,
                 image_url: imageUrl || null,
@@ -1087,7 +1089,8 @@ function editHotel(hotel) {
     document.getElementById('hotelLocationId').value = hotel.location_id;
     document.getElementById('hotelType').value = hotel.hotel_type;
     document.getElementById('hotelRating').value = hotel.star_rating;
-    document.getElementById('hotelBasePrice').value = hotel.min_price_per_night || 5000;
+    document.getElementById('hotelBasePrice').value = hotel.min_price_per_night ? Math.round(Number(hotel.min_price_per_night)) : 5000;
+    document.getElementById('hotelTotalRooms').value = hotel.total_available_rooms || 10;
     document.getElementById('hotelAddress').value = hotel.address;
     document.getElementById('hotelContact').value = hotel.contact_number || '';
     document.getElementById('hotelEmail').value = hotel.email || '';

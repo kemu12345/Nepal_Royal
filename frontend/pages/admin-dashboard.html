@@ -574,7 +574,13 @@
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelBasePrice">Base Price/Night (NPR)</label>
-                                    <input type="number" id="hotelBasePrice" class="form-control" min="1" value="5000"
+                                    <input type="number" id="hotelBasePrice" class="form-control" min="1" step="any" value="5000"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(this.value < 1 && this.value !== '') this.value = 1;"
+                                        required>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelTotalRooms">Total Rooms</label>
+                                    <input type="number" id="hotelTotalRooms" class="form-control" min="1" value="10"
                                         oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value < 1 && this.value !== '') this.value = 1;"
                                         required>
                                 </div>
