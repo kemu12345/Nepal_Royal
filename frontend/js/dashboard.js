@@ -113,6 +113,12 @@ function formatAmount(amount, currency = 'NPR') {
     return `${currency} ${value.toLocaleString('en-NP', { maximumFractionDigits: 0 })}`;
 }
 
+function formatBookingDate(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '-';
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 function bookingDestination(booking) {
     const d = booking.details || {};
     if (booking.booking_type === 'flight' || booking.booking_type === 'bus') {
@@ -232,7 +238,7 @@ function renderBookingsTable() {
             <td class="fw-bold">#${b.booking_reference || b.booking_id}</td>
             <td class="text-capitalize">${getBookingIcon(b.booking_type)}${b.booking_type}</td>
             <td>${bookingDestination(b)}</td>
-            <td>${new Date(b.booking_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+            <td>${formatBookingDate(b.booking_date)}</td>
             <td>
                 <span class="status-badge status-${(b.booking_status || 'pending').toLowerCase()}">
                     ${(b.booking_status || 'pending').toLowerCase() === 'confirmed' ? '<i class="bi bi-check-circle-fill"></i>' : 
@@ -242,13 +248,82 @@ function renderBookingsTable() {
                 </span>
             </td>
             <td class="fw-bold">${formatAmount(b.total_amount, b.currency)}</td>
+            <td>
+                <button type="button" class="btn btn-action btn-view" onclick="viewBookingDetails('${b.booking_reference || b.booking_id}')">
+                    <i class="bi bi-eye me-1"></i>View Details
+                </button>
+            </td>
         </tr>
     `).join('');
 }
 
 
 function viewBookingDetails(id) {
-    alert('Viewing details for booking ID: ' + id + '\\n\\n(This feature will be implemented in the future)');
+    const booking = allUserBookings.find((entry) => String(entry.booking_reference || entry.booking_id) === String(id));
+    if (!booking) return;
+
+    const body = document.getElementById('bookingDetailsBody');
+    const title = document.getElementById('bookingDetailsModalLabel');
+    if (!body) return;
+
+    if (title) {
+        title.textContent = `Booking #${booking.booking_reference || booking.booking_id}`;
+    }
+
+    const details = booking.details || {};
+    const typeLabel = (booking.booking_type || 'booking').toUpperCase();
+    const status = (booking.booking_status || 'pending').toLowerCase();
+    const statusClass = `status-badge status-${status}`;
+
+    body.innerHTML = `
+        <div class="booking-detail-header d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+            <div>
+                <p class="text-uppercase text-muted small fw-bold mb-1">${typeLabel}</p>
+                <h4 class="fw-bold mb-1">${bookingDestination(booking)}</h4>
+                <p class="text-muted mb-0">Booked on ${formatBookingDate(booking.booking_date)}</p>
+            </div>
+            <span class="${statusClass}">
+                ${(status === 'confirmed' ? '<i class="bi bi-check-circle-fill"></i>' : status === 'cancelled' ? '<i class="bi bi-x-circle-fill"></i>' : '<i class="bi bi-clock-fill"></i>')}
+                ${status}
+            </span>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="booking-detail-card">
+                    <label>Booking ID</label>
+                    <p>#${booking.booking_reference || booking.booking_id}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="booking-detail-card">
+                    <label>Amount</label>
+                    <p>${formatAmount(booking.total_amount, booking.currency)}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="booking-detail-card">
+                    <label>Type</label>
+                    <p class="text-capitalize">${booking.booking_type || '-'}</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="booking-detail-card">
+                    <label>Booking Date</label>
+                    <p>${formatBookingDate(booking.booking_date)}</p>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="booking-detail-card">
+                    <label>Travel Details</label>
+                    <p class="mb-1">${details.origin && details.destination ? `${details.origin} to ${details.destination}` : bookingDestination(booking)}</p>
+                    <small class="text-muted">${details.package_name || details.hotel_name || details.flight_number || details.bus_number || details.city || ''}</small>
+                </div>
+            </div>
+        </div>
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById('bookingDetailsModal'));
+    modal.show();
 }
 
 function cancelBooking(id) {

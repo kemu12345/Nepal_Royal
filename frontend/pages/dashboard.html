@@ -219,11 +219,12 @@
                             <th>Date</th>
                             <th>Status</th>
                             <th>Amount</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="recentBookings">
                         <tr>
-                            <td colspan="6" class="text-center py-5">
+                            <td colspan="7" class="text-center py-5">
                                 <img src="../assets/images/empty-bookings.svg" alt="No bookings" style="width: 150px; opacity: 0.5; margin-bottom: 1rem;">
                                 <h5 class="text-muted fw-bold">No Bookings Found</h5>
                                 <p class="text-muted mb-0">Start exploring Nepal and book your first trip!</p>
@@ -231,6 +232,26 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Booking Details Modal -->
+        <div class="modal fade" id="bookingDetailsModal" tabindex="-1" aria-labelledby="bookingDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="modal-header border-0 bg-light px-4 py-3">
+                        <div>
+                            <p class="text-uppercase text-muted small fw-bold mb-1">Booking Details</p>
+                            <h5 class="modal-title fw-bold mb-0" id="bookingDetailsModalLabel">Booking Information</h5>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4" id="bookingDetailsBody">
+                        <div class="booking-details-skeleton text-center py-4 text-muted">
+                            Select a booking to view its details.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

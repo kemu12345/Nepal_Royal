@@ -502,6 +502,51 @@ body {
     color: #ef4444;
 }
 
+.btn-view {
+    border-color: #cbd5e1;
+    background: white;
+    color: var(--primary);
+    font-weight: 700;
+    padding: 0.5rem 0.85rem;
+}
+
+.btn-view:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.booking-detail-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    height: 100%;
+}
+
+.booking-detail-card label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.booking-detail-card p {
+    margin: 0;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.booking-details-skeleton {
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Discover Nepal Cards */
 .destination-card {
     background: #f8fafc;
