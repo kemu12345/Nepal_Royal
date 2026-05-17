@@ -334,8 +334,14 @@ async function loadDashboardData() {
         if (totalBookings) totalBookings.textContent = String(summary.bookings ?? bookings.length ?? 0);
 
         if (totalRevenue) {
+            const isConfirmed = (s) => {
+                if (!s) return false;
+                const st = String(s).toLowerCase();
+                return st === 'confirmed' || st === 'approved';
+            };
+
             const revenue = bookings
-                .filter(b => b.booking_status === 'confirmed')
+                .filter(b => isConfirmed(b.booking_status))
                 .reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
             totalRevenue.textContent = `NPR ${revenue.toLocaleString()}`;
         }
@@ -1825,9 +1831,22 @@ function renderCharts(bookings) {
             return d.toISOString().split('T')[0];
         }).reverse();
 
+        const isConfirmed = (s) => {
+            if (!s) return false;
+            const st = String(s).toLowerCase();
+            return st === 'confirmed' || st === 'approved';
+        };
+
         const revenueData = last7Days.map(date => {
             return bookings
-                .filter(b => b.booking_status === 'confirmed' && b.booking_date.startsWith(date))
+                .filter(b => {
+                    if (!isConfirmed(b.booking_status)) return false;
+                    if (!b.booking_date) return false;
+                    const parsed = new Date(b.booking_date);
+                    if (Number.isNaN(parsed.getTime())) return false;
+                    const bookingDateOnly = parsed.toISOString().split('T')[0];
+                    return bookingDateOnly === date;
+                })
                 .reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
         });
 
