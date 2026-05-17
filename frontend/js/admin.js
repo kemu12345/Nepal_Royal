@@ -1010,6 +1010,7 @@ async function submitNewHotel() {
         const locationId = document.getElementById('hotelLocationId').value;
         const hotelType = document.getElementById('hotelType').value;
         const starRating = document.getElementById('hotelRating').value;
+        const basePrice = document.getElementById('hotelBasePrice').value;
         const address = document.getElementById('hotelAddress').value;
         const contactNumber = document.getElementById('hotelContact').value;
         const email = document.getElementById('hotelEmail').value;
@@ -1029,6 +1030,7 @@ async function submitNewHotel() {
                 description: description,
                 star_rating: Number(starRating),
                 hotel_type: hotelType,
+                base_price: basePrice ? Number(basePrice) : undefined,
                 contact_number: contactNumber || null,
                 email: email || null,
                 image_url: imageUrl || null,
@@ -1061,6 +1063,7 @@ function editHotel(hotel) {
     document.getElementById('hotelLocationId').value = hotel.location_id;
     document.getElementById('hotelType').value = hotel.hotel_type;
     document.getElementById('hotelRating').value = hotel.star_rating;
+    document.getElementById('hotelBasePrice').value = hotel.min_price_per_night || 5000;
     document.getElementById('hotelAddress').value = hotel.address;
     document.getElementById('hotelContact').value = hotel.contact_number || '';
     document.getElementById('hotelEmail').value = hotel.email || '';

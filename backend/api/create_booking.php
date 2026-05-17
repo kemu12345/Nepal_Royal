@@ -114,7 +114,8 @@ try {
             if($item) {
                 $nights = isset($data->nights) ? intval($data->nights) : 1;
                 $rooms = isset($data->rooms) ? intval($data->rooms) : 1;
-                $total_amount = $item['base_price_per_night'] * $nights * $rooms;
+                $multiplier = isset($data->price_multiplier) ? floatval($data->price_multiplier) : 1;
+                $total_amount = ($item['base_price_per_night'] * $multiplier) * $nights * $rooms;
                 $currency = $item['currency'];
             }
             break;
