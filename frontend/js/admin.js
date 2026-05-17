@@ -1739,6 +1739,16 @@ async function submitNewLocation() {
         const airport = document.getElementById('locationAirport').value;
         const popular = document.getElementById('locationPopular').checked ? 1 : 0;
 
+        if (!name || !type || !province) {
+            showMessage('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        if (!/^[a-zA-Z\s]{3,100}$/.test(name.trim())) {
+            showMessage('Location Name must be between 3 and 100 characters containing only letters and spaces.', 'warning');
+            return;
+        }
+
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'location';
 
         await RoyalNepal.apiRequest('manage_inventory.php', {

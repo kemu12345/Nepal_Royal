@@ -899,9 +899,10 @@
                         <form id="addLocationForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="locationName">Location Name</label>
-                                <input type="text" id="locationName" class="form-control" placeholder="e.g. Kathmandu"
+                                <input type="text" id="locationName" class="form-control" pattern="^[a-zA-Z\s]{3,100}$" minlength="3" maxlength="100" placeholder="e.g. Kathmandu"
                                     required
                                     >
+                                <small class="text-muted">Must be 3-100 characters (letters and spaces only).</small>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
