@@ -1012,10 +1012,34 @@ async function submitNewHotel() {
         const starRating = document.getElementById('hotelRating').value;
         const basePrice = document.getElementById('hotelBasePrice').value;
         const address = document.getElementById('hotelAddress').value;
-        const contactNumber = document.getElementById('hotelContact').value;
+        const contactNumber = document.getElementById('hotelContact').value.trim();
         const email = document.getElementById('hotelEmail').value;
         const description = document.getElementById('hotelDescription').value;
         const imageUrl = document.getElementById('hotelImageUrl').value;
+
+        // Validation
+        if (!hotelName || !locationId || !hotelType || !starRating || !address || !basePrice) {
+            showMessage('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        if (Number(basePrice) <= 0) {
+            showMessage('Base Price must be a positive number.', 'warning');
+            return;
+        }
+
+        if (address.trim().length < 3) {
+            showMessage('Please enter a valid address.', 'warning');
+            return;
+        }
+
+        if (contactNumber) {
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(contactNumber)) {
+                showMessage('Please enter a valid contact number (exactly 10 digits).', 'warning');
+                return;
+            }
+        }
 
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'hotel';
 
