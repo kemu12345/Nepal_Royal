@@ -576,17 +576,28 @@
                                         required
                                         >
                                 </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelBasePrice">Base Price/Night (NPR)</label>
+                                    <input type="number" id="hotelBasePrice" class="form-control" min="1" step="any" value="5000"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, ''); if(this.value < 1 && this.value !== '') this.value = 1;"
+                                        required>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label for="hotelTotalRooms">Total Rooms</label>
+                                    <input type="number" id="hotelTotalRooms" class="form-control" min="1" value="10"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value < 1 && this.value !== '') this.value = 1;"
+                                        required>
+                                </div>
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="hotelAddress">Address</label>
-                                <input type="text" id="hotelAddress" class="form-control" required
-                                    >
+                                <input type="text" id="hotelAddress" class="form-control" minlength="3" required>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelContact">Contact Number</label>
-                                    <input type="text" id="hotelContact" class="form-control"
-                                        >
+                                    <input type="tel" id="hotelContact" class="form-control" pattern="[0-9]{10}"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')" minlength="10" maxlength="10" required>
                                 </div>
                                 <div class="form-group" style="flex: 1;">
                                     <label for="hotelEmail">Email Address</label>

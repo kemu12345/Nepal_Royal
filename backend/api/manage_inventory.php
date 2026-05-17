@@ -211,6 +211,15 @@ function handleCreate($db, $data) {
                 $data->image_url ?? null,
                 $data->is_active ?? 1
             ]);
+            
+            // Insert a default room if base_price is provided
+            if (isset($data->base_price) && $data->base_price !== '') {
+                $hotel_id = $db->lastInsertId();
+                $total_rooms = isset($data->total_rooms) ? (int)$data->total_rooms : 10;
+                $room_query = "INSERT INTO hotel_rooms (hotel_id, room_type, base_price_per_night, total_rooms, available_rooms) VALUES (?, 'Standard Room', ?, ?, ?)";
+                $room_stmt = $db->prepare($room_query);
+                $room_stmt->execute([$hotel_id, $data->base_price, $total_rooms, $total_rooms]);
+            }
             break;
 
         case 'package':
@@ -431,6 +440,20 @@ function handleUpdate($db, $data) {
                 $data->is_active ?? 1,
                 $item_id // The ID of the hotel to update.
             ]);
+            
+            // Update or insert a default room if base_price is provided
+            if (isset($data->base_price) && $data->base_price !== '') {
+                $total_rooms = isset($data->total_rooms) ? (int)$data->total_rooms : 10;
+                $check_room = $db->prepare("SELECT room_id FROM hotel_rooms WHERE hotel_id = ? LIMIT 1");
+                $check_room->execute([$item_id]);
+                if ($check_room->fetchColumn()) {
+                    $update_room = $db->prepare("UPDATE hotel_rooms SET base_price_per_night = ?, total_rooms = ?, available_rooms = ? WHERE hotel_id = ?");
+                    $update_room->execute([$data->base_price, $total_rooms, $total_rooms, $item_id]);
+                } else {
+                    $insert_room = $db->prepare("INSERT INTO hotel_rooms (hotel_id, room_type, base_price_per_night, total_rooms, available_rooms) VALUES (?, 'Standard Room', ?, ?, ?)");
+                    $insert_room->execute([$item_id, $data->base_price, $total_rooms, $total_rooms]);
+                }
+            }
             break;
 
         case 'package':

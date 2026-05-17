@@ -464,16 +464,31 @@ function openBookingModal(roomId) {
             <div class="row text-center">
                 <div class="col-6">
                     <i class="bi bi-door-open fs-4 text-success"></i>
-                    <div class="small mt-1">${selectedHotel.room_type || 'Standard Room'}</div>
+                    <div class="small mt-1" id="displayRoomType">${selectedHotel.room_type || 'Standard Room'}</div>
                 </div>
                 <div class="col-6">
                     <i class="bi bi-cash-stack fs-4 text-success"></i>
-                    <div class="small mt-1">${selectedHotel.currency || 'NPR'} ${formatPrice(selectedHotel.base_price_per_night || 5000)}/night</div>
+                    <div class="small mt-1" id="displayRoomPrice">${selectedHotel.currency || 'NPR'} ${formatPrice(selectedHotel.base_price_per_night || 5000)}/night</div>
                 </div>
             </div>
         </div>
         
         <div class="row g-3">
+            <div class="col-md-6">
+                <label for="roomTypeSelect" class="form-label fw-semibold">Choose Room Type</label>
+                <select class="form-select" id="roomTypeSelect">
+                    <option value="1" data-name="Standard Room" data-price="${selectedHotel.base_price_per_night || 5000}">Standard Room (Base Price)</option>
+                    <option value="1.5" data-name="Deluxe Room" data-price="${(selectedHotel.base_price_per_night || 5000) * 1.5}">Deluxe Room (+50%)</option>
+                    <option value="2.5" data-name="Suite" data-price="${(selectedHotel.base_price_per_night || 5000) * 2.5}">Suite (+150%)</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <div class="p-2 border rounded bg-light text-center h-100 d-flex flex-column justify-content-center">
+                    <span class="text-muted small fw-bold">Total Price Estimator</span>
+                    <h5 class="text-success mb-0 fw-bold" id="totalPriceDisplay">${selectedHotel.currency || 'NPR'} 0</h5>
+                </div>
+            </div>
+
             <div class="col-md-6">
                 <label for="modalCheckin" class="form-label fw-semibold">Check-in Date</label>
                 <input type="date" class="form-control" id="modalCheckin" min="${new Date().toISOString().split('T')[0]}">
@@ -495,8 +510,51 @@ function openBookingModal(roomId) {
                 </select>
                 <div class="form-text text-danger small" id="guestValidationMsg" style="display: none;">Maximum 4 guests allowed per room</div>
             </div>
+            
+            <div class="col-md-6">
+                <label for="contactNumber" class="form-label fw-semibold">Contact Number <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" id="contactNumber" placeholder="e.g. 98XXXXXXXX" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                <div class="form-text text-danger small" id="contactValidationMsg" style="display: none;">Please enter exactly 10 digits.</div>
+            </div>
+            <div class="col-md-6">
+                <label for="contactAddress" class="form-label fw-semibold">Address <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="contactAddress" placeholder="Your city/address" required>
+                <div class="form-text text-danger small" id="addressValidationMsg" style="display: none;">Address is required.</div>
+            </div>
         </div>
     `;
+
+    function updateTotalPrice() {
+        const checkin = document.getElementById('modalCheckin').value;
+        const checkout = document.getElementById('modalCheckout').value;
+        const rooms = parseInt(document.getElementById('roomCount').value) || 1;
+        const roomTypeSelect = document.getElementById('roomTypeSelect');
+        const selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex];
+        
+        const pricePerNight = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+        const roomName = selectedOption.getAttribute('data-name');
+        
+        // Update top display
+        const roomTypeEl = document.getElementById('displayRoomType');
+        const roomPriceEl = document.getElementById('displayRoomPrice');
+        if (roomTypeEl) roomTypeEl.innerText = roomName;
+        if (roomPriceEl) roomPriceEl.innerText = `${selectedHotel.currency || 'NPR'} ${formatPrice(pricePerNight)}/night`;
+
+        let nights = 0;
+        if (checkin && checkout) {
+            const d1 = new Date(checkin);
+            const d2 = new Date(checkout);
+            if (d2 > d1) {
+                nights = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+            }
+        }
+        
+        const total = nights * rooms * pricePerNight;
+        const totalEl = document.getElementById('totalPriceDisplay');
+        if (totalEl) {
+            totalEl.innerText = total > 0 ? `${selectedHotel.currency || 'NPR'} ${formatPrice(total)}` : `${selectedHotel.currency || 'NPR'} 0`;
+        }
+    }
 
     // Pre-fill dates from URL if available.
     const urlParams = new URLSearchParams(window.location.search);
@@ -505,6 +563,14 @@ function openBookingModal(roomId) {
 
     if (checkin) document.getElementById('modalCheckin').value = checkin;
     if (checkout) document.getElementById('modalCheckout').value = checkout;
+
+    // Attach listeners for price calculation
+    ['modalCheckin', 'modalCheckout', 'roomCount', 'roomTypeSelect'].forEach(id => {
+        document.getElementById(id)?.addEventListener('change', updateTotalPrice);
+    });
+    
+    // Initial calculation
+    updateTotalPrice();
 
     // Add event listener for guest count validation
     document.getElementById('guestCount')?.addEventListener('change', (e) => {
@@ -559,6 +625,30 @@ async function confirmBooking() {
             return;
         }
 
+        const contactNumber = document.getElementById('contactNumber').value.trim();
+        const contactAddress = document.getElementById('contactAddress').value.trim();
+        
+        // Validate contact number (exactly 10 digits)
+        const phoneRegex = /^[0-9]{10}$/;
+        if (!phoneRegex.test(contactNumber)) {
+            document.getElementById('contactValidationMsg').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('contactValidationMsg').style.display = 'none';
+        }
+        
+        if (!contactAddress) {
+            document.getElementById('addressValidationMsg').style.display = 'block';
+            return;
+        } else {
+            document.getElementById('addressValidationMsg').style.display = 'none';
+        }
+
+        const roomTypeSelect = document.getElementById('roomTypeSelect');
+        const selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex];
+        const priceMultiplier = parseFloat(roomTypeSelect.value);
+        const roomTypeName = selectedOption.getAttribute('data-name');
+
         const nights = Math.max(1, Math.ceil((new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24)));
 
         const response = await fetch(`${API_BASE_URL}/create_booking.php`, {
@@ -575,7 +665,14 @@ async function confirmBooking() {
                 nights,
                 rooms,
                 guests,
-                guest_details: []
+                price_multiplier: priceMultiplier,
+                guest_details: [
+                    {
+                        contact: contactNumber,
+                        address: contactAddress,
+                        room_preference: roomTypeName
+                    }
+                ]
             })
         });
 

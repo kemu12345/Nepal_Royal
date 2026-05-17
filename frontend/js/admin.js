@@ -1111,11 +1111,37 @@ async function submitNewHotel() {
         const locationId = document.getElementById('hotelLocationId').value;
         const hotelType = document.getElementById('hotelType').value;
         const starRating = document.getElementById('hotelRating').value;
+        const basePrice = document.getElementById('hotelBasePrice').value;
+        const totalRooms = document.getElementById('hotelTotalRooms').value;
         const address = document.getElementById('hotelAddress').value;
-        const contactNumber = document.getElementById('hotelContact').value;
+        const contactNumber = document.getElementById('hotelContact').value.trim();
         const email = document.getElementById('hotelEmail').value;
         const description = document.getElementById('hotelDescription').value;
         const imageUrl = document.getElementById('hotelImageUrl').value;
+
+        // Validation
+        if (!hotelName || !locationId || !hotelType || !starRating || !address || !basePrice || !totalRooms) {
+            showMessage('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        if (Number(basePrice) <= 0) {
+            showMessage('Base Price must be a positive number.', 'warning');
+            return;
+        }
+
+        if (address.trim().length < 3) {
+            showMessage('Please enter a valid address.', 'warning');
+            return;
+        }
+
+        if (contactNumber) {
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(contactNumber)) {
+                showMessage('Please enter a valid contact number (exactly 10 digits).', 'warning');
+                return;
+            }
+        }
 
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'hotel';
 
@@ -1130,6 +1156,8 @@ async function submitNewHotel() {
                 description: description,
                 star_rating: Number(starRating),
                 hotel_type: hotelType,
+                base_price: basePrice ? Number(basePrice) : undefined,
+                total_rooms: totalRooms ? Number(totalRooms) : undefined,
                 contact_number: contactNumber || null,
                 email: email || null,
                 image_url: imageUrl || null,
@@ -1162,6 +1190,8 @@ function editHotel(hotel) {
     document.getElementById('hotelLocationId').value = hotel.location_id;
     document.getElementById('hotelType').value = hotel.hotel_type;
     document.getElementById('hotelRating').value = hotel.star_rating;
+    document.getElementById('hotelBasePrice').value = hotel.min_price_per_night ? Math.round(Number(hotel.min_price_per_night)) : 5000;
+    document.getElementById('hotelTotalRooms').value = hotel.total_available_rooms || 10;
     document.getElementById('hotelAddress').value = hotel.address;
     document.getElementById('hotelContact').value = hotel.contact_number || '';
     document.getElementById('hotelEmail').value = hotel.email || '';

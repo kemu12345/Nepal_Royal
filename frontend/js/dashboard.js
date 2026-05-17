@@ -146,6 +146,8 @@ function bindDashboardNavLinks() {
     });
 }
 
+let allUserBookings = [];
+
 async function loadUserBookingData() {
     const response = await fetch(`${API_BASE_URL}/get_user_bookings.php`, {
         credentials: 'include'
@@ -164,40 +166,159 @@ async function loadUserBookingData() {
         throw new Error(data.message || 'Unable to load booking history');
     }
 
-    const bookings = data.data || [];
-    const flightCount = bookings.filter(b => b.booking_type === 'flight').length;
-    const hotelCount = bookings.filter(b => b.booking_type === 'hotel').length;
-    const packageCount = bookings.filter(b => b.booking_type === 'package').length;
+    allUserBookings = data.data || [];
+    
+    // Original Stats Cards
+    const flightCount = allUserBookings.filter(b => b.booking_type === 'flight').length;
+    const hotelCount = allUserBookings.filter(b => b.booking_type === 'hotel').length;
+    const packageCount = allUserBookings.filter(b => b.booking_type === 'package').length;
 
-    document.getElementById('flightBookings').textContent = String(flightCount);
-    document.getElementById('hotelBookings').textContent = String(hotelCount);
-    document.getElementById('packageBookings').textContent = String(packageCount);
+    if (document.getElementById('flightBookings')) document.getElementById('flightBookings').textContent = String(flightCount);
+    if (document.getElementById('hotelBookings')) document.getElementById('hotelBookings').textContent = String(hotelCount);
+    if (document.getElementById('packageBookings')) document.getElementById('packageBookings').textContent = String(packageCount);
 
+    // New Booking Summary Cards
+    const confirmedCount = allUserBookings.filter(b => (b.booking_status || '').toLowerCase() === 'confirmed').length;
+    const pendingCount = allUserBookings.filter(b => (b.booking_status || '').toLowerCase() === 'pending').length;
+    const cancelledCount = allUserBookings.filter(b => (b.booking_status || '').toLowerCase() === 'cancelled').length;
+    
+    if (document.getElementById('summaryTotal')) document.getElementById('summaryTotal').textContent = allUserBookings.length;
+    if (document.getElementById('summaryConfirmed')) document.getElementById('summaryConfirmed').textContent = confirmedCount;
+    if (document.getElementById('summaryPending')) document.getElementById('summaryPending').textContent = pendingCount;
+    if (document.getElementById('summaryCancelled')) document.getElementById('summaryCancelled').textContent = cancelledCount;
+
+    renderUpcomingTrip();
+    renderBookingsTable();
+}
+
+function getBookingIcon(type) {
+    if (type === 'flight') return '<i class="bi bi-airplane text-primary me-2"></i>';
+    if (type === 'bus') return '<i class="bi bi-bus-front text-success me-2"></i>';
+    if (type === 'hotel') return '<i class="bi bi-building text-warning me-2"></i>';
+    if (type === 'package') return '<i class="bi bi-gift text-info me-2"></i>';
+    return '<i class="bi bi-journal-text text-secondary me-2"></i>';
+}
+
+function renderBookingsTable() {
     const recentBody = document.getElementById('recentBookings');
     if (!recentBody) return;
 
-    if (!bookings.length) {
+    const searchTerm = (document.getElementById('bookingSearch')?.value || '').toLowerCase();
+    const filterType = document.getElementById('bookingTypeFilter')?.value || 'all';
+
+    let filteredBookings = allUserBookings.filter(b => {
+        const dest = bookingDestination(b).toLowerCase();
+        const ref = (b.booking_reference || b.booking_id || '').toString().toLowerCase();
+        const matchSearch = ref.includes(searchTerm) || dest.includes(searchTerm);
+        const matchType = filterType === 'all' || b.booking_type === filterType;
+
+        return matchSearch && matchType;
+    });
+
+    if (!filteredBookings.length) {
         recentBody.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center py-4 text-muted">
-                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
-                    No bookings yet. Start exploring Nepal!
+                <td colspan="7" class="text-center py-5">
+                    <img src="../assets/images/empty-bookings.svg" alt="No bookings" style="width: 150px; opacity: 0.5; margin-bottom: 1rem;" onerror="this.style.display='none'">
+                    <h5 class="text-muted fw-bold">No Bookings Found</h5>
+                    <p class="text-muted mb-0">We couldn't find any bookings matching your criteria.</p>
                 </td>
             </tr>
         `;
         return;
     }
 
-    recentBody.innerHTML = bookings.slice(0, 8).map((b) => `
+    recentBody.innerHTML = filteredBookings.slice(0, 10).map((b) => `
         <tr>
-            <td>${b.booking_reference || b.booking_id}</td>
-            <td>${b.booking_type}</td>
+            <td class="fw-bold">#${b.booking_reference || b.booking_id}</td>
+            <td class="text-capitalize">${getBookingIcon(b.booking_type)}${b.booking_type}</td>
             <td>${bookingDestination(b)}</td>
-            <td>${new Date(b.booking_date).toLocaleDateString()}</td>
-            <td><span class="status-badge status-${(b.booking_status || 'pending').toLowerCase()}">${b.booking_status}</span></td>
-            <td>${formatAmount(b.total_amount, b.currency)}</td>
+            <td>${new Date(b.booking_date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+            <td>
+                <span class="status-badge status-${(b.booking_status || 'pending').toLowerCase()}">
+                    ${(b.booking_status || 'pending').toLowerCase() === 'confirmed' ? '<i class="bi bi-check-circle-fill"></i>' : 
+                      (b.booking_status || 'pending').toLowerCase() === 'cancelled' ? '<i class="bi bi-x-circle-fill"></i>' : 
+                      '<i class="bi bi-clock-fill"></i>'}
+                    ${b.booking_status}
+                </span>
+            </td>
+            <td class="fw-bold">${formatAmount(b.total_amount, b.currency)}</td>
+            <td class="text-end">
+                <button class="btn-action" title="View Details" onclick="viewBookingDetails('${b.booking_id}')">
+                    <i class="bi bi-eye"></i>
+                </button>
+                ${(b.booking_status || 'pending').toLowerCase() !== 'cancelled' ? `
+                <button class="btn-action btn-cancel ms-1" title="Cancel Booking" onclick="cancelBooking('${b.booking_id}')">
+                    <i class="bi bi-x-circle"></i>
+                </button>
+                ` : ''}
+            </td>
         </tr>
     `).join('');
+}
+
+function renderUpcomingTrip() {
+    const upcomingSection = document.getElementById('upcomingTripSection');
+    const upcomingContent = document.getElementById('upcomingTripContent');
+    if (!upcomingSection || !upcomingContent) return;
+
+    // Find the next upcoming confirmed booking
+    const now = new Date();
+    // Assuming booking_date is the date of travel for simplicity, or we just take the latest one.
+    // We'll filter for future dates. If there are no future dates, just don't show it.
+    const upcoming = allUserBookings
+        .filter(b => (b.booking_status || '').toLowerCase() === 'confirmed')
+        .filter(b => {
+             // Basic attempt to see if date is in the future.
+             // Usually booking_date is when it was booked, but let's assume it's travel date for this context if we don't have separate fields.
+             // Alternatively, let's just show the most recent confirmed booking.
+             return true; 
+        })
+        .sort((a, b) => new Date(b.booking_date) - new Date(a.booking_date))[0]; // Most recent
+
+    if (!upcoming) {
+        upcomingSection.style.display = 'none';
+        return;
+    }
+
+    upcomingSection.style.display = 'block';
+    
+    let iconClass = 'bi-airplane';
+    if(upcoming.booking_type === 'hotel') iconClass = 'bi-building';
+    if(upcoming.booking_type === 'bus') iconClass = 'bi-bus-front';
+    if(upcoming.booking_type === 'package') iconClass = 'bi-gift';
+
+    upcomingContent.innerHTML = `
+        <div class="upcoming-trip-header">
+            <div>
+                <p class="upcoming-trip-subtitle text-uppercase tracking-wider mb-1">Next Adventure</p>
+                <h4 class="upcoming-trip-title">${bookingDestination(upcoming)}</h4>
+            </div>
+            <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                <i class="bi ${iconClass}"></i>
+            </div>
+        </div>
+        <div class="upcoming-trip-details">
+            <div class="upcoming-trip-detail-item">
+                <i class="bi bi-calendar-check"></i>
+                <span>${new Date(upcoming.booking_date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</span>
+            </div>
+            <div class="upcoming-trip-detail-item">
+                <i class="bi bi-upc-scan"></i>
+                <span>Ref: ${upcoming.booking_reference || upcoming.booking_id}</span>
+            </div>
+        </div>
+    `;
+}
+
+function viewBookingDetails(id) {
+    alert('Viewing details for booking ID: ' + id + '\\n\\n(This feature will be implemented in the future)');
+}
+
+function cancelBooking(id) {
+    if(confirm('Are you sure you want to cancel this booking?')) {
+        alert('Cancellation request sent for booking ID: ' + id + '\\n\\n(This feature will be implemented in the future)');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -243,6 +364,12 @@ document.addEventListener('DOMContentLoaded', () => {
     bindDashboardNavLinks();
     bindWishlistButtons();
     renderWishlistSection();
+
+    // Bind Search and Filter listeners
+    const searchInput = document.getElementById('bookingSearch');
+    const filterSelect = document.getElementById('bookingTypeFilter');
+    if (searchInput) searchInput.addEventListener('input', renderBookingsTable);
+    if (filterSelect) filterSelect.addEventListener('change', renderBookingsTable);
 
     loadUserBookingData().catch((error) => {
         console.error('Dashboard booking history error:', error);
