@@ -254,6 +254,25 @@ function handleCreate($db, $data) {
                 $data->is_active ?? 1,
                 $data->is_featured ?? 0
             ]);
+
+            $package_id = $db->lastInsertId();
+            if (isset($data->destinations) && is_string($data->destinations) && trim($data->destinations) !== '') {
+                $names = array_filter(array_map('trim', explode(',', $data->destinations)));
+                $check_loc = $db->prepare("SELECT location_id FROM locations WHERE LOWER(location_name) = LOWER(?)");
+                $insert_loc = $db->prepare("INSERT INTO locations (location_name) VALUES (?)");
+                $loc_stmt = $db->prepare("INSERT INTO package_locations (package_id, location_id, sequence_order) VALUES (?, ?, ?)");
+
+                $seq = 1;
+                foreach ($names as $name) {
+                    $check_loc->execute([$name]);
+                    $loc_id = $check_loc->fetchColumn();
+                    if (!$loc_id) {
+                        $insert_loc->execute([$name]);
+                        $loc_id = $db->lastInsertId();
+                    }
+                    $loc_stmt->execute([$package_id, (int)$loc_id, $seq++]);
+                }
+            }
             break;
 
         case 'place':
@@ -488,6 +507,27 @@ function handleUpdate($db, $data) {
                 $data->is_featured ?? 0,
                 $item_id // The ID of the package to update.
             ]);
+
+            if (isset($data->destinations) && is_string($data->destinations) && trim($data->destinations) !== '') {
+                $del_stmt = $db->prepare("DELETE FROM package_locations WHERE package_id = ?");
+                $del_stmt->execute([$item_id]);
+
+                $names = array_filter(array_map('trim', explode(',', $data->destinations)));
+                $check_loc = $db->prepare("SELECT location_id FROM locations WHERE LOWER(location_name) = LOWER(?)");
+                $insert_loc = $db->prepare("INSERT INTO locations (location_name) VALUES (?)");
+                $loc_stmt = $db->prepare("INSERT INTO package_locations (package_id, location_id, sequence_order) VALUES (?, ?, ?)");
+
+                $seq = 1;
+                foreach ($names as $name) {
+                    $check_loc->execute([$name]);
+                    $loc_id = $check_loc->fetchColumn();
+                    if (!$loc_id) {
+                        $insert_loc->execute([$name]);
+                        $loc_id = $db->lastInsertId();
+                    }
+                    $loc_stmt->execute([$item_id, (int)$loc_id, $seq++]);
+                }
+            }
             break;
 
         case 'place':

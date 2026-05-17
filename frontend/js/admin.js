@@ -895,6 +895,9 @@ function populateSupportDropdowns() {
 
         const placeLocationSelect = document.getElementById('placeLocationId');
         if (placeLocationSelect) placeLocationSelect.innerHTML = '<option value="">Select Location...</option>' + locs;
+
+        const packageDestSelect = document.getElementById('packageDestinations');
+        if (packageDestSelect) packageDestSelect.innerHTML = locs;
     }
 }
 
@@ -1230,6 +1233,22 @@ async function submitNewPackage() {
         const basePrice = document.getElementById('packagePrice').value;
         const description = document.getElementById('packageDescription').value;
         const imageUrl = document.getElementById('packageImageUrl').value;
+        const destinationsInput = document.getElementById('packageDestinations').value.trim();
+
+        if (!packageName || !packageType || !durationDays || !durationNights || !basePrice || !description) {
+            showMessage('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        if (!destinationsInput) {
+            showMessage('Please enter at least one destination.', 'warning');
+            return;
+        }
+
+        if (!/^[a-zA-Z\s]+(,[a-zA-Z\s]+)*$/.test(destinationsInput)) {
+            showMessage('Destinations must be valid names separated by commas (letters and spaces only, e.g. Kathmandu, Pokhara).', 'warning');
+            return;
+        }
 
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'package';
 
@@ -1244,6 +1263,7 @@ async function submitNewPackage() {
                 duration_days: Number(durationDays),
                 duration_nights: Number(durationNights),
                 base_price: Number(basePrice),
+                destinations: destinationsInput,
                 currency: 'NPR',
                 image_url: imageUrl || null,
                 is_active: Number(document.getElementById('packageStatus').value)
@@ -1279,6 +1299,7 @@ function editPackage(pkg) {
     document.getElementById('packageDescription').value = pkg.description;
     document.getElementById('packageImageUrl').value = pkg.image_url || '';
     document.getElementById('packageStatus').value = pkg.is_active;
+    document.getElementById('packageDestinations').value = pkg.destinations || '';
 }
 
 async function deletePackage(pkg) {

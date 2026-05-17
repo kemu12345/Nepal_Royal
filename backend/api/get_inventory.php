@@ -230,6 +230,7 @@ function getHotels($db) {
 function getPackages($db) {
     $query = "SELECT tp.*,
                      GROUP_CONCAT(DISTINCT l.location_name ORDER BY pl.sequence_order SEPARATOR ', ') AS destinations,
+                     GROUP_CONCAT(DISTINCT pl.location_id ORDER BY pl.sequence_order SEPARATOR ',') AS destination_ids,
                      COUNT(DISTINCT pl.location_id) AS destination_count
               FROM tour_packages tp
               LEFT JOIN package_locations pl ON tp.package_id = pl.package_id
