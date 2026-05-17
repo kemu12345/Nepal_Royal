@@ -1035,9 +1035,9 @@ async function submitNewHotel() {
         }
 
         if (contactNumber) {
-            const phoneRegex = /^[0-9]{10}$/;
+            const phoneRegex = /^(98|97)[0-9]{8}$/;
             if (!phoneRegex.test(contactNumber)) {
-                showMessage('Please enter a valid contact number (exactly 10 digits).', 'warning');
+                showMessage('Please enter a 10-digit contact number starting with 98 or 97.', 'warning');
                 return;
             }
         }
