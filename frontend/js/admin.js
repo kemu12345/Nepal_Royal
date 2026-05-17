@@ -637,7 +637,7 @@ function renderPlacesTable(places) {
     if (!tbody) return;
 
     if (!places.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center">No places found</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No places found</td></tr>';
         return;
     }
 
@@ -647,7 +647,6 @@ function renderPlacesTable(places) {
             <td>${escapeHtml(p.place_name || '-')}</td>
             <td>${escapeHtml(p.location_name || '-')}</td>
             <td>${p.altitude_meters ?? '-'}</td>
-            <td>${p.latitude && p.longitude ? `${p.latitude}, ${p.longitude}` : '-'}</td>
             <td>${escapeHtml((p.description || '').slice(0, 60))}${(p.description || '').length > 60 ? '...' : ''}</td>
             <td>
                 <button class="btn btn-secondary btn-sm" type="button" data-place-edit="${p.place_id}">Edit</button>
@@ -1334,8 +1333,19 @@ async function submitNewPlace() {
         const placeName = document.getElementById('placeName').value;
         const locationId = document.getElementById('placeLocationId').value;
         const category = document.getElementById('placeCategory').value;
+        const altitude = document.getElementById('placeAltitude').value;
         const description = document.getElementById('placeDescription').value;
         const imageUrl = document.getElementById('placeImageUrl').value;
+
+        if (!placeName || !locationId || !category || !description) {
+            showMessage('Please fill in all required fields.', 'warning');
+            return;
+        }
+
+        if (!/^[a-zA-Z\s]{3,100}$/.test(placeName.trim())) {
+            showMessage('Place Name must be between 3 and 100 characters containing only letters and spaces.', 'warning');
+            return;
+        }
 
         const isEditing = adminState.editingItem && adminState.editingItem.type === 'place';
 
@@ -1347,6 +1357,7 @@ async function submitNewPlace() {
                 place_name: placeName,
                 location_id: Number(locationId),
                 category: category,
+                altitude_meters: altitude ? Number(altitude) : null,
                 description: description,
                 image_url: imageUrl || null,
                 is_active: 1
@@ -1377,6 +1388,7 @@ function editPlace(place) {
     document.getElementById('placeName').value = place.place_name;
     document.getElementById('placeLocationId').value = place.location_id;
     document.getElementById('placeCategory').value = place.category;
+    document.getElementById('placeAltitude').value = place.altitude_meters || '';
     document.getElementById('placeDescription').value = place.description;
     document.getElementById('placeImageUrl').value = place.image_url || '';
 }

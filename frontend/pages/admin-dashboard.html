@@ -769,14 +769,13 @@
                                         <th>Place Name</th>
                                         <th>Region</th>
                                         <th>Altitude (m)</th>
-                                        <th>Coordinates</th>
                                         <th>Description</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="placesTableBody">
                                     <tr>
-                                        <td colspan="7" class="text-center">No places found</td>
+                                        <td colspan="6" class="text-center">No places found</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -798,8 +797,10 @@
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="placeName">Place Name</label>
                                 <input type="text" id="placeName" class="form-control"
+                                    pattern="^[a-zA-Z\s]{3,100}$" minlength="3" maxlength="100"
                                     placeholder="e.g. Swayambhunath Stupa" required
                                     >
+                                <small class="text-muted">Must be 3-100 characters (letters and spaces only).</small>
                             </div>
                             <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="form-group" style="flex: 1;">
@@ -824,6 +825,10 @@
                                         <option value="viewpoint">Viewpoint</option>
                                     </select>
                                 </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="placeAltitude">Altitude (meters)</label>
+                                <input type="number" id="placeAltitude" class="form-control" placeholder="e.g. 1350" min="0">
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label for="placeDescription">Description</label>
