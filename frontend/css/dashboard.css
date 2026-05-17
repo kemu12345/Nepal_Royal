@@ -327,26 +327,179 @@ body {
 }
 
 .status-badge {
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 800;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    letter-spacing: 0.05em;
 }
 
 .status-confirmed {
     background: #dcfce7;
-    color: #166534;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
 }
 
 .status-pending {
-    background: #fef9c3;
-    color: #854d0e;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
 }
 
 .status-cancelled {
     background: #fee2e2;
-    color: #991b1b;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+/* Booking Summary Cards */
+.booking-summary-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.booking-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-subtle);
+}
+
+.booking-summary-card .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.booking-summary-card.total .icon { background: #f1f5f9; color: #475569; }
+.booking-summary-card.confirmed .icon { background: #dcfce7; color: #166534; }
+.booking-summary-card.pending .icon { background: #fef9c3; color: #854d0e; }
+.booking-summary-card.cancelled .icon { background: #fee2e2; color: #991b1b; }
+
+.booking-summary-card .details h4 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--text-main);
+    line-height: 1;
+}
+
+.booking-summary-card .details p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+/* Upcoming Trip Card */
+.upcoming-trip-card {
+    background: linear-gradient(135deg, #003893 0%, #1e3a8a 100%);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-premium);
+}
+
+.upcoming-trip-card::after {
+    content: '';
+    position: absolute;
+    right: -50px;
+    top: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.upcoming-trip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.upcoming-trip-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.upcoming-trip-subtitle {
+    color: #bfdbfe;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.upcoming-trip-details {
+    display: flex;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.upcoming-trip-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upcoming-trip-detail-item i {
+    font-size: 1.25rem;
+    color: #60a5fa;
+}
+
+.upcoming-trip-detail-item span {
+    font-weight: 600;
+}
+
+/* Search Box inside Dashboard */
+.search-box input {
+    border-radius: 20px;
+    border: 1px solid #cbd5e1;
+    transition: all 0.2s ease;
+}
+
+.search-box input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 56, 147, 0.1);
+}
+
+/* Table Actions */
+.btn-action {
+    padding: 0.4rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    transition: all 0.1s ease;
+}
+
+.btn-action:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+}
+
+.btn-action.btn-cancel:hover {
+    background: #fee2e2;
+    color: #ef4444;
 }
 
 /* Discover Nepal Cards */
