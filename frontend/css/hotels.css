@@ -37,6 +37,7 @@ body {
     box-shadow: 0 3px 15px rgba(0,0,0,0.08);
     transition: all 0.1s ease;
     overflow: hidden;
+    margin-bottom: 1rem;
 }
 
 .hotel-card:hover {
