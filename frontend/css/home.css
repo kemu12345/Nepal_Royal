@@ -128,6 +128,29 @@ body {
     border: none;
 }
 
+/* The "Why Choose Us" section uses a soft grey-white background with dark text. */
+.features-section {
+    background: #ffffff !important;
+    color: #000000;
+}
+
+.features-section.text-white {
+    color: #000000 !important;
+}
+
+.features-section.text-white h2,
+.features-section.text-white h5,
+.features-section.text-white p,
+.features-section.text-white .feature-card h5,
+.features-section.text-white .feature-card p,
+.features-section.text-white .text-white-50 {
+    color: #000000 !important;
+}
+
+.features-section.text-white .feature-card .feature-icon {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
 /* Styling for the tabs (Flights, Buses, etc.) in the search card. */
 .search-tabs .nav-pills .nav-link {
     color: #666;
