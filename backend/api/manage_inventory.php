@@ -190,6 +190,21 @@ function handleCreate($db, $data) {
             // Define required fields for creating a hotel.
             requireFields($data, ['hotel_name', 'location_id', 'address']);
 
+            $hotel_name = trim(strip_tags($data->hotel_name));
+            if ($hotel_name === '') {
+                throw new Exception("Hotel name cannot be empty");
+            }
+            if (mb_strlen($hotel_name) < 2) {
+                throw new Exception("Hotel name must be at least 2 characters");
+            }
+            if (mb_strlen($hotel_name) > 100) {
+                throw new Exception("Hotel name cannot exceed 100 characters");
+            }
+            if (!preg_match('/^[a-zA-Z0-9\s]+$/', $hotel_name)) {
+                throw new Exception("Hotel name can only contain letters, numbers, and spaces");
+            }
+            $data->hotel_name = $hotel_name;
+
             // SQL query to insert a new hotel.
             $query = "INSERT INTO hotels
                       (vendor_id, hotel_name, location_id, address, description, star_rating, hotel_type,
@@ -225,6 +240,21 @@ function handleCreate($db, $data) {
         case 'package':
             // Define required fields for creating a tour package.
             requireFields($data, ['package_name', 'package_type', 'description', 'duration_days', 'duration_nights', 'base_price']);
+
+            $package_name = trim(strip_tags($data->package_name));
+            if ($package_name === '') {
+                throw new Exception("Package name cannot be empty");
+            }
+            if (mb_strlen($package_name) < 2) {
+                throw new Exception("Package name must be at least 2 characters");
+            }
+            if (mb_strlen($package_name) > 100) {
+                throw new Exception("Package name cannot exceed 100 characters");
+            }
+            if (!preg_match('/^[a-zA-Z\s]+$/', $package_name)) {
+                throw new Exception("Package name can only contain letters and spaces");
+            }
+            $data->package_name = $package_name;
 
             // SQL query to insert a new tour package.
             $query = "INSERT INTO tour_packages
@@ -436,6 +466,22 @@ function handleUpdate($db, $data) {
 
         case 'hotel':
             requireFields($data, ['hotel_name', 'location_id', 'address']);
+
+            $hotel_name = trim(strip_tags($data->hotel_name));
+            if ($hotel_name === '') {
+                throw new Exception("Hotel name cannot be empty");
+            }
+            if (mb_strlen($hotel_name) < 2) {
+                throw new Exception("Hotel name must be at least 2 characters");
+            }
+            if (mb_strlen($hotel_name) > 100) {
+                throw new Exception("Hotel name cannot exceed 100 characters");
+            }
+            if (!preg_match('/^[a-zA-Z0-9\s]+$/', $hotel_name)) {
+                throw new Exception("Hotel name can only contain letters, numbers, and spaces");
+            }
+            $data->hotel_name = $hotel_name;
+
             // SQL query to update an existing hotel record.
             $query = "UPDATE hotels SET
                       vendor_id = ?, hotel_name = ?, location_id = ?, address = ?, description = ?,
@@ -477,6 +523,22 @@ function handleUpdate($db, $data) {
 
         case 'package':
             requireFields($data, ['package_name', 'package_type', 'description', 'duration_days', 'duration_nights', 'base_price']);
+
+            $package_name = trim(strip_tags($data->package_name));
+            if ($package_name === '') {
+                throw new Exception("Package name cannot be empty");
+            }
+            if (mb_strlen($package_name) < 2) {
+                throw new Exception("Package name must be at least 2 characters");
+            }
+            if (mb_strlen($package_name) > 100) {
+                throw new Exception("Package name cannot exceed 100 characters");
+            }
+            if (!preg_match('/^[a-zA-Z\s]+$/', $package_name)) {
+                throw new Exception("Package name can only contain letters and spaces");
+            }
+            $data->package_name = $package_name;
+
             // SQL query to update an existing tour package record.
             $query = "UPDATE tour_packages SET
                       package_name = ?, package_type = ?, description = ?, detailed_itinerary = ?,

@@ -1115,7 +1115,9 @@ async function deleteBus(bus) {
 
 async function submitNewHotel() {
     try {
-        const hotelName = document.getElementById('hotelName').value;
+        const nameEl = document.getElementById('hotelName');
+        const hotelName = nameEl ? nameEl.value.trim() : '';
+        if (nameEl) nameEl.value = hotelName;
         const locationId = document.getElementById('hotelLocationId').value;
         const hotelType = document.getElementById('hotelType').value;
         const starRating = document.getElementById('hotelRating').value;
@@ -1231,7 +1233,9 @@ async function deleteHotel(hotel) {
 
 async function submitNewPackage() {
     try {
-        const packageName = document.getElementById('packageName').value;
+        const nameEl = document.getElementById('packageName');
+        const packageName = nameEl ? nameEl.value.trim() : '';
+        if (nameEl) nameEl.value = packageName;
         const packageType = document.getElementById('packageType').value;
         const durationDays = document.getElementById('packageDays').value;
         const durationNights = document.getElementById('packageNights').value;
@@ -1582,6 +1586,23 @@ function validateBusForm() {
 }
 
 function validateHotelForm() {
+    const nameEl = document.getElementById('hotelName');
+    const cleanHotelName = nameEl ? nameEl.value.trim() : '';
+    if (nameEl) nameEl.value = cleanHotelName;
+
+    if (!cleanHotelName) {
+        showMessage('Hotel name is required.', 'error');
+        return false;
+    }
+    if (cleanHotelName.length < 2) {
+        showMessage('Hotel name must be at least 2 characters.', 'error');
+        return false;
+    }
+    if (!/^[a-zA-Z0-9\s]+$/.test(cleanHotelName)) {
+        showMessage('Hotel name can only contain letters, numbers, and spaces.', 'error');
+        return false;
+    }
+
     const rating = Number(document.getElementById('hotelRating').value);
     if (rating < 0 || rating > 5) {
         showMessage('Star rating must be between 0 and 5', 'error');
@@ -1591,6 +1612,23 @@ function validateHotelForm() {
 }
 
 function validatePackageForm() {
+    const nameEl = document.getElementById('packageName');
+    const cleanPackageName = nameEl ? nameEl.value.trim() : '';
+    if (nameEl) nameEl.value = cleanPackageName;
+
+    if (!cleanPackageName) {
+        showMessage('Package name is required.', 'error');
+        return false;
+    }
+    if (cleanPackageName.length < 2) {
+        showMessage('Package name must be at least 2 characters.', 'error');
+        return false;
+    }
+    if (!/^[a-zA-Z\s]+$/.test(cleanPackageName)) {
+        showMessage('Package name can only contain letters and spaces.', 'error');
+        return false;
+    }
+
     const days = Number(document.getElementById('packageDays').value);
     const nights = Number(document.getElementById('packageNights').value);
     const price = Number(document.getElementById('packagePrice').value);

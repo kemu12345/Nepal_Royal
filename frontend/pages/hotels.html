@@ -83,6 +83,11 @@
                     </div>
                     <div class="card-body">
                         <div class="mb-4">
+                            <label for="filter-name" class="form-label fw-semibold"><i class="bi bi-search text-success me-1"></i>Hotel Name</label>
+                            <input type="text" class="form-control" id="filter-name" placeholder="Search by hotel name..." maxlength="100">
+                            <div class="form-text text-danger small" id="filter-name-error" style="display: none;">Invalid characters. Only letters, numbers and spaces allowed.</div>
+                        </div>
+                        <div class="mb-4">
                             <label for="filter-type" class="form-label fw-semibold"><i class="bi bi-building text-success me-1"></i>Hotel Type</label>
                             <select class="form-select" id="filter-type">
                                 <option value="">All Types</option>

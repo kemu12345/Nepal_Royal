@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Set up event listeners for the filter and sort controls.
+    document.getElementById('filter-name')?.addEventListener('input', debounce(applyFilters, 300));
     document.getElementById('filter-type')?.addEventListener('change', applyFilters);
     document.getElementById('filter-rating')?.addEventListener('change', applyFilters);
     document.getElementById('sort-by')?.addEventListener('change', applyFilters);
@@ -267,18 +268,34 @@ async function searchHotels(city, checkin, checkout) {
 }
 
 /**
+ * Helper to sanitize hotel name search input against XSS and invalid characters.
+ */
+function sanitizeHotelSearchInput(input) {
+    if (!input) return '';
+    // Strip malicious tags like <script>
+    let clean = input.replace(/<\/?[\w\s="/.':;#-\/]+>/gi, '');
+    // Allow only letters, numbers, and spaces
+    clean = clean.replace(/[^a-zA-Z0-9\s]/g, '');
+    return clean.slice(0, 100);
+}
+
+/**
  * Resets all filters to their default values and re-applies them.
  */
 function resetFilters() {
+    const nameEl = document.getElementById('filter-name');
     const typeEl = document.getElementById('filter-type');
     const ratingEl = document.getElementById('filter-rating');
     const sortEl = document.getElementById('sort-by');
     const priceEl = document.getElementById('filter-price');
+    const nameErrEl = document.getElementById('filter-name-error');
 
+    if (nameEl) nameEl.value = '';
     if (typeEl) typeEl.value = '';
     if (ratingEl) ratingEl.value = '';
     if (sortEl) sortEl.value = 'price-asc';
     if (priceEl) priceEl.value = '';
+    if (nameErrEl) nameErrEl.style.display = 'none';
 
     applyFilters();
 }
@@ -287,6 +304,21 @@ function resetFilters() {
  * Applies the selected filters and sorting to the list of hotels.
  */
 function applyFilters() {
+    const rawNameFilter = document.getElementById('filter-name')?.value || '';
+    const nameErrEl = document.getElementById('filter-name-error');
+
+    let nameFilter = '';
+    if (rawNameFilter) {
+        if (/[^a-zA-Z0-9\s]/.test(rawNameFilter) || /<script/i.test(rawNameFilter)) {
+            if (nameErrEl) nameErrEl.style.display = 'block';
+        } else {
+            if (nameErrEl) nameErrEl.style.display = 'none';
+        }
+        nameFilter = sanitizeHotelSearchInput(rawNameFilter);
+    } else {
+        if (nameErrEl) nameErrEl.style.display = 'none';
+    }
+
     const typeFilter = document.getElementById('filter-type')?.value || '';
     const ratingFilter = document.getElementById('filter-rating')?.value || '';
     const priceFilter = document.getElementById('filter-price')?.value || '';
@@ -294,6 +326,11 @@ function applyFilters() {
 
     // Filter the hotels based on the selected criteria.
     filteredHotels = allHotels.filter(hotel => {
+        if (nameFilter) {
+            if (!hotel.hotel_name || !hotel.hotel_name.toLowerCase().includes(nameFilter.toLowerCase())) {
+                return false;
+            }
+        }
         if (typeFilter && hotel.hotel_type !== typeFilter) return false;
         if (ratingFilter && parseFloat(hotel.star_rating) < parseFloat(ratingFilter)) return false;
         
