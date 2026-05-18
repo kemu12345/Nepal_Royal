@@ -50,12 +50,12 @@ if(strlen($data->password) < PASSWORD_MIN_LENGTH) {
     exit();
 }
 
-// Validate first and last names contain letters only.
-if (!preg_match('/^\p{L}+$/u', $data->first_name) || !preg_match('/^\p{L}+$/u', $data->last_name)) {
+// Validate first and last names contain letters and spaces only.
+if (!preg_match('/^[\p{L}\s]+$/u', $data->first_name) || !preg_match('/^[\p{L}\s]+$/u', $data->last_name)) {
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "First name and last name must contain letters only"
+        "message" => "First name and last name can contain letters and spaces only"
     ]);
     exit();
 }
@@ -99,8 +99,8 @@ if($user->emailExists()) {
 
 // Set user properties
 $user->password = $data->password;
-$user->first_name = $data->first_name;
-$user->last_name = $data->last_name;
+$user->first_name = preg_replace('/\s+/', ' ', trim($data->first_name));
+$user->last_name = preg_replace('/\s+/', ' ', trim($data->last_name));
 $user->phone = $data->phone ?? null;
 $user->role = 'user'; // Default role
 

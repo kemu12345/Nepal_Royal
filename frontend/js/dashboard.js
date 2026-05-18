@@ -152,6 +152,103 @@ function bindDashboardNavLinks() {
     });
 }
 
+function getCurrentUserFromStorage() {
+    try {
+        return JSON.parse(localStorage.getItem('user') || '{}');
+    } catch (_error) {
+        return {};
+    }
+}
+
+function openEditProfileModal() {
+    const user = getCurrentUserFromStorage();
+    const firstNameInput = document.getElementById('editFirstName');
+    const lastNameInput = document.getElementById('editLastName');
+    const emailInput = document.getElementById('editEmail');
+    const phoneInput = document.getElementById('editPhone');
+
+    if (firstNameInput) firstNameInput.value = user.first_name || '';
+    if (lastNameInput) lastNameInput.value = user.last_name || '';
+    if (emailInput) emailInput.value = user.email || '';
+    if (phoneInput) phoneInput.value = user.phone || '';
+
+    const modalElement = document.getElementById('editProfileModal');
+    if (!modalElement) return;
+
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modal.show();
+}
+
+async function submitProfileUpdate(event) {
+    event.preventDefault();
+
+    const saveButton = document.getElementById('saveProfileButton');
+    const originalLabel = saveButton?.innerHTML || '';
+
+    const payload = {
+        first_name: document.getElementById('editFirstName')?.value.trim(),
+        last_name: document.getElementById('editLastName')?.value.trim(),
+        phone: document.getElementById('editPhone')?.value.trim()
+    };
+
+    if (saveButton) {
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Saving...';
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/update_profile.php`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || 'Unable to update profile');
+        }
+
+        const currentUser = getCurrentUserFromStorage();
+        const updatedUser = {
+            ...currentUser,
+            first_name: data.data?.first_name || payload.first_name,
+            last_name: data.data?.last_name || payload.last_name,
+            phone: data.data?.phone ?? payload.phone,
+            email: data.data?.email || currentUser.email
+        };
+
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+
+        const initial = (updatedUser.first_name || 'U').charAt(0).toUpperCase();
+        const fullName = `${updatedUser.first_name || ''} ${updatedUser.last_name || ''}`.trim();
+
+        if (document.getElementById('userFullName')) document.getElementById('userFullName').textContent = fullName;
+        if (document.getElementById('userEmail')) document.getElementById('userEmail').textContent = updatedUser.email || '';
+        if (document.getElementById('userInitial')) document.getElementById('userInitial').textContent = initial;
+        if (document.getElementById('profileAvatarLarge')) document.getElementById('profileAvatarLarge').textContent = initial;
+        if (document.getElementById('profileNameDetail')) document.getElementById('profileNameDetail').textContent = fullName;
+        if (document.getElementById('detailFirstName')) document.getElementById('detailFirstName').textContent = updatedUser.first_name || '-';
+        if (document.getElementById('detailLastName')) document.getElementById('detailLastName').textContent = updatedUser.last_name || '-';
+        if (document.getElementById('detailPhone')) document.getElementById('detailPhone').textContent = updatedUser.phone || 'Not provided';
+
+        const modalElement = document.getElementById('editProfileModal');
+        bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+
+        alert('Profile updated successfully');
+    } catch (error) {
+        alert(error.message || 'Unable to update profile');
+    } finally {
+        if (saveButton) {
+            saveButton.disabled = false;
+            saveButton.innerHTML = originalLabel;
+        }
+    }
+}
+
 let allUserBookings = [];
 
 async function loadUserBookingData() {
@@ -370,6 +467,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('detailLastName')) document.getElementById('detailLastName').textContent = user.last_name || '-';
         if (document.getElementById('detailEmail')) document.getElementById('detailEmail').textContent = user.email || '-';
         if (document.getElementById('detailPhone')) document.getElementById('detailPhone').textContent = user.phone || 'Not provided';
+    }
+
+    const profileCard = document.getElementById('profileCard');
+    const editProfileButton = document.getElementById('editProfileButton');
+    const editProfileForm = document.getElementById('editProfileForm');
+
+    if (profileCard) {
+        profileCard.addEventListener('click', openEditProfileModal);
+        profileCard.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openEditProfileModal();
+            }
+        });
+    }
+
+    if (editProfileButton) {
+        editProfileButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            openEditProfileModal();
+        });
+    }
+
+    if (editProfileForm) {
+        editProfileForm.addEventListener('submit', submitProfileUpdate);
     }
 
     bindDashboardNavLinks();

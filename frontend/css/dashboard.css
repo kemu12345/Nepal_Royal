@@ -676,6 +676,19 @@ body {
     border-radius: var(--radius-lg);
     padding: 2.5rem;
     text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-sidebar-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-soft);
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+}
+
+.profile-sidebar-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
 }
 .profile-avatar-large {
     width: 100px;
