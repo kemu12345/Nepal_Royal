@@ -1,7 +1,7 @@
 :root {
     --primary: #003893;
     --accent: #dc143c;
-    --sidebar-gradient: linear-gradient(180deg, #003893 0%, #003893 50%, #dc143c 100%);
+    --sidebar-gradient: linear-gradient(180deg, #003893 0%, #002f7a 65%, #dc143c 100%);
     --accent-soft: rgba(220, 20, 60, 0.1);
     --bg-body: #f1f5f9;
     --surface: #ffffff;

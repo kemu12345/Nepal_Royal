@@ -2,8 +2,8 @@
     --nepal-red: #DC143C;
     --nepal-blue: #003893;
     --nepal-gold: #FFD700;
-    --explore-teal: #20c997;
-    --explore-gradient: linear-gradient(135deg, #20c997 0%, #0d6efd 100%);
+    --explore-teal: #003893;
+    --explore-gradient: linear-gradient(135deg, #003893 0%, #DC143C 100%);
 }
 
 * {
@@ -60,7 +60,7 @@ body {
 
 .search-input:focus {
     border-color: var(--explore-teal);
-    box-shadow: 0 0 0 0.25rem rgba(32, 201, 151, 0.15);
+    box-shadow: 0 0 0 0.25rem rgba(0, 56, 147, 0.15);
 }
 
 .search-icon {

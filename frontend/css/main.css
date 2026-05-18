@@ -21,8 +21,8 @@
     /*
         Semantic color variables for consistent UI element styling.
     */
-    --primary-color: #DC143C;
-    --secondary-color: #003893;
+    --primary-color: #003893;
+    --secondary-color: #DC143C;
     --accent-color: #FFD700;
     --success-color: #28a745;
     --error-color: #dc3545;

@@ -67,7 +67,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.stat-card:nth-child(1) .stat-icon { background: linear-gradient(135deg, #4f46e5, #3b82f6); }
+.stat-card:nth-child(1) .stat-icon { background: linear-gradient(135deg, #003893, #4a90e2); }
 .stat-card:nth-child(2) .stat-icon { background: linear-gradient(135deg, #059669, #10b981); }
 .stat-card:nth-child(3) .stat-icon { background: linear-gradient(135deg, #d97706, #fbbf24); }
 .stat-card:nth-child(4) .stat-icon { background: linear-gradient(135deg, #dc2626, #ef4444); }

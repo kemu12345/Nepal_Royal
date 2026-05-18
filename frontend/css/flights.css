@@ -6,7 +6,7 @@ body {
 }
 
 .page-header {
-    background: linear-gradient(135deg, #DC143C 0%, #003893 100%);
+    background: linear-gradient(135deg, #003893 0%, #DC143C 100%);
     color: white;
     padding: 3rem 0;
     margin-bottom: 2rem;
@@ -45,7 +45,7 @@ body {
 }
 
 .airline-badge {
-    background: linear-gradient(135deg, #DC143C 0%, #ff6b6b 100%);
+    background: linear-gradient(135deg, #003893 0%, #4a90e2 100%);
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
@@ -56,7 +56,7 @@ body {
 .route-line {
     position: relative;
     height: 3px;
-    background: linear-gradient(90deg, #DC143C, #003893);
+    background: linear-gradient(90deg, #003893, #DC143C);
     flex: 1;
     margin: 0 1rem;
     border-radius: 3px;
@@ -83,7 +83,7 @@ body {
 }
 
 .btn-book {
-    background: linear-gradient(135deg, #DC143C 0%, #b8102f 100%);
+    background: linear-gradient(135deg, #003893 0%, #002266 100%);
     border: none;
     padding: 0.75rem 2rem;
     font-weight: 600;
@@ -93,7 +93,7 @@ body {
 
 .btn-book:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(220,20,60,0.3);
+    box-shadow: 0 5px 15px rgba(0,56,147,0.3);
 }
 
 .skeleton {

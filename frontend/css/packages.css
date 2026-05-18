@@ -2,8 +2,8 @@
     --nepal-red: #DC143C;
     --nepal-blue: #003893;
     --nepal-gold: #FFD700;
-    --package-purple: #6f42c1;
-    --package-gradient: linear-gradient(135deg, #6f42c1 0%, #4a1d96 100%);
+    --package-purple: #003893;
+    --package-gradient: linear-gradient(135deg, #003893 0%, #DC143C 100%);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -11,7 +11,7 @@ body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
 
 /* Navbar */
 .navbar-custom {
-    background: linear-gradient(135deg, var(--nepal-red) 0%, var(--nepal-blue) 100%);
+    background: linear-gradient(135deg, var(--nepal-blue) 0%, var(--nepal-red) 100%);
     padding: 1rem 0;
     box-shadow: 0 2px 20px rgba(0,0,0,0.1);
 }
@@ -73,7 +73,7 @@ body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
 }
 .filter-section .form-select:focus {
     border-color: var(--package-purple);
-    box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.15);
+    box-shadow: 0 0 0 0.25rem rgba(0, 56, 147, 0.15);
 }
 
 /* Package Cards */
@@ -89,11 +89,11 @@ body { font-family: 'Poppins', sans-serif; background: #f8f9fa; }
 }
 .package-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 20px 50px rgba(111, 66, 193, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 56, 147, 0.2);
 }
 .package-image {
     height: 220px;
-    background: linear-gradient(135deg, #6f42c1, #4a1d96);
+    background: linear-gradient(135deg, #003893, #DC143C);
     position: relative;
     overflow: hidden;
 }

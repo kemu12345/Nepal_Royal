@@ -1,6 +1,6 @@
 :root {
-    --primary-red: #C81E3D;
-    --primary-yellow: #FFB800;
+    --primary-red: #003893;
+    --primary-yellow: #DC143C;
     --bg-light: #F0F4F8;
     --text-dark: #2D3436;
     --text-muted: #636E72;
@@ -88,7 +88,7 @@ body {
 
 .feature-item i {
     font-size: 1.5rem;
-    color: var(--primary-yellow);
+    color: #FFD700;
     margin-right: 1.25rem;
 }
 

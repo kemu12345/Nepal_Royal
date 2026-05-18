@@ -137,13 +137,13 @@ body {
 }
 
 .search-tabs .nav-pills .nav-link:hover {
-    background: rgba(220, 20, 60, 0.1);
-    color: var(--nepal-red);
+    background: rgba(0, 56, 147, 0.1);
+    color: var(--nepal-blue);
 }
 
 /* Style for the active search tab. */
 .search-tabs .nav-pills .nav-link.active {
-    background: linear-gradient(135deg, var(--nepal-red) 0%, var(--nepal-blue) 100%);
+    background: linear-gradient(135deg, var(--nepal-blue) 0%, var(--nepal-red) 100%);
     color: white;
 }
 
@@ -156,8 +156,8 @@ body {
 */
 .form-select:focus,
 .form-control:focus {
-    border-color: var(--nepal-red);
-    box-shadow: 0 0 0 0.25rem rgba(220, 20, 60, 0.15);
+    border-color: var(--nepal-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 56, 147, 0.15);
 }
 
 .form-select-lg,
@@ -455,7 +455,7 @@ html {
 
 /* Customizes the color of selected text. */
 ::selection {
-    background: var(--nepal-red);
+    background: var(--nepal-blue);
     color: white;
 }
 
@@ -468,7 +468,7 @@ html {
     Adds a custom, accessibility-friendly focus outline for keyboard navigation.
 */
 *:focus-visible {
-    outline: 2px solid var(--nepal-gold);
+    outline: 2px solid var(--nepal-blue);
     outline-offset: 2px;
 }
 
